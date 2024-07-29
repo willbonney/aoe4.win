@@ -19,12 +19,19 @@ defmodule Wololo.PlayerAPI do
     end
   end
 
-  @expected_fields ~w(name avatars country modes)
+  @expected_fields ~w(avatars country modes)a
 
   def process_player(body) do
     body
     |> Jason.decode!()
-    |> Map.take(@expected_fields)
-    |> Enum.map(fn {k, v} -> {String.to_atom(k), v} end)
+    |> then(fn decoded ->
+      for field <- @expected_fields,
+          value = Map.get(decoded, to_string(field)),
+          value != nil,
+          into: %{} do
+        {field, value}
+      end
+    end)
+    |> tap(&IO.inspect(&1, label: "Final processed player data"))
   end
 end
