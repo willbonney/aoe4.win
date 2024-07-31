@@ -1,3 +1,28 @@
-<section>
-  <h2>Civs by Map</h2>
-</section>
+<%# Template last updated: <%= DateTime.utc_now() %> %>
+
+<h1>Civ2s b  sy Map</h1>
+<%= if @civs_by_map_data do %>
+  <!-- Display your data here -->
+  <%= inspect(@civs_by_map_data) %>
+<% else %>
+  <p>No data available</p>
+<% end %>
+<.table id="aoe4_civilizations" rows={@maps}>
+  <:col :let={map} label="Map"><%= map.name %></:col>
+  <:col :let={map} label="Abbasid Dynasty"><%= map.abbasid_dynasty %></:col>
+  <:col :let={map} label="Chinese"><%= map.chinese %></:col>
+  <:col :let={map} label="Delhi Sultanate"><%= map.delhi_sultanate %></:col>
+  <:col :let={map} label="English"><%= map.english %></:col>
+  <:col :let={map} label="French"><%= map.french %></:col>
+  <:col :let={map} label="Holy Roman Empire"><%= map.holy_roman_empire %></:col>
+  <:col :let={map} label="Mongols"><%= map.mongols %></:col>
+  <:col :let={map} label="Rus"><%= map.rus %></:col>
+  <:col :let={map} label="Ottomans"><%= map.ottomans %></:col>
+  <:col :let={map} label="Malians"><%= map.malians %></:col>
+  <:col :let={map} label="Byzantines"><%= map.byzantines %></:col>
+  <:col :let={map} label="Japanese"><%= map.japanese %></:col>
+  <:col :let={map} label="Ayyubids"><%= map.ayyubids %></:col>
+  <:col :let={map} label="Jeanne d'Arc"><%= map.jeanne_darc %></:col>
+  <:col :let={map} label="Order of the Dragon"><%= map.order_of_the_dragon %></:col>
+  <:col :let={map} label="Zhu Xi's Legacy"><%= map.zhu_xis_legacy %></:col>
+</.table>
