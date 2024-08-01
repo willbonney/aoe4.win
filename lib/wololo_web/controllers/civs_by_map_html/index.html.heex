@@ -1,28 +1,53 @@
-<%# Template last updated: <%= DateTime.utc_now() %> %>
+<.header>Civs by Map</.header>
 
-<h1>Civ2s b  sy Map</h1>
-<%= if @civs_by_map_data do %>
-  <!-- Display your data here -->
-  <%= inspect(@civs_by_map_data) %>
-<% else %>
-  <p>No data available</p>
-<% end %>
 <.table id="aoe4_civilizations" rows={@maps}>
-  <:col :let={map} label="Map"><%= map.name %></:col>
-  <:col :let={map} label="Abbasid Dynasty"><%= map.abbasid_dynasty %></:col>
-  <:col :let={map} label="Chinese"><%= map.chinese %></:col>
-  <:col :let={map} label="Delhi Sultanate"><%= map.delhi_sultanate %></:col>
-  <:col :let={map} label="English"><%= map.english %></:col>
-  <:col :let={map} label="French"><%= map.french %></:col>
-  <:col :let={map} label="Holy Roman Empire"><%= map.holy_roman_empire %></:col>
-  <:col :let={map} label="Mongols"><%= map.mongols %></:col>
-  <:col :let={map} label="Rus"><%= map.rus %></:col>
-  <:col :let={map} label="Ottomans"><%= map.ottomans %></:col>
-  <:col :let={map} label="Malians"><%= map.malians %></:col>
-  <:col :let={map} label="Byzantines"><%= map.byzantines %></:col>
-  <:col :let={map} label="Japanese"><%= map.japanese %></:col>
-  <:col :let={map} label="Ayyubids"><%= map.ayyubids %></:col>
-  <:col :let={map} label="Jeanne d'Arc"><%= map.jeanne_darc %></:col>
-  <:col :let={map} label="Order of the Dragon"><%= map.order_of_the_dragon %></:col>
-  <:col :let={map} label="Zhu Xi's Legacy"><%= map.zhu_xis_legacy %></:col>
+  <:col :let={map} label={"Map"}><%= map.name %></:col>
+  <:col :let={map} label={civ_header(%{civ: "abbasid_dynasty", label: "Abbasid Dynasty"})}>
+    <div class={"#{bg_color(map.abbasid_dynasty)} p-2 rounded"}><%= map.abbasid_dynasty %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "chinese", label: "Chinese"})}>
+    <div class={"#{bg_color(map.chinese)} p-2 rounded"}><%= map.chinese %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "delhi_sultanate", label: "Delhi Sultanate"})}>
+    <div class={"#{bg_color(map.delhi_sultanate)} p-2 rounded"}><%= map.delhi_sultanate %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "english", label: "English"})}>
+    <div class={"#{bg_color(map.english)} p-2 rounded"}><%= map.english %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "french", label: "French"})}>
+    <div class={"#{bg_color(map.french)} p-2 rounded"}><%= map.french %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "holy_roman_empire", label: "Holy Roman Empire"})}>
+    <div class={"#{bg_color(map.holy_roman_empire)} p-2 rounded"}><%= map.holy_roman_empire %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "mongols", label: "Mongols"})}>
+    <div class={"#{bg_color(map.mongols)} p-2 rounded"}><%= map.mongols %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "rus", label: "Rus"})}>
+    <div class={"#{bg_color(map.rus)} p-2 rounded"}><%= map.rus %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "ottomans", label: "Ottomans"})}>
+    <div class={"#{bg_color(map.ottomans)} p-2 rounded"}><%= map.ottomans %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "malians", label: "Malians"})}>
+    <div class={"#{bg_color(map.malians)} p-2 rounded"}><%= map.malians %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "byzantines", label: "Byzantines"})}>
+    <div class={"#{bg_color(map.byzantines)} p-2 rounded"}><%= map.byzantines %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "japanese", label: "Japanese"})}>
+    <div class={"#{bg_color(map.japanese)} p-2 rounded"}><%= map.japanese %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "ayyubids", label: "Ayyubids"})}>
+    <div class={"#{bg_color(map.ayyubids)} p-2 rounded"}><%= map.ayyubids %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "jeanne_darc", label: "Jeanne d'Arc"})}>
+    <div class={"#{bg_color(map.jeanne_darc)} p-2 rounded"}><%= map.jeanne_darc %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "order_of_the_dragon", label: "Order of the Dragon"})}>
+    <div class={"#{bg_color(map.order_of_the_dragon)} p-2 rounded"}><%= map.order_of_the_dragon %></div>
+  </:col>
+  <:col :let={map} label={civ_header(%{civ: "zhu_xis_legacy", label: "Zhu Xi's Legacy"})}>
+    <div class={"#{bg_color(map.zhu_xis_legacy)} p-2 rounded"}><%= map.zhu_xis_legacy %></div>
+  </:col>
 </.table>

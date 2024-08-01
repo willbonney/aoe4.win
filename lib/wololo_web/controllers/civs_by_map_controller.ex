@@ -7,9 +7,10 @@ defmodule WololoWeb.CivsByMapController do
     Logger.info("CivsByMapController.index called at #{DateTime.utc_now()}")
 
     case CivsByMapAPI.fetch_civs_by_map() do
-      {:ok, civs_by_map_data} ->
+      {:ok, raw_data} ->
         Logger.info("Successfully fetched civs_by_map data")
-        render(conn, :index, civs_by_map_data: civs_by_map_data)
+        transformed_data = CivsByMapAPI.transform_data(raw_data)
+        render(conn, :index, maps: transformed_data)
 
       {:error, reason} ->
         Logger.error("Failed to fetch civs_by_map data: #{inspect(reason)}")
