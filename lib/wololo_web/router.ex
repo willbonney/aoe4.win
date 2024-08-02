@@ -19,7 +19,7 @@ defmodule WololoWeb.Router do
 
     get "/", PageController, :home
     resources "/player", PlayerController, only: [:index, :show]
-    get "/civs_by_map", CivsByMapController, :index
+    live "/civs_by_map", CivsByMapLive
   end
 
   # Other scopes may use custom stacks.

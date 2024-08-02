@@ -1,0 +1,12 @@
+    <.header>Civs by Map</.header>
+
+    <.button phx-click="click_btn">Click</.button>
+
+    <.table id="aoe4_civilizations" rows={@maps}>
+      <:col :let={map} label="Map"><%= map.name %></:col>
+      <:col :let={map} :for={civ <- @civs} label={civ_header(%{civ: civ.image, label: civ.label})}>
+        <div class={"#{bg_color(Map.get(map, civ.key))} p-2 rounded"}>
+          <%= Map.get(map, civ.key) %>
+        </div>
+      </:col>
+    </.table>
