@@ -6,5 +6,5 @@ defmodule WololoWeb.PageHTML do
   """
   use WololoWeb, :html
 
-  embed_templates "page_html/*"
+  embed_templates("page_html/*")
 end

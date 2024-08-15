@@ -10,5 +10,5 @@ defmodule WololoWeb.Layouts do
   """
   use WololoWeb, :html
 
-  embed_templates "layouts/*"
+  embed_templates("layouts/*")
 end

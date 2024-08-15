@@ -22,13 +22,33 @@ defmodule Wololo.CivsByMapAPI do
     "zhu_xis_legacy"
   ]
 
-  def fetch_civs_by_map() do
-    Logger.info("Fetching civs_by_map data at #{DateTime.utc_now()}")
-    url = "#{@base_url}/stats/rm_solo/maps?include_civs=true"
+  def fetch_civs_by_map(league \\ nil) do
+    Logger.info("Fetching civs_by_map data for #{league}")
+    base_url = "#{@base_url}/stats/rm_solo/maps?include_civs=true"
 
-    case Finch.build(:get, url) |> Finch.request(Wololo.Finch) do
-      {:ok, %Finch.Response{status: 200, body: body}} ->
-        Logger.info("Successfully received response from API")
+    url =
+      if league do
+        "#{base_url}&rank_level=#{URI.encode_www_form(league)}"
+      else
+        base_url
+      end
+
+    request = Finch.build(:get, url)
+    start_time = System.monotonic_time()
+
+    case Finch.request(request, Wololo.Finch) do
+      {:ok, %Finch.Response{status: 200, body: body} = response} ->
+        end_time = System.monotonic_time()
+        duration = System.convert_time_unit(end_time - start_time, :native, :millisecond)
+
+        Logger.info("""
+        Finch Request:
+          URL: #{request.scheme}://#{request.host}#{request.path}
+          Method: #{request.method}
+          Status: #{response.status}
+          Duration: #{duration}ms
+        """)
+
         {:ok, Jason.decode!(body)}
 
       {:ok, %Finch.Response{status: status}} ->
