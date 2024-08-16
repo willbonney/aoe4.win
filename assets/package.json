@@ -1,0 +1,11 @@
+{
+  "name": "Wololo",
+  "description": "Gigalixir npm deployment configuration",
+  "authors": "author",
+  "version": "1.0.0",
+  "main": "pathToMain",
+  "dependencies": {},
+  "scripts": {
+    "deploy": "cd .. && mix assets.deploy && rm -f _build/esbuild"
+  }
+}

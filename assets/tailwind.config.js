@@ -6,33 +6,11 @@ const fs = require("fs");
 const path = require("path");
 
 module.exports = {
+  mode: "jit",
   content: [
     "./js/**/*.js",
     "../lib/wololo_web.ex",
     "../lib/wololo_web/**/*.*ex",
-  ],
-  safelist: [
-    "bg-red-500",
-    "bg-red-400",
-    "bg-red-300",
-    "bg-red-200",
-    "bg-gray-200",
-    "bg-gray-100",
-    "bg-green-200",
-    "bg-green-300",
-    "bg-green-400",
-    "bg-gray-500",
-    "text-red-500",
-    "text-red-400",
-    "text-red-300",
-    "text-red-200",
-    "text-gray-200",
-    "text-gray-100",
-    "text-gray-600",
-    "text-green-200",
-    "text-green-300",
-    "text-green-400",
-    "text-gray-500",
   ],
   theme: {
     extend: {

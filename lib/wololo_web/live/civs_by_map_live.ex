@@ -107,7 +107,6 @@ defmodule WololoWeb.CivsByMapLive do
   def color_class(percentage, type) when is_number(percentage) and type in [:bg, :text] do
     prefix = if type == :bg, do: "bg", else: "text"
 
-    # remember to safelist these classes in tailwind.config.js!
     cond do
       percentage < 45 -> "#{prefix}-red-500"
       percentage < 47 -> "#{prefix}-red-400"
