@@ -11,22 +11,22 @@ defmodule WololoWeb.CivsByMapLive do
     {"Platinum", "platinum"},
     {"Diamond", "diamond"},
     {"Conqueror", "conqueror"},
-    {"> Platinum", "≥platinum"},
-    {">Diamond", "≥diamond"},
-    {">Conq 1", "≥conqueror_1"},
-    {">Conq 2", "≥conqueror_2"},
-    {">Conq3", "≥conqueror_3"},
-    {">Conq4", "≥conqueror_4"}
+    {"≥ Platinum", "≥platinum"},
+    {"≥ Diamond", "≥diamond"},
+    {"≥ Conq 1", "≥conqueror_1"},
+    {"≥ Conq 2", "≥conqueror_2"},
+    {"≥ Conq 3", "≥conqueror_3"},
+    {"≥ Conq 4", "≥conqueror_4"}
   ]
 
   @civs [
     %{key: :name, label: "Map", image: nil},
-    %{key: :abbasid_dynasty, label: "Abbasid Dynasty", image: "abbasid_dynasty"},
+    %{key: :abbasid_dynasty, label: "Abbasid", image: "abbasid_dynasty"},
     %{key: :chinese, label: "Chinese", image: "chinese"},
-    %{key: :delhi_sultanate, label: "Delhi Sultanate", image: "delhi_sultanate"},
+    %{key: :delhi_sultanate, label: "Delhi", image: "delhi_sultanate"},
     %{key: :english, label: "English", image: "english"},
     %{key: :french, label: "French", image: "french"},
-    %{key: :holy_roman_empire, label: "Holy Roman Empire", image: "holy_roman_empire"},
+    %{key: :holy_roman_empire, label: "HRE", image: "holy_roman_empire"},
     %{key: :mongols, label: "Mongols", image: "mongols"},
     %{key: :rus, label: "Rus", image: "rus"},
     %{key: :ottomans, label: "Ottomans", image: "ottomans"},
@@ -34,9 +34,9 @@ defmodule WololoWeb.CivsByMapLive do
     %{key: :byzantines, label: "Byzantines", image: "byzantines"},
     %{key: :japanese, label: "Japanese", image: "japanese"},
     %{key: :ayyubids, label: "Ayyubids", image: "ayyubids"},
-    %{key: :jeanne_darc, label: "Jeanne d'Arc", image: "jeanne_darc"},
-    %{key: :order_of_the_dragon, label: "Order of the Dragon", image: "order_of_the_dragon"},
-    %{key: :zhu_xis_legacy, label: "Zhu Xi's Legacy", image: "zhu_xis_legacy"}
+    %{key: :jeanne_darc, label: "JDA", image: "jeanne_darc"},
+    %{key: :order_of_the_dragon, label: "OOTD", image: "order_of_the_dragon"},
+    %{key: :zhu_xis_legacy, label: "ZXL", image: "zhu_xis_legacy"}
   ]
 
   @impl true
@@ -87,9 +87,9 @@ defmodule WololoWeb.CivsByMapLive do
 
   def civ_header(assigns) do
     ~H"""
-    <div class="flex items-center flex-col">
+    <div class="flex items-center flex-col text-center">
       <%= if @image do %>
-        <img src={"/images/#{@image}.png"} alt={@label} class="w-10 h-6 mr-2" />
+        <img src={"/images/#{@image}.png"} alt={@label} class="w-10 h-6 mb-1" />
       <% end %>
       <span><%= @label %></span>
     </div>
@@ -108,6 +108,8 @@ defmodule WololoWeb.CivsByMapLive do
     prefix = if type == :bg, do: "bg", else: "text"
 
     cond do
+      percentage < 39 -> "#{prefix}-red-700"
+      percentage < 42 -> "#{prefix}-red-600"
       percentage < 45 -> "#{prefix}-red-500"
       percentage < 47 -> "#{prefix}-red-400"
       percentage < 49 -> "#{prefix}-red-300"
@@ -116,6 +118,9 @@ defmodule WololoWeb.CivsByMapLive do
       percentage < 51 -> "#{prefix}-green-200"
       percentage < 53 -> "#{prefix}-green-300"
       percentage < 55 -> "#{prefix}-green-400"
+      percentage < 57 -> "#{prefix}-green-500"
+      percentage < 59 -> "#{prefix}-green-600"
+      percentage < 61 -> "#{prefix}-green-700"
       true -> "#{prefix}-gray-500"
     end
   end

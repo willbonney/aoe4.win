@@ -16,7 +16,7 @@
   </.form>
 
   <%= if @error do %>
-    <.error message={@error} />
+    <.error><%= @error %></.error>
   <% else %>
     <div class="hidden md:block">
       <.table id="aoe4_civilizations" rows={@maps}>
