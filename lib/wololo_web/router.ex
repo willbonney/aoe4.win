@@ -18,8 +18,8 @@ defmodule WololoWeb.Router do
     pipe_through(:browser)
 
     get("/", PageController, :home)
-    resources("/player", PlayerController, only: [:index, :show])
     live("/civs_by_map", CivsByMapLive)
+    live("/opponents_by_country", OpponentsByCountry)
   end
 
   # Other scopes may use custom stacks.

@@ -39,7 +39,7 @@ defmodule WololoWeb.CivsByMapLive do
     %{key: :zhu_xis_legacy, label: "ZXL", image: "zhu_xis_legacy"}
   ]
 
-  @impl true
+  @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
     socket =
       assign(socket,
@@ -58,7 +58,7 @@ defmodule WololoWeb.CivsByMapLive do
     {:ok, socket}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event("select-league", %{"league" => league}, socket) do
     socket =
       socket
@@ -68,8 +68,7 @@ defmodule WololoWeb.CivsByMapLive do
     {:noreply, socket}
   end
 
-  @impl true
-  @spec handle_info(:fetch_initial_data, any()) :: {:noreply, any()}
+  @impl Phoenix.LiveView
   def handle_info(:fetch_initial_data, socket) do
     {:noreply, fetch_civs_data(socket)}
   end
