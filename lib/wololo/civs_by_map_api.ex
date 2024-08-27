@@ -22,6 +22,7 @@ defmodule Wololo.CivsByMapAPI do
     "zhu_xis_legacy"
   ]
 
+  @spec fetch_civs_by_map(false | nil | binary()) :: {:error, <<_::64, _::_*8>>} | {:ok, any()}
   def fetch_civs_by_map(league \\ nil) do
     Logger.info("Fetching civs_by_map data for #{league}")
     endpoint = "#{@base_url}/stats/rm_solo/maps?include_civs=true"

@@ -23,33 +23,25 @@ defmodule Wololo.OpponentsByCountryAPI do
     end
   end
 
+  @spec process_games(any()) :: :ok
   def process_games(body) do
     body
     |> Jason.decode!()
-    |> Map.get("data.games")
+    |> Map.get("games")
     |> Enum.reduce(%{}, fn game, acc ->
       {_, opponent_team} =
-        Enum.split_with(game["teams"], fn team -> team[0]["profile_id"] == @player_id end)
+        Enum.split_with(game["teams"], fn [team | _] -> team["profile_id"] == @player_id end)
 
-      opponent_country = opponent_team[0][1]["country"]
+      [[opponent], _] = opponent_team
+
+      opponent_country = opponent["player"]["country"]
 
       if(Map.get(acc, opponent_country) == nil) do
         Map.put(acc, opponent_country, 1)
       else
-        Map.put(acc, opponent_country, Map.get(acc, opponent_country) + 1)
+        Map.update(acc, opponent_country, 1, &(&1 + 1))
       end
-
-      acc
     end)
-    |> Logger.info(label: "Processed player data")
-    # |> then(fn decoded -> Map
-    #   for game <- @decoded.games,
-    #       value = Map.get(decoded, to_string(field)),
-    #       value != nil,
-    #       into: %{} do
-    #     {field, value}
-    #   end
-    # end)
     |> tap(&IO.inspect(&1, label: "Final processed player data"))
   end
 end

@@ -6,7 +6,7 @@ defmodule WololoWeb.OpponentsByCountry do
   @impl true
   def mount(params, session, socket) do
     data = OpponentsByCountryAPI.fetch_last_50_player_games()
-    socket = assign(socket, data: data, loading: true, error: nil)
+    socket = assign(socket, data: data, loading: false, error: nil)
     {:ok, socket}
   end
 
@@ -18,6 +18,7 @@ defmodule WololoWeb.OpponentsByCountry do
         <.spinner />
       <% else %>
         <!-- render data here -->
+        <canvas id="my-chart" phx-hook="ChartJS"></canvas>
       <% end %>
     </div>
     """
