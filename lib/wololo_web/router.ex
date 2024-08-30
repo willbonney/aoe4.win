@@ -19,7 +19,7 @@ defmodule WololoWeb.Router do
 
     get("/", PageController, :home)
     live("/civs_by_map", CivsByMapLive)
-    live("/opponents_by_country", OpponentsByCountry)
+    live("/opponents_by_country", OpponentsByCountryLive)
   end
 
   # Other scopes may use custom stacks.

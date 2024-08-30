@@ -23,7 +23,6 @@ defmodule Wololo.OpponentsByCountryAPI do
     end
   end
 
-  @spec process_games(any()) :: :ok
   def process_games(body) do
     body
     |> Jason.decode!()

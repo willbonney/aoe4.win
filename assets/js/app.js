@@ -31,15 +31,55 @@ let hooks = {};
 hooks.ChartJS = {
   mounted() {
     const ctx = this.el;
+    console.log("ctx", ctx);
     const data = {
-      type: "bar",
+      type: "doughnut",
       data: {
-        // random data to validate chart generation
-        labels: ["A", "B", "C", "D", "E"],
-        datasets: [{ data: [14, 3, 8, 2, 1] }],
+        datasets: [
+          {
+            data: [],
+            backgroundColor: [
+              "#FFC107", // Amber
+              "#2196F3", // Blue
+              "#009688", // Teal
+              "#4CAF50", // Green
+              "#FF9800", // Orange
+              "#9C27B0", // Purple
+              "#F44336", // Red
+              "#03A9F4", // Light Blue
+              "#8BC34A", // Light Green
+              "#FF69B4", // Pink
+              "#3F51B5", // Indigo
+              "#795548", // Brown
+            ],
+          },
+        ],
+        hoverOffset: 4,
+        borderJoinStyle: "bevel",
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+          title: {
+            display: true,
+            text: "Opponents by Country",
+          },
+        },
       },
     };
     const chart = new Chart(ctx, data);
+    this.handleEvent("update-player", (event) => {
+      console.log("event", event);
+      chart.data.datasets[0].data = Object.values(event.byCountry);
+      chart.data.labels = Object.keys(event.byCountry);
+      chart.update();
+    });
+  },
+  beforeUnmount() {
+    this.handleEvent("update-player", null);
   },
 };
 
