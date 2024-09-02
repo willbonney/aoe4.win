@@ -17,6 +17,8 @@ defmodule WololoWeb do
   those modules here.
   """
 
+  # alias WololoWeb.CustomComponents
+
   def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
 
   def router do

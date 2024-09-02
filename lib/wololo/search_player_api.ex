@@ -2,17 +2,17 @@ defmodule Wololo.SearchPlayerAPI do
   require Logger
 
   @base_url Application.compile_env(:wololo, :api_base_url)
-  @expected_fields ~w(avatars country modes)a
-  @name "znmto"
 
   def fetch_player(name) do
-    endpoint = "#{@base_url}/players/autocomplete?query=#{@name}"
+    endpoint = "#{@base_url}/players/autocomplete?leaderboard=rm_solo&query=#{name}"
 
     request = Finch.build(:get, endpoint)
 
     case Finch.request(request, Wololo.Finch) do
       {:ok, %Finch.Response{status: 200, body: body}} ->
         Logger.info("Received players body: #{inspect(Jason.decode!(body))}")
+
+        {:ok, Jason.decode!(body)}
 
       # {:ok, process_games(body)}
 
