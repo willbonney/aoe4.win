@@ -3,17 +3,16 @@ defmodule Wololo.OpponentsByCountryAPI do
 
   @base_url Application.compile_env(:wololo, :api_base_url)
   @expected_fields ~w(avatars country modes)a
-  @player_id "76561197961443238"
 
-  def fetch_last_50_player_games() do
-    endpoint = "#{@base_url}/players/#{@player_id}/games?leaderboard=rm_solo"
+  def fetch_last_50_player_games(profile_id) do
+    endpoint = "#{@base_url}/players/#{profile_id}/games?leaderboard=rm_solo"
 
     request = Finch.build(:get, endpoint)
 
     case Finch.request(request, Wololo.Finch) do
       {:ok, %Finch.Response{status: 200, body: body}} ->
         # Logger.info("Received countries body: #{inspect(Jason.decode!(body))}")
-        {:ok, process_games(body)}
+        {:ok, process_games(body, profile_id)}
 
       {:ok, %Finch.Response{status: status_code}} ->
         {:error, "Request failed with status code: #{status_code}"}
@@ -23,13 +22,13 @@ defmodule Wololo.OpponentsByCountryAPI do
     end
   end
 
-  def process_games(body) do
+  def process_games(body, profile_id) do
     body
     |> Jason.decode!()
     |> Map.get("games")
     |> Enum.reduce(%{}, fn game, acc ->
       {_, opponent_team} =
-        Enum.split_with(game["teams"], fn [team | _] -> team["profile_id"] == @player_id end)
+        Enum.split_with(game["teams"], fn [team | _] -> team["profile_id"] == profile_id end)
 
       [[opponent], _] = opponent_team
 

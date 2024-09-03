@@ -4,21 +4,21 @@ defmodule WololoWeb.OpponentsByCountryLive do
   alias WololoWeb.SearchComponent
   import WololoWeb.Components.Spinner
 
-  @countries %{}
-
   @impl true
   def mount(params, session, socket) do
-    {:ok, data} = OpponentsByCountryAPI.fetch_last_50_player_games()
-    socket = assign(socket, countries: data, loading: false, error: nil)
-
-    {:ok, socket |> push_event("update-player", %{byCountry: data})}
+    socket = assign(socket, countries: [], loading: true, show: true, error: nil)
+    {:ok, socket}
   end
 
   @impl true
-  def handle_event("select-player", %{"player" => player}, socket) do
-    countries = socket.assigns.countries
-    IO.inspect(countries, label: "countries")
+  def handle_event("select-player", %{"id" => profile_id}, socket) do
+    IO.inspect(profile_id, label: "profile_id")
 
-    {:noreply, socket |> push_event("update-player", %{byCountry: countries})}
+    {:ok, data} = OpponentsByCountryAPI.fetch_last_50_player_games(profile_id)
+
+    {:noreply,
+     socket
+     |> assign(countries: data, loading: false, show: false, error: nil)
+     |> push_event("update-player", %{byCountry: data})}
   end
 end

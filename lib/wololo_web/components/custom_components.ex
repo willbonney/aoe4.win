@@ -44,7 +44,7 @@ defmodule WololoWeb.CustomComponents do
     """
   end
 
-  attr(:docs, :list, required: true)
+  attr(:players, :list)
 
   def search_results(assigns) do
     ~H"""
@@ -59,7 +59,14 @@ defmodule WololoWeb.CustomComponents do
         No Results
       </li>
       <%= for player <- @players do %>
-        <li class="cursor-pointer select-none px-4 py-2 text-xl flex border-b-2 w-95% hover:bg-zinc-100">
+        <li
+          class="cursor-default select-none rounded-md px-4 py-2 text-xl bg-zinc-100 hover:bg-zinc-200 hover:cursor-pointer flex flex-row space-x-2 items-center"
+          id={"option-#{player["name"]}"}
+          role="option"
+          tabindex="-1"
+          phx-click="select-player"
+          phx-value-id={player["profile_id"]}
+        >
           <div>
             <img class="mr-2" src={player["avatars"]["medium"]} />
           </div>
@@ -74,27 +81,6 @@ defmodule WololoWeb.CustomComponents do
         </li>
       <% end %>
     </ul>
-    """
-  end
-
-  attr(:doc, :map, required: true)
-
-  def result_item(assigns) do
-    ~H"""
-    <li
-      class="cursor-default select-none rounded-md px-4 py-2 text-xl bg-zinc-100 hover:bg-zinc-800 hover:text-white hover:cursor-pointer flex flex-row space-x-2 items-center"
-      id={"option-#{@doc.id}"}
-      role="option"
-      tabindex="-1"
-    >
-      <!-- svg of a document -->
-      <div>
-        <%= @doc.title %>
-        <div class="text-xs">
-          <%!-- <%= clean_levels(@doc.levels) %> --%>
-        </div>
-      </div>
-    </li>
     """
   end
 

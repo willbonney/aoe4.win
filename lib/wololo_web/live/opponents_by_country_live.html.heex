@@ -1,7 +1,7 @@
 <.header>Opponents by Country</.header>
 
 <div>
-  <.live_component module={SearchComponent} id="search-results" show={true} on_cancel={%JS{}} />
+  <.live_component module={SearchComponent} id="search-results" show={@show} on_cancel={%JS{}} />
   <%= if @loading do %>
     <.spinner />
   <% else %>
