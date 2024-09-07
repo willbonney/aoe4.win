@@ -50,7 +50,7 @@ defmodule WololoWeb.CustomComponents do
     ~H"""
     <ul class="-mb-2 py-2 text-sm text-gray-800 flex flex-col space-y-2 " id="options" role="listbox">
       <li
-        :if={@players == []}
+        :if={@players == [] && @hasSearched}
         id="option-none"
         role="option"
         tabindex="-1"
@@ -94,7 +94,7 @@ defmodule WololoWeb.CustomComponents do
         {@rest}
         type="text"
         class="h-12 w-full border-none focus:ring-0 pl-11 pr-4 text-gray-800 placeholder-gray-400 sm:text-sm"
-        placeholder="Search the docs.."
+        placeholder="Search player.."
         role="combobox"
         aria-expanded="false"
         aria-controls="options"

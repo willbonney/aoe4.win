@@ -1,11 +1,12 @@
-<.header>Opponents by Country</.header>
+<div id="opponents-by-country">
+  <.header>Opponents by Country</.header>
 
-<div>
-  <.live_component module={SearchComponent} id="search-results" show={@show} on_cancel={%JS{}} />
-  <%= if @loading do %>
-    <.spinner />
-  <% else %>
-    <!-- render data here -->
-    <canvas id="my-chart" phx-hook="ChartJS" data-points={Jason.encode!(@countries)}></canvas>
-  <% end %>
+  <div>
+    <%= if @loading do %>
+      <.spinner />
+    <% else %>
+      <!-- render data here -->
+      <canvas id="my-chart" phx-hook="ChartJS" data-points={Jason.encode!(@countries)}></canvas>
+    <% end %>
+  </div>
 </div>

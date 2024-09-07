@@ -30,8 +30,10 @@ import Chart from "chart.js/auto";
 let hooks = {};
 hooks.ChartJS = {
   mounted() {
+    const regionNamesInEnglish = new Intl.DisplayNames(["en"], {
+      type: "region",
+    });
     const ctx = this.el;
-    console.log("ctx", ctx);
     const data = {
       type: "doughnut",
       data: {
@@ -39,18 +41,31 @@ hooks.ChartJS = {
           {
             data: [],
             backgroundColor: [
-              "#FFC107", // Amber
-              "#2196F3", // Blue
-              "#009688", // Teal
-              "#4CAF50", // Green
-              "#FF9800", // Orange
-              "#9C27B0", // Purple
-              "#F44336", // Red
-              "#03A9F4", // Light Blue
-              "#8BC34A", // Light Green
-              "#FF69B4", // Pink
-              "#3F51B5", // Indigo
-              "#795548", // Brown
+              "#FFC107",
+              "#FF9800",
+              "#FF69B4",
+              "#E91E63",
+              "#9C27B0",
+              "#673AB7",
+              "#3F51B5",
+              "#2196F3",
+              "#03A9F4",
+              "#00BCD4",
+              "#009688",
+              "#4CAF50",
+              "#8BC34A",
+              "#CDDC39",
+              "#FFEB3B",
+              "#FFC400",
+              "#FFAB40",
+              "#FF66CC",
+              "#E64A19",
+              "#795548",
+              "#607D8B",
+              "#455A64",
+              "#37474F",
+              "#263238",
+              "#212121",
             ],
           },
         ],
@@ -60,11 +75,18 @@ hooks.ChartJS = {
       options: {
         responsive: true,
         plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                return `${context.formattedValue}%`;
+              },
+            },
+          },
           legend: {
             position: "top",
           },
           title: {
-            display: true,
+            display: false,
             text: "Opponents by Country",
           },
         },
@@ -74,7 +96,10 @@ hooks.ChartJS = {
     this.handleEvent("update-player", (event) => {
       console.log("event", event);
       chart.data.datasets[0].data = Object.values(event.byCountry);
-      chart.data.labels = Object.keys(event.byCountry);
+      chart.data.labels = Object.keys(event.byCountry).map(
+        (twoLetterCountryCode) =>
+          regionNamesInEnglish.of(twoLetterCountryCode.toUpperCase())
+      );
       chart.update();
     });
   },

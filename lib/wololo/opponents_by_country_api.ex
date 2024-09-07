@@ -6,6 +6,7 @@ defmodule Wololo.OpponentsByCountryAPI do
 
   def fetch_last_50_player_games(profile_id) do
     endpoint = "#{@base_url}/players/#{profile_id}/games?leaderboard=rm_solo"
+    IO.inspect(endpoint, label: "endpoint")
 
     request = Finch.build(:get, endpoint)
 
