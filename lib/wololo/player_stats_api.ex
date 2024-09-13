@@ -45,8 +45,6 @@ defmodule Wololo.PlayerStatsAPI do
   end
 
   def calculate_average_rating(rating_history, total_count) do
-    IO.inspect(rating_history, label: "rating_history")
-
     round(
       Enum.reduce(rating_history, 0, fn {_, %{"rating" => rating}}, acc -> acc + rating end) /
         total_count

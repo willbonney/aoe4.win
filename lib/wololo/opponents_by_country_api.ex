@@ -27,6 +27,7 @@ defmodule Wololo.OpponentsByCountryAPI do
     body
     |> Jason.decode!()
     |> Map.get("games")
+    |> Enum.reverse()
     |> Enum.reduce(%{countries: %{}, ratings: []}, fn game, acc ->
       {player_team, opponent_team} =
         Enum.split_with(game["teams"], fn [team | _] ->
@@ -70,43 +71,49 @@ defmodule Wololo.OpponentsByCountryAPI do
           acc,
           :ratings,
           [
-            %{player_rating: player_rating, updated_at: updated_at, moving_average_10d: 0}
+            %{player_rating: player_rating, updated_at: updated_at, moving_average_10g: 0}
           ],
           fn ratings ->
-            moving_average_10d =
+            moving_average_10g =
               if length(ratings) <= 10 do
                 0
               else
                 current_index = length(ratings)
-                IO.inspect(current_index, label: "current_index")
-                IO.inspect(ratings, label: "ratings")
+                IO.inspect(ratings, label: "ratings before take")
+                # IO.inspect(ratings, label: "ratings")
 
-                # if current_index >= 10 do
-                # start_index = max(current_index - 10, 0)
-                first_10_ratings =
-                  Enum.slice(ratings, 0, 10)
+                prev_10_ratings =
+                  if current_index >= 9 do
+                    Enum.take(ratings, -10)
+                  else
+                    []
+                  end
+
+                # IO.inspect(prev_10_ratings, label: "prev_10_ratings")
 
                 # else
                 #   []
                 # end
 
-                Enum.reduce(first_10_ratings, 0, fn %{player_rating: rating}, acc ->
+                Enum.reduce(prev_10_ratings, 0, fn %{player_rating: rating}, acc ->
+                  IO.inspect(rating, label: "rating")
+
                   acc + rating
                 end) / 10
               end
 
-            IO.inspect(moving_average_10d, label: "moving_average_10d")
+            IO.inspect(moving_average_10g, label: "moving_average_10g")
 
-            new_ratings = [
-              %{
-                player_rating: player_rating,
-                updated_at: updated_at,
-                moving_average_10d: moving_average_10d
-              }
-              | ratings
-            ]
+            ratings ++
+              [
+                %{
+                  player_rating: player_rating,
+                  updated_at: updated_at,
+                  moving_average_10g: moving_average_10g
+                }
+              ]
 
-            Enum.reverse(new_ratings)
+            # Enum.reverse(new_ratings)
           end
         )
 

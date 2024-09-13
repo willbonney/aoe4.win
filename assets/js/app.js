@@ -143,13 +143,16 @@ hooks.MovingAverages = {
     };
     const chart = new Chart(ctx, data);
     this.handleEvent("update-player", (event) => {
-      console.log("event", event);
-      const sorted = event.movingAverages.sort(
+      const withoutNulls = event.movingAverages.slice(11);
+      console.log("withoutNulls", withoutNulls);
+      const sorted = withoutNulls.sort(
         (a, b) => new Date(a.updated_at) - new Date(b.updated_at)
       );
 
-      chart.data.datasets[0].data = sorted.map((m) => m.moving_average_10d);
-      chart.data.labels = sorted.map((m) => m.updated_at);
+      chart.data.datasets[0].data = sorted.map((m) => m.moving_average_10g);
+      chart.data.labels = sorted.map((m) =>
+        new Date(m.updated_at).toLocaleDateString("en-US")
+      );
       chart.update();
     });
   },
