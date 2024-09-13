@@ -3,3 +3,24 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+@layer base {
+    @font-face {
+        font-family: 'TimeTravelerPal';
+        src: url('/fonts/TimeTravelerPal-Normal-Regular.ttf') format('ttf');
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

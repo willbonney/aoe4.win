@@ -28,7 +28,7 @@ import topbar from "../vendor/topbar";
 import Chart from "chart.js/auto";
 
 let hooks = {};
-hooks.ChartJS = {
+hooks.OpponentsByCountry = {
   mounted() {
     const regionNamesInEnglish = new Intl.DisplayNames(["en"], {
       type: "region",
@@ -100,6 +100,56 @@ hooks.ChartJS = {
         (twoLetterCountryCode) =>
           regionNamesInEnglish.of(twoLetterCountryCode.toUpperCase())
       );
+      chart.update();
+    });
+  },
+  beforeUnmount() {
+    this.handleEvent("update-player", null);
+  },
+};
+hooks.MovingAverages = {
+  mounted() {
+    const ctx = this.el;
+    const data = {
+      type: "line",
+      data: {
+        datasets: [
+          {
+            data: [],
+            // backgroundColor: [
+            // ],
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          // tooltip: {
+          //   callbacks: {
+          //     label: function (context) {
+          //       return `${context.formattedValue}%`;
+          //     },
+          //   },
+          // },
+          legend: {
+            position: "top",
+          },
+          title: {
+            display: false,
+            text: "Moving Average",
+          },
+        },
+      },
+    };
+    const chart = new Chart(ctx, data);
+    this.handleEvent("update-player", (event) => {
+      console.log("event", event);
+      const sorted = event.movingAverages.sort(
+        (a, b) => new Date(a.updated_at) - new Date(b.updated_at)
+      );
+
+      chart.data.datasets[0].data = sorted.map((m) => m.moving_average_10d);
+      chart.data.labels = sorted.map((m) => m.updated_at);
       chart.update();
     });
   },

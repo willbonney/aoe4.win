@@ -46,6 +46,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        "time-traveler-pal": ["TimeTravelerPal", "sans-serif"],
+      },
       colors: {
         brand: "#FD4F00",
       },

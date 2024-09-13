@@ -1,12 +1,11 @@
 <div id="opponents-by-country">
-  <.header>Opponents by Country</.header>
+  <h1 class="font-time-traveler-pal font-black text-6xl mb-4">Opponents By Country</h1>
 
-  <div>
-    <%= if @loading do %>
-      <.spinner />
-    <% else %>
-      <!-- render data here -->
-      <canvas id="my-chart" phx-hook="ChartJS" data-points={Jason.encode!(@countries)}></canvas>
-    <% end %>
-  </div>
+  <%= if @loading do %>
+    <.spinner />
+  <% else %>
+    <!-- render data here -->
+    <canvas id="countries" phx-hook="OpponentsByCountry" data-points={Jason.encode!(@countries)}>
+    </canvas>
+  <% end %>
 </div>

@@ -8,13 +8,13 @@ defmodule WololoWeb.OpponentsByCountryLive do
   end
 
   def update(assigns, socket) do
-    case OpponentsByCountryAPI.fetch_last_50_player_games(assigns[:profile_id]) do
+    case OpponentsByCountryAPI.get_players_games_statistics(assigns[:profile_id]) do
       {:ok, data} ->
         {
           :ok,
           socket
-          |> assign(countries: data, loading: false, error: nil)
-          |> push_event("update-player", %{byCountry: data})
+          |> assign(countries: data[:countries], loading: false, error: nil)
+          |> push_event("update-player", %{byCountry: data[:countries]})
         }
 
       {:error, reason} ->
@@ -25,17 +25,4 @@ defmodule WololoWeb.OpponentsByCountryLive do
         }
     end
   end
-
-  # def update(socket) do
-  #   IO.inspect("Update function called")
-
-  #   {:ok, data} = OpponentsByCountryAPI.fetch_last_50_player_games(socket.assigns.profile_id)
-
-  #   {
-  #     :noreply,
-  #     socket
-  #     |> assign(countries: data, loading: false, error: nil)
-  #     |> push_event("update-player", %{byCountry: data})
-  #   }
-  # end
 end

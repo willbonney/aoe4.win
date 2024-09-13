@@ -1,6 +1,37 @@
+<div class="flex justify-start mb-16 border-b border-gray-200 pb-8">
+  <.link
+    patch={~p"/player/opponents"}
+    class={
+      (@active == :opponents &&
+         "bg-gray-100 p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100 shadow-md") ||
+        "p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+    }
+  >
+    <div class="rounded-md">
+      Opponents
+    </div>
+  </.link>
+  <.link
+    patch={~p"/player/rating"}
+    class={
+      (@active == :rating &&
+         "bg-gray-100 p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100 shadow-md") ||
+        "p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+    }
+  >
+    <div class="rounded-md">
+      Rating
+    </div>
+  </.link>
+</div>
 <.live_component module={SearchComponent} id="search-results" show={@show} on_cancel={%JS{}} />
-<.live_component
-  module={OpponentsByCountryLive}
-  id="opponents-by-country"
-  profile_id={@profile_id}
-/>
+<%= if @active == :opponents do %>
+  <.live_component
+    module={OpponentsByCountryLive}
+    id="opponents-by-country"
+    profile_id={@profile_id}
+  />
+<% end %>
+<%= if @active == :rating do %>
+  <.live_component module={NumbersLive} id="numbers" profile_id={@profile_id} />
+<% end %>
