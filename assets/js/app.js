@@ -96,9 +96,8 @@ hooks.OpponentsByCountry = {
     this.handleEvent("update-player", (event) => {
       console.log("event", event);
       chart.data.datasets[0].data = Object.values(event.byCountry);
-      chart.data.labels = Object.keys(event.byCountry).map(
-        (twoLetterCountryCode) =>
-          regionNamesInEnglish.of(twoLetterCountryCode.toUpperCase())
+      chart.data.labels = Object.keys(event.byCountry).map((twoLetterCountryCode) =>
+        regionNamesInEnglish.of(twoLetterCountryCode.toUpperCase())
       );
       chart.update();
     });
@@ -112,15 +111,7 @@ hooks.MovingAverages = {
     const ctx = this.el;
     const data = {
       type: "line",
-      data: {
-        datasets: [
-          {
-            data: [],
-            // backgroundColor: [
-            // ],
-          },
-        ],
-      },
+      data: {},
       options: {
         responsive: true,
         plugins: {
@@ -141,17 +132,31 @@ hooks.MovingAverages = {
         },
       },
     };
+    const sortByDate = (unsorted) => unsorted.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
     const chart = new Chart(ctx, data);
     this.handleEvent("update-player", (event) => {
-      const withoutNulls = event.movingAverages.slice(11);
-      console.log("withoutNulls", withoutNulls);
-      const sorted = withoutNulls.sort(
-        (a, b) => new Date(a.updated_at) - new Date(b.updated_at)
-      );
+      console.log("event", event);
+      const sorted = sortByDate(event.movingAverages);
 
-      chart.data.datasets[0].data = sorted.map((m) => m.moving_average_10g);
+      chart.data.datasets.push(
+        {
+          data: sortByDate(sorted).map(({ moving_average_5g }) => moving_average_5g),
+          label: "5 Game",
+        },
+        {
+          data: sortByDate(sorted).map(({ moving_average_10g }) => moving_average_10g),
+          label: "10 Game",
+        },
+        {
+          data: sortByDate(sorted).map(({ moving_average_20g }) => moving_average_20g),
+          label: "20 Game",
+        }
+      );
       chart.data.labels = sorted.map((m) =>
-        new Date(m.updated_at).toLocaleDateString("en-US")
+        new Date(m.updated_at).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        })
       );
       chart.update();
     });
@@ -165,9 +170,7 @@ hooks.MovingAverages = {
 // *****
 // *****
 
-let csrfToken = document
-  .querySelector("meta[name='csrf-token']")
-  .getAttribute("content");
+let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
 
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,

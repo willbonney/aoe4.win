@@ -1,20 +1,20 @@
 <div id="numbers">
   <h1 class="font-time-traveler-pal font-black text-4xl">
-    Max Rating: <%= @stats[:max_rating] %>
+    Max: <%= @stats[:max_rating] %>
   </h1>
   <h1 class="font-time-traveler-pal font-black text-4xl">
-    7D High Rating: <%= @stats[:max_rating_7d] %>
+    7D High: <%= @stats[:max_rating_7d] %>
   </h1>
   <h1 class="font-time-traveler-pal font-black text-4xl">
-    30D High Rating: <%= @stats[:max_rating_1m] %>
+    30D High: <%= @stats[:max_rating_1m] %>
   </h1>
   <%!-- line break --%>
   <h1 class="font-time-traveler-pal font-black text-4xl">
-    Avg rating last <%= @stats[:total_count] %> games: <%= @stats[:average_rating] %>
+    Last <%= @stats[:total_count] %> games: <%= @stats[:average_rating] %>
   </h1>
   <div class="border-b border-gray-200 mt-8"></div>
   <h1 class="font-time-traveler-pal font-black text-4xl my-8">
-    10 Game Moving Average:
+    Moving Averages:
   </h1>
   <canvas
     id="moving-averages"

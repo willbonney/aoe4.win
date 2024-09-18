@@ -1,8 +1,27 @@
-defmodule Wololo.OpponentsByCountryAPI do
+defmodule Wololo.PlayerGamesAPI do
   require Logger
 
   @base_url Application.compile_env(:wololo, :api_base_url)
-  @expected_fields ~w(avatars country modes)a
+
+  defp get_moving_average(ratings, games_count) do
+    current_index = length(ratings)
+    games_count_minus_one = games_count - 1
+
+    if length(ratings) <= games_count do
+      nil
+    else
+      prev_x_ratings =
+        if current_index >= games_count_minus_one do
+          Enum.take(ratings, -games_count)
+        else
+          []
+        end
+
+      Enum.reduce(prev_x_ratings, 0, fn %{player_rating: rating}, acc ->
+        acc + rating
+      end) / games_count
+    end
+  end
 
   def get_players_games_statistics(profile_id) do
     endpoint = "#{@base_url}/players/#{profile_id}/games?leaderboard=rm_solo"
@@ -34,113 +53,53 @@ defmodule Wololo.OpponentsByCountryAPI do
           to_string(team["player"]["profile_id"]) == profile_id
         end)
 
-      # IO.inspect(opponent_team, label: "opponent_team")
-      # IO.inspect(player_team, label: "player_team")
-
       [[opponent]] = opponent_team
       [[player]] = player_team
-
-      # IO.inspect(opponent, label: "opponent")
-      # IO.inspect(player, label: "player")
-
       opponent_country = opponent["player"]["country"]
-
-      # IO.inspect(opponent_country, label: "opponent_country")
-      # IO.inspect(acc[:countries][opponent_country], label: " acc[:countries][opponent_country]")
 
       acc =
         if acc[:countries][opponent_country] == nil do
-          update_in(acc, [:countries], &Map.put(&1, opponent_country, 1))
+          # 2% because we have 50 games
+          update_in(acc, [:countries], &Map.put(&1, opponent_country, 2))
         else
           update_in(
             acc,
             [:countries],
-            &Map.update(&1, opponent_country, 1, fn count -> count + 1 end)
+            &Map.update(&1, opponent_country, 2, fn count -> count + 2 end)
           )
         end
 
-      # IO.inspect(player_team, label: "player_team")
-
       player_rating = player["player"]["rating"]
       updated_at = game["updated_at"]
-      # IO.inspect(acc[:ratings], label: "acc[:ratings]")
-      # IO.inspect(length(acc[:ratings]), label: "length(acc[:ratings])")
 
       acc =
         Map.update(
           acc,
           :ratings,
           [
-            %{player_rating: player_rating, updated_at: updated_at, moving_average_10g: 0}
+            %{
+              player_rating: player_rating,
+              updated_at: updated_at,
+              moving_average_5g: 0,
+              moving_average_10g: 0,
+              moving_average_20g: 0
+            }
           ],
           fn ratings ->
-            moving_average_10g =
-              if length(ratings) <= 10 do
-                0
-              else
-                current_index = length(ratings)
-                IO.inspect(ratings, label: "ratings before take")
-                # IO.inspect(ratings, label: "ratings")
-
-                prev_10_ratings =
-                  if current_index >= 9 do
-                    Enum.take(ratings, -10)
-                  else
-                    []
-                  end
-
-                # IO.inspect(prev_10_ratings, label: "prev_10_ratings")
-
-                # else
-                #   []
-                # end
-
-                Enum.reduce(prev_10_ratings, 0, fn %{player_rating: rating}, acc ->
-                  IO.inspect(rating, label: "rating")
-
-                  acc + rating
-                end) / 10
-              end
-
-            IO.inspect(moving_average_10g, label: "moving_average_10g")
-
             ratings ++
               [
                 %{
                   player_rating: player_rating,
                   updated_at: updated_at,
-                  moving_average_10g: moving_average_10g
+                  moving_average_5g: get_moving_average(ratings, 5),
+                  moving_average_10g: get_moving_average(ratings, 10),
+                  moving_average_20g: get_moving_average(ratings, 20)
                 }
               ]
-
-            # Enum.reverse(new_ratings)
           end
         )
 
-      # IO.inspect(acc, label: "acc")
-
-      # IO.inspect(ratings, label: "ratings")
-
       acc
-
-      # IO.inspect(ratings, label: "ratings")
-
-      # case length(ratings) do
-
-      #   10 -> Map.put(acc, :ratings, ratings)
-      # end
-
-      # if length(ratings) > 10, do: ratings = Enum.take(ratings, 10)
-
-      # if length(ratings) == 10 do
-      #   average = Enum.sum(ratings) / 10
-
-      #   Map.put(acc, :moving_averages, [
-      #     {game["updated_at"], average} | Map.get(acc, :moving_averages)
-      #   ])
-
-      #   Map.put(acc, :ratings, ratings)
-      # end
     end)
 
     # |> tap(&IO.inspect(&1, label: "Final processed player data"))

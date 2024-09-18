@@ -1,6 +1,6 @@
 defmodule WololoWeb.OpponentsByCountryLive do
   use WololoWeb, :live_component
-  alias Wololo.OpponentsByCountryAPI
+  alias Wololo.PlayerGamesAPI
   import WololoWeb.Components.Spinner
 
   def mount(socket) do
@@ -8,7 +8,7 @@ defmodule WololoWeb.OpponentsByCountryLive do
   end
 
   def update(assigns, socket) do
-    case OpponentsByCountryAPI.get_players_games_statistics(assigns[:profile_id]) do
+    case PlayerGamesAPI.get_players_games_statistics(assigns[:profile_id]) do
       {:ok, data} ->
         {
           :ok,

@@ -1,5 +1,5 @@
 defmodule WololoWeb.NumbersLive do
-  alias Wololo.OpponentsByCountryAPI
+  alias Wololo.PlayerGamesAPI
   use WololoWeb, :live_component
   import WololoWeb.Components.Spinner
   alias Wololo.PlayerStatsAPI
@@ -12,7 +12,7 @@ defmodule WololoWeb.NumbersLive do
     profile_id = assigns[:profile_id]
 
     {opponents_result, player_stats_result} =
-      {OpponentsByCountryAPI.get_players_games_statistics(profile_id),
+      {PlayerGamesAPI.get_players_games_statistics(profile_id),
        PlayerStatsAPI.fetch_player_stats(profile_id)}
 
     socket =
@@ -32,8 +32,6 @@ defmodule WololoWeb.NumbersLive do
     socket =
       case player_stats_result do
         {:ok, data} ->
-          IO.inspect(data, label: "data")
-
           socket
           |> assign(stats: data, loading: false, error: nil)
 

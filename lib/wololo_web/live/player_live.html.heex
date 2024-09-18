@@ -1,4 +1,10 @@
 <div class="flex justify-start mb-16 border-b border-gray-200 pb-8">
+  <div class="mb-8">
+    <img class="mr-2" src={@avatar} />
+    <a href={@site_url}>
+      <%= @name %>
+    </a>
+  </div>
   <.link
     patch={~p"/player/opponents"}
     class={
