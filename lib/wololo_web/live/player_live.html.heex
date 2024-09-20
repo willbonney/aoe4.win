@@ -1,43 +1,58 @@
-<div class="flex justify-start mb-16 border-b border-gray-200 pb-8">
-  <div class="mb-8">
-    <img class="mr-2" src={@avatar} />
-    <a href={@site_url}>
-      <%= @name %>
-    </a>
-  </div>
-  <.link
-    patch={~p"/player/opponents"}
-    class={
-      (@active == :opponents &&
-         "bg-gray-100 p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100 shadow-md") ||
-        "p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-    }
-  >
-    <div class="rounded-md">
-      Opponents
-    </div>
-  </.link>
-  <.link
-    patch={~p"/player/rating"}
-    class={
-      (@active == :rating &&
-         "bg-gray-100 p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100 shadow-md") ||
-        "p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-    }
-  >
-    <div class="rounded-md">
-      Rating
-    </div>
-  </.link>
-</div>
 <.live_component module={SearchComponent} id="search-results" show={@show} on_cancel={%JS{}} />
-<%= if @active == :opponents do %>
-  <.live_component
-    module={OpponentsByCountryLive}
-    id="opponents-by-country"
-    profile_id={@profile_id}
-  />
-<% end %>
-<%= if @active == :rating do %>
-  <.live_component module={NumbersLive} id="numbers" profile_id={@profile_id} />
+<%= if !@show do %>
+  <div class="flex flex-col justify-start mb-16 border-b border-gray-200 pb-8">
+    <div class="flex mb-8">
+      <div class="flex justify-between flex-1">
+        <div class="flex align-center">
+          <img class="mr-4" src={@avatar} />
+          <a href={@url}>
+            <h6 class="font-bold"><%= @name %></h6>
+            <h6>#<%= @rank %></h6>
+            <h6><%= @wr %> %</h6>
+          </a>
+          <.icon name="arrow-top-right-on-square" class="h-4 w-4" />
+        </div>
+        <div class="cursor-pointer" phx-click="reset">
+          <.icon name="hero-x-mark" class="w-8 h-8" />
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center">
+      <.link
+        patch={~p"/player/opponents"}
+        class={
+          (@active == :opponents &&
+             "bg-gray-100 p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100 shadow-md") ||
+            "p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+        }
+      >
+        <div class="rounded-md">
+          Opponents
+        </div>
+      </.link>
+      <.link
+        patch={~p"/player/rating"}
+        class={
+          (@active == :rating &&
+             "bg-gray-100 p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100 shadow-md") ||
+            "p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+        }
+      >
+        <div class="rounded-md">
+          Rating
+        </div>
+      </.link>
+    </div>
+  </div>
+
+  <%= if @active == :opponents do %>
+    <.live_component
+      module={OpponentsByCountryLive}
+      id="opponents-by-country"
+      profile_id={@profile_id}
+    />
+  <% end %>
+  <%= if @active == :rating do %>
+    <.live_component module={NumbersLive} id="numbers" profile_id={@profile_id} />
+  <% end %>
 <% end %>

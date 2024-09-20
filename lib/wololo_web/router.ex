@@ -20,6 +20,7 @@ defmodule WololoWeb.Router do
     get("/", PageController, :home)
     live("/civs_by_map", CivsByMapLive)
     live("/player/:section", PlayerLive)
+    live("/player", PlayerLive)
   end
 
   # Other scopes may use custom stacks.

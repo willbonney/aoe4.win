@@ -67,8 +67,10 @@ defmodule WololoWeb.CustomComponents do
           phx-click="select-player"
           phx-value-id={player["profile_id"]}
           phx-value-name={player["name"]}
-          phx-value-avatar={player["avatars"]["full"]}
+          phx-value-avatar={player["avatars"]["medium"]}
           phx-value-url={player["site_url"]}
+          phx-value-rank={player["rank"]}
+          phx-value-wr={player["win_rate"]}
         >
           <div>
             <img class="mr-2" src={player["avatars"]["medium"]} />

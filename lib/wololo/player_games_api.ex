@@ -25,7 +25,6 @@ defmodule Wololo.PlayerGamesAPI do
 
   def get_players_games_statistics(profile_id) do
     endpoint = "#{@base_url}/players/#{profile_id}/games?leaderboard=rm_solo"
-    IO.inspect(endpoint, label: "endpoint")
 
     request = Finch.build(:get, endpoint)
 
@@ -86,16 +85,20 @@ defmodule Wololo.PlayerGamesAPI do
             }
           ],
           fn ratings ->
-            ratings ++
-              [
-                %{
-                  player_rating: player_rating,
-                  updated_at: updated_at,
-                  moving_average_5g: get_moving_average(ratings, 5),
-                  moving_average_10g: get_moving_average(ratings, 10),
-                  moving_average_20g: get_moving_average(ratings, 20)
-                }
-              ]
+            if player_rating == nil do
+              ratings
+            else
+              ratings ++
+                [
+                  %{
+                    player_rating: player_rating,
+                    updated_at: updated_at,
+                    moving_average_5g: get_moving_average(ratings, 5),
+                    moving_average_10g: get_moving_average(ratings, 10),
+                    moving_average_20g: get_moving_average(ratings, 20)
+                  }
+                ]
+            end
           end
         )
 

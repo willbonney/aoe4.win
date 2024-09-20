@@ -14,7 +14,8 @@ defmodule WololoWeb.PlayerLive do
        name: nil,
        avatar: nil,
        site_url: nil,
-       loading: true,
+       rank: nil,
+       wr: nil,
        error: nil,
        show: true
      )}
@@ -23,11 +24,18 @@ defmodule WololoWeb.PlayerLive do
   @impl true
   def handle_event(
         "select-player",
-        %{"id" => profile_id, "name" => name, "avatar" => avatar, "url" => url},
+        %{
+          "id" => profile_id,
+          "name" => name,
+          "avatar" => avatar,
+          "url" => url,
+          "rank" => rank,
+          "wr" => wr
+        },
         socket
       ) do
     IO.inspect("select-player")
-    IO.inspect(avatar, label: "avatar")
+    IO.inspect(url, label: "url")
 
     {:noreply,
      socket
@@ -37,10 +45,15 @@ defmodule WololoWeb.PlayerLive do
        name: name,
        avatar: avatar,
        url: url,
-       loading: false,
+       rank: rank,
+       wr: wr,
        error: nil,
        show: false
      )}
+  end
+
+  def handle_event("reset", _, socket) do
+    {:noreply, socket |> assign(show: true)}
   end
 
   @impl true
