@@ -1,6 +1,5 @@
 defmodule WololoWeb.PlayerLive do
   use WololoWeb, :live_view
-  import WololoWeb.Components.Spinner
   alias WololoWeb.SearchComponent
   alias WololoWeb.OpponentsByCountryLive
   alias WololoWeb.InsightsLive
@@ -19,45 +18,52 @@ defmodule WololoWeb.PlayerLive do
        rank: nil,
        wr: nil,
        error: nil,
-       show: true
+       show_search: true
        #  loading: true
      )}
   end
 
   @impl true
-  def handle_event(
-        "select-player",
-        %{
-          "id" => profile_id,
-          "name" => name,
-          "avatar" => avatar,
-          "url" => url,
-          "rank" => rank,
-          "wr" => wr
-        },
+  def handle_event(event, params, socket) do
+    case event do
+      "select-player" ->
+        socket = assign(socket, show_search: false)
+        send(self(), {:load_player_data, params})
+        {:noreply, socket}
+
+      "reset" ->
+        {:noreply, socket |> assign(show: true)}
+
+      _ ->
+        {:noreply, socket}
+    end
+  end
+
+  @impl true
+  def handle_info(
+        {:load_player_data,
+         %{
+           "id" => profile_id,
+           "name" => name,
+           "avatar" => avatar,
+           "url" => url,
+           "rank" => rank,
+           "wr" => wr
+         }},
         socket
       ) do
-    IO.inspect("select-player")
-    IO.inspect(url, label: "url")
-
+    # Assign all the player data here
     {:noreply,
-     socket
-     |> assign(
-       active: :opponents,
+     assign(socket,
+       active: :insights,
        profile_id: profile_id,
        name: name,
        avatar: avatar,
        url: url,
        rank: rank,
        wr: wr,
-       error: nil,
-       show: false
-       #  loading: true
+       error: nil
      )}
-  end
-
-  def handle_event("reset", _, socket) do
-    {:noreply, socket |> assign(show: true)}
   end
 
   @impl true
@@ -75,15 +81,9 @@ defmodule WololoWeb.PlayerLive do
     {:noreply, assign(socket, active: active)}
   end
 
-  # def handle_info({:set_loading, loading_state}, socket) do
-  #   IO.inspect(loading_state, label: "loading_state")
-
-  #   {:noreply, assign(socket, loading: loading_state)}
-  # end
-
-  @impl true
   def render_section(assigns) do
-    IO.inspect(assigns, label: "assigns")
+    IO.inspect(assigns[:show_search], label: "assigns")
+    # IO.inspect(show_search, label: ">>>>>>>>>>>>>>>>>>>show_search")
 
     case assigns.active do
       :opponents ->

@@ -111,48 +111,5 @@ defmodule Wololo.PlayerGamesAPI do
 
       acc
     end)
-
-    # |> tap(&IO.inspect(&1, label: "Final processed player data"))
   end
 end
-
-#   def process_games(body, profile_id) do
-#     games = body |> Jason.decode!() |> Map.get("games")
-
-#     {countries, ^moving_averages} =
-#       games
-#       |> Enum.reduce({%{}, {[], []}}, fn game, {countries, {moving_averages, ratings}} ->
-#         {player_team, opponent_team} =
-#           Enum.split_with(game["teams"], fn [team | _] -> team["profile_id"] == profile_id end)
-
-#         [[opponent], _] = opponent_team
-
-#         opponent_country = opponent["player"]["country"]
-
-#         countries =
-#           if Map.get(countries, opponent_country) == nil do
-#             Map.put(countries, opponent_country, 1)
-#           else
-#             Map.update(countries, opponent_country, 1, &(&1 + 1))
-#           end
-
-#         [_, [player]] = player_team
-
-#         player_rating = player["player"]["rating"]
-#         ratings = [rating | ratings]
-#         if length(ratings) > 10, do: ratings = Enum.take(ratings, 10)
-
-#         if length(ratings) == 10 do
-#           average = Enum.sum(ratings) / 10
-#           moving_averages = [{game["updated_at"], average} | moving_averages]
-#         end
-
-#         {countries, {moving_averages, ratings}}
-#       end)
-
-#     moving_averages = moving_averages |> Enum.reverse()
-
-#     %{countries: countries, moving_averages: moving_averages}
-#     |> tap(&IO.inspect(&1, label: "Final processed player data"))
-#   end
-# end

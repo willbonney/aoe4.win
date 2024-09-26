@@ -8,39 +8,45 @@ defmodule WololoWeb.CustomComponents do
 
   def search_modal(assigns) do
     ~H"""
-    <div
-      id={@id}
-      phx-mounted={@show && show_modal(@id)}
-      phx-remove={hide_modal(@id)}
-      class="relative z-50 hidden"
-    >
-      <div id={"#{@id}-bg"} class="fixed inset-0 bg-zinc-50/90 transition-opacity" aria-hidden="true" />
+    <%= if @show do %>
       <div
-        class="fixed inset-0 overflow-y-auto"
-        aria-labelledby={"#{@id}-title"}
-        aria-describedby={"#{@id}-description"}
-        role="dialog"
-        aria-modal="true"
-        tabindex="0"
+        id={@id}
+        phx-mounted={show_modal(@id)}
+        phx-remove={hide_modal(@id)}
+        class="relative z-50 hidden"
       >
-        <div class="flex min-h-full justify-center">
-          <div class="w-full min-h-12 max-w-3xl p-2 sm:p-4 lg:py-6">
-            <.focus_wrap
-              id={"#{@id}-container"}
-              phx-mounted={@show && show_modal(@id)}
-              phx-window-keydown={hide_modal(@on_cancel, @id)}
-              phx-key="escape"
-              phx-click-away={hide_modal(@on_cancel, @id)}
-              class="hidden relative rounded-2xl bg-white p-2 shadow-lg shadow-zinc-700/10 ring-1 ring-zinc-700/10 transition min-h-[30vh] max-h-[50vh] overflow-y-scroll"
-            >
-              <div id={"#{@id}-content"}>
-                <%= render_slot(@inner_block) %>
-              </div>
-            </.focus_wrap>
+        <div
+          id={"#{@id}-bg"}
+          class="fixed inset-0 bg-zinc-50/90 transition-opacity"
+          aria-hidden="true"
+        />
+        <div
+          class="fixed inset-0 overflow-y-auto"
+          aria-labelledby={"#{@id}-title"}
+          aria-describedby={"#{@id}-description"}
+          role="dialog"
+          aria-modal="true"
+          tabindex="0"
+        >
+          <div class="flex min-h-full justify-center">
+            <div class="w-full min-h-12 max-w-3xl p-2 sm:p-4 lg:py-6">
+              <.focus_wrap
+                id={"#{@id}-container"}
+                phx-mounted={@show && show_modal(@id)}
+                phx-window-keydown={hide_modal(@on_cancel, @id)}
+                phx-key="escape"
+                phx-click-away={hide_modal(@on_cancel, @id)}
+                class="hidden relative rounded-2xl bg-white p-2 shadow-lg shadow-zinc-700/10 ring-1 ring-zinc-700/10 transition min-h-[30vh] max-h-[50vh] overflow-y-scroll"
+              >
+                <div id={"#{@id}-content"}>
+                  <%= render_slot(@inner_block) %>
+                </div>
+              </.focus_wrap>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    <% end %>
     """
   end
 

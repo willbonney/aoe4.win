@@ -5,7 +5,7 @@ defmodule WololoWeb.SearchComponent do
 
   @impl true
   def mount(socket) do
-    {:ok, assign(socket, players: [], show: true, has_searched: false)}
+    {:ok, assign(socket, search: "", players: [], has_searched: false)}
   end
 
   @impl true
@@ -21,9 +21,11 @@ defmodule WololoWeb.SearchComponent do
 
   @impl true
   def render(assigns) do
+    IO.inspect(assigns[:show], label: ">>>>>>>>>>>>>>>>>>>assigns[:show]")
+
     ~H"""
     <div id="search-component">
-      <.search_modal :if={@show} id="search-modal" show on_cancel={@on_cancel}>
+      <.search_modal show={assigns[:show]} id="search-modal" on_cancel={@on_cancel}>
         <.search_input phx-target={@myself} phx-keyup="do-search" phx-debounce="200" />
         <.search_results players={@players} has_searched={@has_searched} />
       </.search_modal>

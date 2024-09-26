@@ -3,22 +3,24 @@ defmodule WololoWeb.InsightsLive do
   alias Wololo.PlayerGamesAPI
   import WololoWeb.Components.Spinner
 
-  defp default_prompt do
+  defp default_prompt(player_name) do
     """
     The prompt provided to you is a json object that contains data regarding an Age of Empires IV player profile. The player plays games on the ladder and gains/loses rating depending on the outcome.
 
     Your answer should provide 5 insights about this data. The insights should not be superficial, they should involve deeper reasoning about the statistics in the prompt. For example, you could answer that the player has a significantly higher winrate on weekeends than on weekdays. Or you could say that the player's winrate against opponents located in China is the lowest among all other countries.
 
-    The format of your answer should be in html for easy parsing. Do not wrap the answer with any non-html syntax like ```. The parent container should be a <div> and there shouldn't be any <html> tags. Use <br /> for new lines and use tailwind classes. The 5 insights should be wrapped in a <ul> tag. Each insight should be wrapped in a <li> tag. Make it look modern and clean.
+    The format of your answer should be in html for easy parsing. Do not wrap the answer with any non-html syntax like ```. The parent container should be a <div> and there shouldn't be any <html> tags. Use <br /> for new lines and use tailwind classes. The 5 insights should be bullet points (use the `list-disc` tailwind class), with substantial bottom margin. Make it look modern and clean.
+
+    Instead of using "the player" to refer to the player, use #{player_name} instead. Make the player's name bold.
     """
   end
 
-  def call(_, opts \\ []) do
+  def call(_, %{:player_name => player_name, :prompt => prompt}) do
     %{
       "model" => "gpt-4o-mini",
       "messages" => [
-        %{"role" => "system", "content" => default_prompt()},
-        %{"role" => "user", "content" => opts[:prompt] || ""}
+        %{"role" => "system", "content" => default_prompt(player_name)},
+        %{"role" => "user", "content" => prompt || ""}
       ],
       "temperature" => 0.7
     }
@@ -63,16 +65,18 @@ defmodule WololoWeb.InsightsLive do
   end
 
   def update(assigns, socket) do
-    assign(socket, loading: true)
+    IO.inspect(socket, label: ">>>>>>>>>>>>>>>>>>>LOADING")
+    socket = assign(socket, loading: true)
 
     profile_id = assigns[:profile_id]
+    player_name = assigns[:player_name]
 
     player_stats_result =
       PlayerGamesAPI.get_players_games_statistics(profile_id, false)
 
     case player_stats_result do
       {:ok, data} ->
-        openai_completion = call(nil, %{prompt: data})
+        openai_completion = call(nil, %{player_name: player_name, prompt: data})
         IO.inspect(openai_completion, label: "openai_completion")
 
         {:ok,
