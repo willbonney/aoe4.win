@@ -1,5 +1,11 @@
 import Config
 
+if Config.config_env() == :dev do
+  DotenvParser.load_file(".env")
+end
+
+config :wololo, :open_ai_api_key, System.fetch_env!("OPEN_AI_API_KEY")
+
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
 # system starts, so it is typically used to load production configuration
@@ -16,6 +22,8 @@ import Config
 #
 # Alternatively, you can use `mix phx.gen.release` to generate a `bin/server`
 # script that automatically sets the env var above.
+IO.inspect(config_env(), label: "config_env()")
+
 if System.get_env("PHX_SERVER") do
   config :wololo, WololoWeb.Endpoint, server: true
 end

@@ -8,8 +8,13 @@ defmodule WololoWeb.OpponentsByCountryLive do
   end
 
   def update(assigns, socket) do
+    assign(socket, loading: true)
+
     case PlayerGamesAPI.get_players_games_statistics(assigns[:profile_id]) do
       {:ok, data} ->
+        # send(self(), {:set_loading, false})
+        IO.inspect(data, label: "hi")
+
         {
           :ok,
           socket
@@ -18,6 +23,8 @@ defmodule WololoWeb.OpponentsByCountryLive do
         }
 
       {:error, reason} ->
+        # send(self(), {:set_loading, false})
+
         {
           :ok,
           socket

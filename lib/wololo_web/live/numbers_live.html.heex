@@ -1,25 +1,31 @@
 <div id="numbers">
-  <h1 class="font-time-traveler-pal font-black text-4xl">
-    Max: <%= @stats[:max_rating] %>
-  </h1>
-  <h1 class="font-time-traveler-pal font-black text-4xl">
-    7D High: <%= @stats[:max_rating_7d] %>
-  </h1>
-  <h1 class="font-time-traveler-pal font-black text-4xl">
-    30D High: <%= @stats[:max_rating_1m] %>
-  </h1>
-  <%!-- line break --%>
-  <h1 class="font-time-traveler-pal font-black text-4xl">
-    Last <%= @stats[:total_count] %> games: <%= @stats[:average_rating] %>
-  </h1>
-  <div class="border-b border-gray-200 mt-8"></div>
-  <h1 class="font-time-traveler-pal font-black text-4xl my-8">
-    Moving Averages:
-  </h1>
-  <canvas
-    id="moving-averages"
-    phx-hook="MovingAverages"
-    data-points={Jason.encode!(@moving_averages)}
-  >
-  </canvas>
+  <%= if @loading do %>
+    <div class="flex justify-center items-center">
+      <.spinner size="lg" class="text-orange-500" />
+    </div>
+  <% else %>
+    <h1 class="font-time-traveler-pal font-black text-4xl">
+      Max: <%= @stats[:max_rating] %>
+    </h1>
+    <h1 class="font-time-traveler-pal font-black text-4xl">
+      7D High: <%= @stats[:max_rating_7d] %>
+    </h1>
+    <h1 class="font-time-traveler-pal font-black text-4xl">
+      30D High: <%= @stats[:max_rating_1m] %>
+    </h1>
+    <%!-- line break --%>
+    <h1 class="font-time-traveler-pal font-black text-4xl">
+      Last <%= @stats[:total_count] %> games: <%= @stats[:average_rating] %>
+    </h1>
+    <div class="border-b border-gray-200 mt-8"></div>
+    <h1 class="font-time-traveler-pal font-black text-4xl my-8">
+      Moving Averages:
+    </h1>
+    <canvas
+      id="moving-averages"
+      phx-hook="MovingAverages"
+      data-points={Jason.encode!(@moving_averages)}
+    >
+    </canvas>
+  <% end %>
 </div>

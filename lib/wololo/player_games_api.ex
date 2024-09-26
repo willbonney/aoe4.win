@@ -23,7 +23,7 @@ defmodule Wololo.PlayerGamesAPI do
     end
   end
 
-  def get_players_games_statistics(profile_id) do
+  def get_players_games_statistics(profile_id, should_process \\ true) do
     endpoint = "#{@base_url}/players/#{profile_id}/games?leaderboard=rm_solo"
 
     request = Finch.build(:get, endpoint)
@@ -31,7 +31,14 @@ defmodule Wololo.PlayerGamesAPI do
     case Finch.request(request, Wololo.Finch) do
       {:ok, %Finch.Response{status: 200, body: body}} ->
         # Logger.info("Received countries body: #{inspect(Jason.decode!(body))}")
-        {:ok, process_games(body, profile_id)}
+        data =
+          if should_process do
+            process_games(body, profile_id)
+          else
+            body
+          end
+
+        {:ok, data}
 
       {:ok, %Finch.Response{status: status_code}} ->
         {:error, "Request failed with status code: #{status_code}"}

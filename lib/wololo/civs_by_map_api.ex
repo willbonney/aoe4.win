@@ -33,6 +33,8 @@ defmodule Wololo.CivsByMapAPI do
         endpoint
       end
 
+    IO.inspect(url, label: "url")
+
     request = Finch.build(:get, url)
 
     case Finch.request(request, Wololo.Finch) do

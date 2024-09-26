@@ -5,20 +5,17 @@ defmodule WololoWeb.SearchComponent do
 
   @impl true
   def mount(socket) do
-    {:ok, assign(socket, players: [], show: true, hasSearched: false)}
+    {:ok, assign(socket, players: [], show: true, has_searched: false)}
   end
 
   @impl true
   def handle_event("do-search", %{"value" => value}, socket) do
-    IO.inspect(value, label: "value")
-    {response, data} = fetch_player(value)
-    IO.inspect(response, label: "response")
-    IO.inspect(data, label: "data")
+    {_, data} = fetch_player(value)
 
     {
       :noreply,
       socket
-      |> assign(search: value, players: data["players"], hasSearched: true)
+      |> assign(search: value, players: data["players"], has_searched: true)
     }
   end
 
@@ -28,7 +25,7 @@ defmodule WololoWeb.SearchComponent do
     <div id="search-component">
       <.search_modal :if={@show} id="search-modal" show on_cancel={@on_cancel}>
         <.search_input phx-target={@myself} phx-keyup="do-search" phx-debounce="200" />
-        <.search_results players={@players} hasSearched={@hasSearched} />
+        <.search_results players={@players} has_searched={@has_searched} />
       </.search_modal>
     </div>
     """

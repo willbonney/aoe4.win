@@ -10,11 +10,7 @@ defmodule Wololo.SearchPlayerAPI do
 
     case Finch.request(request, Wololo.Finch) do
       {:ok, %Finch.Response{status: 200, body: body}} ->
-        Logger.info("Received players body: #{inspect(Jason.decode!(body))}")
-
         {:ok, Jason.decode!(body)}
-
-      # {:ok, process_games(body)}
 
       {:ok, %Finch.Response{status: status_code}} ->
         {:error, "Request failed with status code: #{status_code}"}

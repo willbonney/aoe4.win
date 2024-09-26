@@ -1,0 +1,9 @@
+<div id="insights">
+  <%= if @loading do %>
+    <div class="flex justify-center items-center">
+      <.spinner size="lg" class="text-orange-500" />
+    </div>
+  <% else %>
+    <div><%= Phoenix.HTML.raw(@insights) %></div>
+  <% end %>
+</div>

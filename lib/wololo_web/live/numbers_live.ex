@@ -9,6 +9,8 @@ defmodule WololoWeb.NumbersLive do
   end
 
   def update(assigns, socket) do
+    assign(socket, loading: true)
+
     profile_id = assigns[:profile_id]
 
     {opponents_result, player_stats_result} =
@@ -18,8 +20,6 @@ defmodule WololoWeb.NumbersLive do
     socket =
       case opponents_result do
         {:ok, data} ->
-          IO.inspect(data, label: "data")
-
           socket
           |> assign(moving_averages: data[:ratings], loading: false, error: nil)
           |> push_event("update-player", %{movingAverages: data[:ratings]})

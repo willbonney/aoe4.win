@@ -44,13 +44,14 @@ defmodule WololoWeb.CustomComponents do
     """
   end
 
-  attr(:players, :list)
+  attr(:players, :any, required: true)
+  attr(:has_searched, :boolean, required: true)
 
   def search_results(assigns) do
     ~H"""
     <ul class="-mb-2 py-2 text-sm text-gray-800 flex flex-col space-y-2 " id="options" role="listbox">
       <li
-        :if={@players == [] && @hasSearched}
+        :if={@players == [] && @has_searched}
         id="option-none"
         role="option"
         tabindex="-1"

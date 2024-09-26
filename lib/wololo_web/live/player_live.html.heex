@@ -1,16 +1,21 @@
-<.live_component module={SearchComponent} id="search-results" show={@show} on_cancel={%JS{}} />
-<%= if !@show do %>
+<%= if @show do %>
+  <.live_component module={SearchComponent} id="search-results" on_cancel={%JS{}} />
+<% else %>
   <div class="flex flex-col justify-start mb-16 border-b border-gray-200 pb-8">
     <div class="flex mb-8">
       <div class="flex justify-between flex-1">
         <div class="flex align-center">
           <img class="mr-4" src={@avatar} />
-          <a href={@url}>
-            <h6 class="font-bold"><%= @name %></h6>
+          <div class="flex flex-col">
+            <div class="flex">
+              <h6 class="font-bold"><%= @name %></h6>
+              <a href={@url}>
+                <.icon name="hero-arrow-top-right-on-square" class="cursor-pointer h-4 w-4 ml-2" />
+              </a>
+            </div>
             <h6>#<%= @rank %></h6>
             <h6><%= @wr %> %</h6>
-          </a>
-          <.icon name="arrow-top-right-on-square" class="h-4 w-4" />
+          </div>
         </div>
         <div class="cursor-pointer" phx-click="reset">
           <.icon name="hero-x-mark" class="w-8 h-8" />
@@ -42,17 +47,19 @@
           Rating
         </div>
       </.link>
+      <.link
+        patch={~p"/player/insights"}
+        class={
+          (@active == :insights &&
+             "bg-gray-100 p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100 shadow-md") ||
+            "p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+        }
+      >
+        <div class="rounded-md">
+          Insights
+        </div>
+      </.link>
     </div>
   </div>
-
-  <%= if @active == :opponents do %>
-    <.live_component
-      module={OpponentsByCountryLive}
-      id="opponents-by-country"
-      profile_id={@profile_id}
-    />
-  <% end %>
-  <%= if @active == :rating do %>
-    <.live_component module={NumbersLive} id="numbers" profile_id={@profile_id} />
-  <% end %>
+  <%= render_section(assigns) %>
 <% end %>

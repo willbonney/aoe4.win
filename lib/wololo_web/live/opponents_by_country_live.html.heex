@@ -1,6 +1,8 @@
 <div id="opponents-by-country">
   <%= if @loading do %>
-    <.spinner />
+    <div class="flex justify-center items-center">
+      <.spinner size="lg" class="text-orange-500" />
+    </div>
   <% else %>
     <!-- render data here -->
     <canvas id="countries" phx-hook="OpponentsByCountry" data-points={Jason.encode!(@countries)}>
