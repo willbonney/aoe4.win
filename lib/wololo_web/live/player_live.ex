@@ -82,9 +82,6 @@ defmodule WololoWeb.PlayerLive do
   end
 
   def render_section(assigns) do
-    IO.inspect(assigns[:show_search], label: "assigns")
-    # IO.inspect(show_search, label: ">>>>>>>>>>>>>>>>>>>show_search")
-
     case assigns.active do
       :opponents ->
         ~H"""
@@ -102,7 +99,7 @@ defmodule WololoWeb.PlayerLive do
 
       :insights ->
         ~H"""
-        <.live_component module={InsightsLive} id="insights" profile_id={@profile_id} />
+        <.live_component module={InsightsLive} id="insights" profile_id={@profile_id} player_name={@name} />
         """
     end
   end

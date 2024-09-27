@@ -60,33 +60,33 @@ defmodule WololoWeb.InsightsLive do
     |> Finch.request(Wololo.Finch)
   end
 
+  @impl true
   def mount(socket) do
-    {:ok, socket |> assign(loading: true, error: nil, insights: nil)}
+    {:ok, socket |> assign(loading: false, error: nil, insights: nil)}
   end
 
+  @impl true
   def update(assigns, socket) do
-    IO.inspect(socket, label: ">>>>>>>>>>>>>>>>>>>LOADING")
-    socket = assign(socket, loading: true)
-
     profile_id = assigns[:profile_id]
     player_name = assigns[:player_name]
 
-    player_stats_result =
-      PlayerGamesAPI.get_players_games_statistics(profile_id, false)
+    socket =
+      socket
+      # Assign any incoming parameters
+      |> assign(assigns)
+      |> assign_async(:insights, fn -> fetch_insights(profile_id, player_name) end)
 
-    case player_stats_result do
+    {:ok, socket}
+  end
+
+  defp fetch_insights(profile_id, player_name) do
+    case PlayerGamesAPI.get_players_games_statistics(profile_id, false) do
       {:ok, data} ->
         openai_completion = call(nil, %{player_name: player_name, prompt: data})
-        IO.inspect(openai_completion, label: "openai_completion")
-
-        {:ok,
-         socket
-         |> assign(insights: openai_completion["content"], loading: false, error: nil)}
+        {:ok, %{insights: openai_completion["content"]}}
 
       {:error, reason} ->
-        {:ok,
-         socket
-         |> assign(insights: nil, loading: false, error: reason)}
+        {:error, reason}
     end
   end
 end

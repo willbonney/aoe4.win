@@ -21,8 +21,6 @@ defmodule WololoWeb.SearchComponent do
 
   @impl true
   def render(assigns) do
-    IO.inspect(assigns[:show], label: ">>>>>>>>>>>>>>>>>>>assigns[:show]")
-
     ~H"""
     <div id="search-component">
       <.search_modal show={assigns[:show]} id="search-modal" on_cancel={@on_cancel}>
