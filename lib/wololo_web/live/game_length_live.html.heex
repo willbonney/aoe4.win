@@ -1,11 +1,11 @@
-<div id="opponents-by-country">
+<div id="wrs-by-length">
   <%= if @loading do %>
     <div class="flex justify-center items-center">
       <.spinner size="lg" class="text-orange-500" />
     </div>
   <% else %>
     <!-- render data here -->
-    <canvas id="countries" phx-hook="OpponentsByCountry" data-points={Jason.encode!(@countries)}>
+    <canvas id="wrs" phx-hook="WrsByGameLength" data-points={Jason.encode!(@wrs)}>
     </canvas>
   <% end %>
 </div>

@@ -27,155 +27,213 @@ import topbar from "../vendor/topbar";
 // *****
 import Chart from "chart.js/auto";
 
-let hooks = {};
+const getMinutesFromBucket = (bucket) =>
+	({
+		_lt_600: "< 10 Minutes",
+		_600_to_899: "10-15 Minutes",
+		_900_to_1199: "15-20 Minutes",
+		_1200_to_1499: "20-25 Minutes",
+		_1500_to_1799: "25-30 Minutes",
+		_1800_to_2099: "30-35 Minutes",
+		_gt_2100: "> 35 Minutes",
+	})[bucket];
+
+const hooks = {};
 hooks.OpponentsByCountry = {
-  mounted() {
-    const regionNamesInEnglish = new Intl.DisplayNames(["en"], {
-      type: "region",
-    });
-    const ctx = this.el;
-    const data = {
-      type: "doughnut",
-      data: {
-        datasets: [
-          {
-            data: [],
-            backgroundColor: [
-              "#FFC107",
-              "#FF9800",
-              "#FF69B4",
-              "#E91E63",
-              "#9C27B0",
-              "#673AB7",
-              "#3F51B5",
-              "#2196F3",
-              "#03A9F4",
-              "#00BCD4",
-              "#009688",
-              "#4CAF50",
-              "#8BC34A",
-              "#CDDC39",
-              "#FFEB3B",
-              "#FFC400",
-              "#FFAB40",
-              "#FF66CC",
-              "#E64A19",
-              "#795548",
-              "#607D8B",
-              "#455A64",
-              "#37474F",
-              "#263238",
-              "#212121",
-            ],
-          },
-        ],
-        hoverOffset: 4,
-        borderJoinStyle: "bevel",
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          tooltip: {
-            callbacks: {
-              label: function (context) {
-                return `${context.formattedValue}%`;
-              },
-            },
-          },
-          legend: {
-            position: "top",
-          },
-          title: {
-            display: false,
-            text: "Opponents by Country",
-          },
-        },
-      },
-    };
-    const chart = new Chart(ctx, data);
-    this.handleEvent("update-player", (event) => {
-      console.log("event", event);
-      chart.data.datasets[0].data = Object.values(event.byCountry);
-      chart.data.labels = Object.keys(event.byCountry).map((twoLetterCountryCode) =>
-        regionNamesInEnglish.of(twoLetterCountryCode.toUpperCase())
-      );
-      chart.update();
-    });
-  },
-  beforeUnmount() {
-    this.handleEvent("update-player", null);
-  },
+	mounted() {
+		console.log("MOUNTED");
+		const regionNamesInEnglish = new Intl.DisplayNames(["en"], {
+			type: "region",
+		});
+		const ctx = this.el;
+		const data = {
+			type: "doughnut",
+			data: {
+				datasets: [
+					{
+						data: [],
+						backgroundColor: [
+							"#FFC107",
+							"#FF9800",
+							"#FF69B4",
+							"#E91E63",
+							"#9C27B0",
+							"#673AB7",
+							"#3F51B5",
+							"#2196F3",
+							"#03A9F4",
+							"#00BCD4",
+							"#009688",
+							"#4CAF50",
+							"#8BC34A",
+							"#CDDC39",
+							"#FFEB3B",
+							"#FFC400",
+							"#FFAB40",
+							"#FF66CC",
+							"#E64A19",
+							"#795548",
+							"#607D8B",
+							"#455A64",
+							"#37474F",
+							"#263238",
+							"#212121",
+						],
+					},
+				],
+				hoverOffset: 4,
+				borderJoinStyle: "bevel",
+			},
+			options: {
+				responsive: true,
+				plugins: {
+					tooltip: {
+						callbacks: {
+							label: (context) => `${context.formattedValue}%`,
+						},
+					},
+					legend: {
+						position: "top",
+					},
+					title: {
+						display: false,
+						text: "Opponents by Country",
+					},
+				},
+			},
+		};
+		const chart = new Chart(ctx, data);
+		this.handleEvent("update-opponents-by-country", (event) => {
+			console.log("event", event);
+			chart.data.datasets[0].data = Object.values(event.byCountry);
+			chart.data.labels = Object.keys(event.byCountry).map(
+				(twoLetterCountryCode) =>
+					regionNamesInEnglish.of(twoLetterCountryCode.toUpperCase()),
+			);
+			chart.update();
+		});
+	},
+	beforeUnmount() {
+		this.handleEvent("update-opponents-by-country", null);
+	},
 };
 hooks.MovingAverages = {
-  mounted() {
-    const ctx = this.el;
-    const data = {
-      type: "line",
-      data: {},
-      options: {
-        responsive: true,
-        plugins: {
-          // tooltip: {
-          //   callbacks: {
-          //     label: function (context) {
-          //       return `${context.formattedValue}%`;
-          //     },
-          //   },
-          // },
-          legend: {
-            position: "top",
-          },
-          title: {
-            display: false,
-            text: "Moving Average",
-          },
-        },
-      },
-    };
-    const sortByDate = (unsorted) => unsorted.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
-    const chart = new Chart(ctx, data);
-    this.handleEvent("update-player", (event) => {
-      console.log("event", event);
-      const sorted = sortByDate(event.movingAverages);
+	mounted() {
+		const ctx = this.el;
+		const data = {
+			type: "line",
+			data: {},
+			options: {
+				responsive: true,
+				plugins: {
+					// tooltip: {
+					//   callbacks: {
+					//     label: function (context) {
+					//       return `${context.formattedValue}%`;
+					//     },
+					//   },
+					// },
+					legend: {
+						position: "top",
+					},
+					title: {
+						display: false,
+						text: "Moving Average",
+					},
+				},
+			},
+		};
+		const sortByDate = (unsorted) =>
+			unsorted.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
+		const chart = new Chart(ctx, data);
+		this.handleEvent("update-player", (event) => {
+			const sorted = sortByDate(event.movingAverages);
 
-      chart.data.datasets.push(
-        {
-          data: sortByDate(sorted).map(({ moving_average_5g }) => moving_average_5g),
-          label: "5 Game",
-        },
-        {
-          data: sortByDate(sorted).map(({ moving_average_10g }) => moving_average_10g),
-          label: "10 Game",
-        },
-        {
-          data: sortByDate(sorted).map(({ moving_average_20g }) => moving_average_20g),
-          label: "20 Game",
-        }
-      );
-      chart.data.labels = sorted.map((m) =>
-        new Date(m.updated_at).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-        })
-      );
-      chart.update();
-    });
-  },
-  beforeUnmount() {
-    this.handleEvent("update-player", null);
-  },
+			chart.data.datasets.push(
+				{
+					data: sortByDate(sorted).map(
+						({ moving_average_5g }) => moving_average_5g,
+					),
+					label: "5 Game",
+				},
+				{
+					data: sortByDate(sorted).map(
+						({ moving_average_10g }) => moving_average_10g,
+					),
+					label: "10 Game",
+				},
+				{
+					data: sortByDate(sorted).map(
+						({ moving_average_20g }) => moving_average_20g,
+					),
+					label: "20 Game",
+				},
+			);
+			chart.data.labels = sorted.map((m) =>
+				new Date(m.updated_at).toLocaleDateString("en-US", {
+					month: "short",
+					day: "numeric",
+				}),
+			);
+			chart.update();
+		});
+	},
+	beforeUnmount() {
+		this.handleEvent("update-player", null);
+	},
+};
+hooks.WrsByGameLength = {
+	mounted() {
+		const ctx = this.el;
+		const data = {
+			type: "bar",
+			data: {},
+			options: {
+				responsive: true,
+				plugins: {
+					tooltip: {
+						callbacks: {
+							label: (context) => `${context.formattedValue}%`,
+						},
+					},
+
+					title: {
+						display: false,
+						text: "WRs by Game Length",
+					},
+				},
+			},
+		};
+
+		const chart = new Chart(ctx, data);
+		this.handleEvent("update-wrs", (event) => {
+			console.log("event", event);
+			const split = Object.entries(event.byLength);
+			chart.data.datasets.push({
+				data: split.map(([length, wr]) => wr),
+				label: "Win Rate",
+			});
+			chart.data.labels = split.map(([length]) => getMinutesFromBucket(length));
+			chart.update();
+		});
+	},
+	beforeUnmount() {
+		this.handleEvent("update-player", null);
+	},
 };
 
 // *****
 // *****
 // *****
 
-let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+const csrfToken = document
+	.querySelector("meta[name='csrf-token']")
+	.getAttribute("content");
 
-let liveSocket = new LiveSocket("/live", Socket, {
-  longPollFallbackMs: 2500,
-  params: { _csrf_token: csrfToken },
-  hooks: hooks,
+const liveSocket = new LiveSocket("/live", Socket, {
+	longPollFallbackMs: 2500,
+	params: { _csrf_token: csrfToken },
+	hooks: hooks,
 });
 // Show progress bar on live navigation and form submits
 topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" });

@@ -1,3 +1,9 @@
+<%
+  common_link_classes = "p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+  active_link_classes = "bg-gray-100 shadow-md"
+%>
+
+
 <div>
   <.live_component
     show={@show_search}
@@ -29,11 +35,7 @@
     <div class="flex justify-center">
       <.link
         patch={~p"/player/opponents"}
-        class={
-          (@active == :opponents &&
-             "bg-gray-100 p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100 shadow-md") ||
-            "p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-        }
+        class={[common_link_classes, @active == :opponents && active_link_classes]}
       >
         <div class="rounded-md">
           Opponents
@@ -41,11 +43,7 @@
       </.link>
       <.link
         patch={~p"/player/rating"}
-        class={
-          (@active == :rating &&
-             "bg-gray-100 p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100 shadow-md") ||
-            "p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-        }
+        class={[common_link_classes, @active == :rating && active_link_classes]}
       >
         <div class="rounded-md">
           Rating
@@ -53,17 +51,22 @@
       </.link>
       <.link
         patch={~p"/player/insights"}
-        class={
-          (@active == :insights &&
-             "bg-gray-100 p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100 shadow-md") ||
-            "p-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-        }
+        class={[common_link_classes, @active == :insights && active_link_classes]}
       >
         <div class="rounded-md">
           Insights
+        </div>
+      </.link>
+      <.link
+        patch={~p"/player/game_length"}
+        class={[common_link_classes, @active == :game_length && active_link_classes]}
+      >
+        <div class="rounded-md">
+          Game Length
         </div>
       </.link>
     </div>
   </div>
   <%= render_section(assigns) %>
 </div>
+

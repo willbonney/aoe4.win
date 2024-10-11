@@ -19,7 +19,7 @@ defmodule WololoWeb.OpponentsByCountryLive do
           :ok,
           socket
           |> assign(countries: data[:countries], loading: false, error: nil)
-          |> push_event("update-player", %{byCountry: data[:countries]})
+          |> push_event("update-opponents-by-country", %{byCountry: data[:countries]})
         }
 
       {:error, reason} ->

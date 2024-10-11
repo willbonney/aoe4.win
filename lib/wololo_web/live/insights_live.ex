@@ -62,7 +62,7 @@ defmodule WololoWeb.InsightsLive do
 
   @impl true
   def mount(socket) do
-    {:ok, socket |> assign(loading: false, error: nil, insights: nil)}
+    {:ok, socket |> assign(error: nil, insights: nil)}
   end
 
   @impl true
@@ -72,7 +72,6 @@ defmodule WololoWeb.InsightsLive do
 
     socket =
       socket
-      # Assign any incoming parameters
       |> assign(assigns)
       |> assign_async(:insights, fn -> fetch_insights(profile_id, player_name) end)
 
