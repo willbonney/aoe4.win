@@ -42,15 +42,19 @@ defmodule Wololo.PlayerGamesAPI do
         games_by_length = count_games_by_length(games)
 
         wins_by_game_length = count_wins_by_game_length(games, profile_id)
+        IO.inspect(games_by_length, label: ">>>>>>>>>>>>>>>>>>>games_by_length")
 
-        Enum.into(@game_length_buckets, %{}, fn {bucket, _} ->
-          wins = Map.get(wins_by_game_length, bucket, 0)
+        IO.inspect(wins_by_game_length)
 
-          total_games = Map.get(games_by_length, bucket, 0)
+        {:ok,
+         Enum.into(@game_length_buckets, %{}, fn {bucket, _} ->
+           wins = Map.get(wins_by_game_length, bucket, 0)
 
-          win_rate = if total_games > 0, do: wins / total_games * 100, else: 0
-          {bucket, win_rate}
-        end)
+           total_games = Map.get(games_by_length, bucket, 0)
+
+           win_rate = if total_games > 0, do: wins / total_games * 100, else: 0
+           {bucket, win_rate}
+         end)}
 
       {:error, reason} ->
         Logger.error("Failed to get player games statistics: #{reason}")
@@ -59,21 +63,32 @@ defmodule Wololo.PlayerGamesAPI do
   end
 
   def get_players_games_statistics(profile_id, should_process \\ true) do
-    endpoint = "#{@base_url}/players/#{profile_id}/games?leaderboard=rm_solo"
+    base_endpoint = "#{@base_url}/players/#{profile_id}/games?leaderboard=rm_solo"
 
+    with {:ok, page1_data} <- fetch_page(base_endpoint, 1),
+         {:ok, page2_data} <- fetch_page(base_endpoint, 2) do
+      merged_data = merge_page_data(page1_data, page2_data)
+
+      data =
+        if should_process do
+          process_games(Jason.encode!(merged_data), profile_id)
+        else
+          Jason.encode!(merged_data)
+        end
+
+      {:ok, data}
+    else
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
+  defp fetch_page(base_endpoint, page) do
+    endpoint = "#{base_endpoint}&page=#{page}"
     request = Finch.build(:get, endpoint)
 
     case Finch.request(request, Wololo.Finch) do
       {:ok, %Finch.Response{status: 200, body: body}} ->
-        # Logger.info("Received countries body: #{inspect(Jason.decode!(body))}")
-        data =
-          if should_process do
-            process_games(body, profile_id)
-          else
-            body
-          end
-
-        {:ok, data}
+        {:ok, Jason.decode!(body)}
 
       {:ok, %Finch.Response{status: status_code}} ->
         {:error, "Request failed with status code: #{status_code}"}
@@ -81,6 +96,13 @@ defmodule Wololo.PlayerGamesAPI do
       {:error, %Finch.Error{reason: reason}} ->
         {:error, "Request failed: #{reason}"}
     end
+  end
+
+  defp merge_page_data(page1_data, page2_data) do
+    %{
+      "games" => page1_data["games"] ++ page2_data["games"],
+      "total" => page1_data["total"]
+    }
   end
 
   def process_games(body, profile_id) do

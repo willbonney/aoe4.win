@@ -12,8 +12,7 @@ defmodule WololoWeb.OpponentsByCountryLive do
 
     case PlayerGamesAPI.get_players_games_statistics(assigns[:profile_id]) do
       {:ok, data} ->
-        # send(self(), {:set_loading, false})
-        IO.inspect(data, label: "hi")
+        IO.inspect(data, label: ">>>>>>>>>>>>>>>>>>>data")
 
         {
           :ok,

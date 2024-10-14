@@ -33,7 +33,7 @@ defmodule WololoWeb.PlayerLive do
         {:noreply, socket}
 
       "reset" ->
-        {:noreply, socket |> assign(show: true)}
+        {:noreply, socket |> assign(show_search: true)}
 
       _ ->
         {:noreply, socket}

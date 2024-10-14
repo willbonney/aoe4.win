@@ -113,10 +113,29 @@ hooks.OpponentsByCountry = {
 		};
 		const chart = new Chart(ctx, data);
 		this.handleEvent("update-opponents-by-country", (event) => {
-			chart.data.datasets[0].data = Object.values(event.byCountry);
-			chart.data.labels = Object.keys(event.byCountry).map(
-				(twoLetterCountryCode) =>
-					regionNamesInEnglish.of(twoLetterCountryCode.toUpperCase()),
+			const threshold = 5; // Percentage threshold for "Other" category
+			let otherPercentage = 0;
+			const filteredData = Object.entries(event.byCountry).reduce(
+				(acc, [country, percentage]) => {
+					if (percentage >= threshold) {
+						acc[country] = percentage;
+					} else {
+						otherPercentage += percentage;
+					}
+					return acc;
+				},
+				{},
+			);
+
+			if (otherPercentage > 0) {
+				filteredData.other = otherPercentage;
+			}
+
+			chart.data.datasets[0].data = Object.values(filteredData);
+			chart.data.labels = Object.keys(filteredData).map((country) =>
+				country === "other"
+					? "Other"
+					: regionNamesInEnglish.of(country.toUpperCase()),
 			);
 			chart.update();
 		});
