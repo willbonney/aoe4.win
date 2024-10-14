@@ -3,6 +3,7 @@ defmodule WololoWeb.NumbersLive do
   use WololoWeb, :live_component
   import WololoWeb.Components.Spinner
   alias Wololo.PlayerStatsAPI
+  import Wololo.Utils, only: [rating_to_color_map: 1]
 
   def mount(socket) do
     {:ok, socket |> assign(stats: nil, loading: true, error: nil)}

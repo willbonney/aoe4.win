@@ -69,50 +69,56 @@ defmodule WololoWeb.PlayerLive do
 
   @impl true
   def handle_params(params, _uri, socket) do
-    IO.inspect(params, label: "params")
-
     active =
       case params["section"] do
         "opponents" -> :opponents
         "rating" -> :rating
         "insights" -> :insights
         "game_length" -> :game_length
-        _ -> :game_length
+        _ -> :rating
       end
 
     {:noreply, assign(socket, active: active)}
   end
 
   def render_section(assigns) do
-    case assigns.active do
-      :opponents ->
-        ~H"""
-        <.live_component
-          module={OpponentsByCountryLive}
-          id="opponents-by-country"
-          profile_id={@profile_id}
-        />
-        """
+    if(!assigns.profile_id) do
+      ~H"""
+      <div class="flex justify-center items-center h-full">
+        <div class="spinner spinner-primary"></div>
+      </div>
+      """
+    else
+      case assigns.active do
+        :rating ->
+          ~H"""
+          <.live_component module={NumbersLive} id="numbers" profile_id={@profile_id} />
+          """
 
-      :rating ->
-        ~H"""
-        <.live_component module={NumbersLive} id="numbers" profile_id={@profile_id} />
-        """
+        :game_length ->
+          ~H"""
+          <.live_component
+            module={GameLengthLive}
+            id="game-length"
+            profile_id={@profile_id}
+            player_name={@name}
+          />
+          """
 
-      :insights ->
-        ~H"""
-        <.live_component module={InsightsLive} id="insights" profile_id={@profile_id} player_name={@name} />
-        """
+        :opponents ->
+          ~H"""
+          <.live_component
+            module={OpponentsByCountryLive}
+            id="opponents-by-country"
+            profile_id={@profile_id}
+          />
+          """
 
-      :game_length ->
-        ~H"""
-        <.live_component
-          module={GameLengthLive}
-          id="game-length"
-          profile_id={@profile_id}
-          player_name={@name}
-        />
-        """
+        :insights ->
+          ~H"""
+          <.live_component module={InsightsLive} id="insights" profile_id={@profile_id} player_name={@name} />
+          """
+      end
     end
   end
 end

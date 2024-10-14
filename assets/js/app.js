@@ -27,16 +27,51 @@ import topbar from "../vendor/topbar";
 // *****
 import Chart from "chart.js/auto";
 
-const getMinutesFromBucket = (bucket) =>
-	({
+const MUI_COLORS = [
+	"rgba(255, 193, 7, 1)", // #FFC107
+	"rgba(255, 152, 0, 1)", // #FF9800
+	"rgba(255, 105, 180, 1)", // #FF69B4
+	"rgba(233, 30, 99, 1)", // #E91E63
+	"rgba(156, 39, 176, 1)", // #9C27B0
+	"rgba(103, 58, 183, 1)", // #673AB7
+	"rgba(63, 81, 181, 1)", // #3F51B5
+	"rgba(33, 150, 243, 1)", // #2196F3
+	"rgba(3, 169, 244, 1)", // #03A9F4
+	"rgba(0, 188, 212, 1)", // #00BCD4
+	"rgba(0, 150, 136, 1)", // #009688
+	"rgba(76, 175, 80, 1)", // #4CAF50
+	"rgba(139, 195, 74, 1)", // #8BC34A
+	"rgba(205, 220, 57, 1)", // #CDDC39
+	"rgba(255, 235, 59, 1)", // #FFEB3B
+	"rgba(255, 196, 0, 1)", // #FFC400
+	"rgba(255, 171, 64, 1)", // #FFAB40
+	"rgba(255, 102, 204, 1)", // #FF66CC
+	"rgba(230, 74, 25, 1)", // #E64A19
+	"rgba(121, 85, 72, 1)", // #795548
+	"rgba(96, 125, 139, 1)", // #607D8B
+	"rgba(69, 90, 100, 1)", // #455A64
+	"rgba(55, 71, 79, 1)", // #37474F
+	"rgba(38, 50, 56, 1)", // #263238
+	"rgba(33, 33, 33, 1)", // #212121
+];
+
+const getMinutesFromBucket = (bucket) => {
+	const bucketLabels = {
 		_lt_600: "< 10 Minutes",
 		_600_to_899: "10-15 Minutes",
 		_900_to_1199: "15-20 Minutes",
 		_1200_to_1499: "20-25 Minutes",
 		_1500_to_1799: "25-30 Minutes",
 		_1800_to_2099: "30-35 Minutes",
-		_gt_2100: "> 35 Minutes",
-	})[bucket];
+		_2100_to_2399: "35-40 Minutes",
+		_2400_to_2999: "40-50 Minutes",
+		_gt_3000: "> 50 Minutes",
+	};
+
+	const bucketOrder = Object.keys(bucketLabels);
+
+	return { label: bucketLabels[bucket], order: bucketOrder.indexOf(bucket) };
+};
 
 const hooks = {};
 hooks.OpponentsByCountry = {
@@ -52,33 +87,7 @@ hooks.OpponentsByCountry = {
 				datasets: [
 					{
 						data: [],
-						backgroundColor: [
-							"#FFC107",
-							"#FF9800",
-							"#FF69B4",
-							"#E91E63",
-							"#9C27B0",
-							"#673AB7",
-							"#3F51B5",
-							"#2196F3",
-							"#03A9F4",
-							"#00BCD4",
-							"#009688",
-							"#4CAF50",
-							"#8BC34A",
-							"#CDDC39",
-							"#FFEB3B",
-							"#FFC400",
-							"#FFAB40",
-							"#FF66CC",
-							"#E64A19",
-							"#795548",
-							"#607D8B",
-							"#455A64",
-							"#37474F",
-							"#263238",
-							"#212121",
-						],
+						backgroundColor: MUI_COLORS,
 					},
 				],
 				hoverOffset: 4,
@@ -104,7 +113,6 @@ hooks.OpponentsByCountry = {
 		};
 		const chart = new Chart(ctx, data);
 		this.handleEvent("update-opponents-by-country", (event) => {
-			console.log("event", event);
 			chart.data.datasets[0].data = Object.values(event.byCountry);
 			chart.data.labels = Object.keys(event.byCountry).map(
 				(twoLetterCountryCode) =>
@@ -190,13 +198,24 @@ hooks.WrsByGameLength = {
 			data: {},
 			options: {
 				responsive: true,
+				scales: {
+					y: {
+						title: {
+							display: true,
+							text: "Win %",
+						},
+						beginAtZero: true,
+					},
+				},
 				plugins: {
+					legend: {
+						display: false,
+					},
 					tooltip: {
 						callbacks: {
 							label: (context) => `${context.formattedValue}%`,
 						},
 					},
-
 					title: {
 						display: false,
 						text: "WRs by Game Length",
@@ -209,11 +228,24 @@ hooks.WrsByGameLength = {
 		this.handleEvent("update-wrs", (event) => {
 			console.log("event", event);
 			const split = Object.entries(event.byLength);
+			const sortedSplit = split.sort(
+				(a, b) =>
+					getMinutesFromBucket(a[0]).order - getMinutesFromBucket(b[0]).order,
+			);
+
 			chart.data.datasets.push({
-				data: split.map(([length, wr]) => wr),
+				data: sortedSplit.map(([length, wr]) => wr),
 				label: "Win Rate",
+				borderColor: MUI_COLORS.slice(0, sortedSplit.length),
+				backgroundColor: MUI_COLORS.map(
+					(color) => `${color.slice(0, -4)}, 0.4)`,
+				).slice(0, sortedSplit.length),
+				borderWidth: 1,
+				barThickness: 50,
 			});
-			chart.data.labels = split.map(([length]) => getMinutesFromBucket(length));
+			chart.data.labels = sortedSplit.map(
+				([length]) => getMinutesFromBucket(length).label,
+			);
 			chart.update();
 		});
 	},

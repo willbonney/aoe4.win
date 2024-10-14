@@ -9,7 +9,9 @@ defmodule Wololo.PlayerGamesAPI do
     _1200_to_1499: 0,
     _1500_to_1799: 0,
     _1800_to_2099: 0,
-    _gt_2100: 0
+    _2100_to_2399: 0,
+    _2400_to_2999: 0,
+    _gt_3000: 0
   }
 
   defp get_moving_average(ratings, games_count) do
@@ -38,22 +40,17 @@ defmodule Wololo.PlayerGamesAPI do
         games = Jason.decode!(game_stats)["games"]
 
         games_by_length = count_games_by_length(games)
-        IO.inspect(games_by_length, label: ">>>>>>>>>>>>>>>>>>>games_by_length")
 
         wins_by_game_length = count_wins_by_game_length(games, profile_id)
 
-        IO.inspect(wins_by_game_length, label: ">>>>>>>>>>>>>>>>>>>wins_by_game_length")
+        Enum.into(@game_length_buckets, %{}, fn {bucket, _} ->
+          wins = Map.get(wins_by_game_length, bucket, 0)
 
-        wrs_by_game_length =
-          Enum.into(@game_length_buckets, %{}, fn {bucket, _} ->
-            wins = Map.get(wins_by_game_length, bucket, 0)
-            total_games = Map.get(games_by_length, bucket, 0)
-            win_rate = if total_games > 0, do: wins / total_games * 100, else: 0
-            {bucket, win_rate}
-          end)
+          total_games = Map.get(games_by_length, bucket, 0)
 
-        IO.inspect(wrs_by_game_length, label: "wrs_by_game_length")
-        {:ok, wrs_by_game_length}
+          win_rate = if total_games > 0, do: wins / total_games * 100, else: 0
+          {bucket, win_rate}
+        end)
 
       {:error, reason} ->
         Logger.error("Failed to get player games statistics: #{reason}")
@@ -181,7 +178,9 @@ defmodule Wololo.PlayerGamesAPI do
       duration < 1500 -> :_1200_to_1499
       duration < 1800 -> :_1500_to_1799
       duration < 2100 -> :_1800_to_2099
-      true -> :_gt_2100
+      duration < 2400 -> :_2100_to_2399
+      duration < 3000 -> :_2400_to_2999
+      true -> :_gt_3000
     end
   end
 end
