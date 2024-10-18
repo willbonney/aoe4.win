@@ -295,6 +295,7 @@ defmodule WololoWeb.CoreComponents do
                 multiple pattern placeholder readonly required rows size step)
   )
 
+  @compile {:no_warn_undefined, used_input?: 1}
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
 
