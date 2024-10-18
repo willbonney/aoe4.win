@@ -16,7 +16,8 @@ defmodule Wololo.Application do
       # Start a worker by calling: Wololo.Worker.start_link(arg)
       # {Wololo.Worker, arg},
       # Start to serve requests, typically the last entry
-      WololoWeb.Endpoint
+      WololoWeb.Endpoint,
+      {Cachex, name: :openai_cache}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

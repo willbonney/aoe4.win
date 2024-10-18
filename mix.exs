@@ -57,7 +57,8 @@ defmodule Wololo.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:httpoison, "~> 2.2"},
-      {:dotenv_parser, "~> 2.0"}
+      {:dotenv_parser, "~> 2.0"},
+      {:cachex, "~> 3.6"}
     ]
   end
 

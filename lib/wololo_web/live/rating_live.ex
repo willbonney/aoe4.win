@@ -1,4 +1,4 @@
-defmodule WololoWeb.NumbersLive do
+defmodule WololoWeb.RatingLive do
   alias Wololo.PlayerGamesAPI
   use WololoWeb, :live_component
   import WololoWeb.Components.Spinner

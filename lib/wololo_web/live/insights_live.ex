@@ -9,6 +9,8 @@ defmodule WololoWeb.InsightsLive do
 
     Your answer should provide 5 insights about this data. The insights should not be superficial, they should involve deeper reasoning about the statistics in the prompt. For example, you could answer that the player has a significantly higher winrate on weekeends than on weekdays. Or you could say that the player's winrate against opponents located in China is the lowest among all other countries.
 
+    Remember that the `country` key in the `player` object is a two-letter country code. You can use this to determine the country of the player's opponents. This is not the same as the `civilization` key, which is the civilization the player chose to play with.
+
     The format of your answer should be in html for easy parsing. Do not wrap the answer with any non-html syntax like ```. The parent container should be a <div> and there shouldn't be any <html> tags. Use <br /> for new lines and use tailwind classes. The 5 insights should be bullet points (use the `list-disc` tailwind class), with substantial bottom margin. Make it look modern and clean.
 
     Instead of using "the player" to refer to the player, use #{player_name} instead. Make the player's name bold.
@@ -16,6 +18,26 @@ defmodule WololoWeb.InsightsLive do
   end
 
   def call(_, %{:player_name => player_name, :prompt => prompt}) do
+    cache_key = "openai_#{:crypto.hash(:md5, prompt) |> Base.encode16()}"
+
+    case Cachex.get(:openai_cache, cache_key) do
+      {:ok, nil} ->
+        # Cache miss, make the API call
+        result = make_openai_request(player_name, prompt)
+        Cachex.put(:openai_cache, cache_key, result, ttl: :timer.hours(24))
+        result
+
+      {:ok, cached_result} ->
+        # Cache hit, return the cached result
+        cached_result
+
+      {:error, _} ->
+        # Error reading from cache, fall back to API call
+        make_openai_request(player_name, prompt)
+    end
+  end
+
+  defp make_openai_request(player_name, prompt) do
     %{
       "model" => "gpt-4o-mini",
       "messages" => [

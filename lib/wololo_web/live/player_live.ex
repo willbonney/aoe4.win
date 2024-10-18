@@ -3,7 +3,7 @@ defmodule WololoWeb.PlayerLive do
   alias WololoWeb.SearchComponent
   alias WololoWeb.OpponentsByCountryLive
   alias WololoWeb.InsightsLive
-  alias WololoWeb.NumbersLive
+  alias WololoWeb.RatingLive
   alias WololoWeb.GameLengthLive
 
   @impl true
@@ -56,7 +56,7 @@ defmodule WololoWeb.PlayerLive do
     # Assign all the player data here
     {:noreply,
      assign(socket,
-       active: :opponents,
+       active: :rating,
        profile_id: profile_id,
        name: name,
        avatar: avatar,
@@ -92,7 +92,7 @@ defmodule WololoWeb.PlayerLive do
       case assigns.active do
         :rating ->
           ~H"""
-          <.live_component module={NumbersLive} id="numbers" profile_id={@profile_id} />
+          <.live_component module={RatingLive} id="rating" profile_id={@profile_id} />
           """
 
         :game_length ->
