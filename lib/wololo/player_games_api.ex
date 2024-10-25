@@ -42,9 +42,6 @@ defmodule Wololo.PlayerGamesAPI do
         games_by_length = count_games_by_length(games)
 
         wins_by_game_length = count_wins_by_game_length(games, profile_id)
-        IO.inspect(games_by_length, label: ">>>>>>>>>>>>>>>>>>>games_by_length")
-
-        IO.inspect(wins_by_game_length)
 
         {:ok,
          Enum.into(@game_length_buckets, %{}, fn {bucket, _} ->

@@ -76,7 +76,6 @@ const getMinutesFromBucket = (bucket) => {
 const hooks = {};
 hooks.OpponentsByCountry = {
 	mounted() {
-		console.log("MOUNTED");
 		const regionNamesInEnglish = new Intl.DisplayNames(["en"], {
 			type: "region",
 		});
@@ -269,7 +268,7 @@ hooks.WrsByGameLength = {
 		});
 	},
 	beforeUnmount() {
-		this.handleEvent("update-player", null);
+		this.handleEvent("update-wrs", null);
 	},
 };
 

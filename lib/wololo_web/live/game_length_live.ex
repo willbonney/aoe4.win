@@ -11,6 +11,7 @@ defmodule WololoWeb.GameLengthLive do
   @impl true
   def update(assigns, socket) do
     profile_id = assigns[:profile_id]
+    assign(socket, loading: true)
 
     case PlayerGamesAPI.get_player_wr_by_game_length(profile_id) do
       {:ok, wrs} ->

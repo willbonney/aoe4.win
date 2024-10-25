@@ -4,6 +4,8 @@ defmodule WololoWeb.PlayerLive do
   alias WololoWeb.OpponentsByCountryLive
   alias WololoWeb.InsightsLive
   alias WololoWeb.RatingLive
+  import WololoWeb.Components.Spinner
+
   alias WololoWeb.GameLengthLive
 
   @impl true
@@ -19,8 +21,8 @@ defmodule WololoWeb.PlayerLive do
        rank: nil,
        wr: nil,
        error: nil,
-       show_search: true
-       #  loading: true
+       show_search: true,
+       loading: true
      )}
   end
 
@@ -33,7 +35,7 @@ defmodule WololoWeb.PlayerLive do
         {:noreply, socket}
 
       "reset" ->
-        {:noreply, socket |> assign(show_search: true)}
+        {:noreply, socket |> assign(show_search: true, profile_id: nil)}
 
       _ ->
         {:noreply, socket}
@@ -63,7 +65,8 @@ defmodule WololoWeb.PlayerLive do
        url: url,
        rank: rank,
        wr: wr,
-       error: nil
+       error: nil,
+       loading: false
      )}
   end
 

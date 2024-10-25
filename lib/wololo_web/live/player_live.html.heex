@@ -4,6 +4,7 @@
 %>
 
 
+
 <div>
   <.live_component
     show={@show_search}
@@ -70,6 +71,12 @@
       </.link>
     </div>
   </div>
-  <%= render_section(assigns) %>
+  <%= if @loading do %>
+  <div class="flex justify-center items-center h-64">
+    <.spinner size="lg" class="text-brand-500" />
+    </div>
+  <% else %>
+    <%= render_section(assigns) %>
+  <% end %>
 </div>
 

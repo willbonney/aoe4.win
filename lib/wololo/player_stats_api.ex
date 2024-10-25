@@ -33,7 +33,6 @@ defmodule Wololo.PlayerStatsAPI do
       |> get_in(["modes", "rm_solo"])
 
     total_count = Enum.count(rating_history)
-    IO.inspect(total_count, label: "total_count")
 
     %{
       max_rating: max_rating,
