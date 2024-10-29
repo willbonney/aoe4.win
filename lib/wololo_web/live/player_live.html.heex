@@ -5,7 +5,7 @@
 
 
 
-<div>
+<div class="mx-auto max-w-4xl">
   <.live_component
     show={@show_search}
     module={SearchComponent}
@@ -16,16 +16,22 @@
     <div class="flex mb-8">
       <div class="flex justify-between flex-1">
         <div class="flex align-center">
-          <img class="mr-4" src={@avatar} />
+          <img class="mr-4 h-full" src={@avatar} />
           <div class="flex flex-col">
             <div class="flex">
               <h6 class="font-bold"><%= @name %></h6>
-              <a href={@url}>
-                <.icon name="hero-arrow-top-right-on-square" class="cursor-pointer h-4 w-4 ml-2" />
-              </a>
+              <%= if @url do %>
+                <a href={@url}>
+                  <.icon name="hero-arrow-top-right-on-square" class="cursor-pointer h-4 w-4 ml-2" />
+                </a>
+              <% end %>
             </div>
-            <h6>#<%= @rank %></h6>
-            <h6><%= @wr %> %</h6>
+            <%= if @rank do %>
+              <h6>#<%= @rank %></h6>
+            <% end %>
+            <%= if @wr do %>
+              <h6><%= @wr %> %</h6>
+            <% end %>
           </div>
         </div>
         <div class="cursor-pointer" phx-click="reset">
@@ -71,12 +77,6 @@
       </.link>
     </div>
   </div>
-  <%= if @loading do %>
-  <div class="flex justify-center items-center h-64">
-    <.spinner size="lg" class="text-brand-500" />
-    </div>
-  <% else %>
-    <%= render_section(assigns) %>
-  <% end %>
+  <%= render_section(assigns) %>
 </div>
 

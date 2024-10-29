@@ -10,10 +10,10 @@ defmodule WololoWeb.RatingLive do
     {:ok,
      socket
      |> assign(:stats, %AsyncResult{})
-     |> assign(:moving_averages, [])
      |> assign(:error, nil)}
   end
 
+  @impl true
   def update(assigns, socket) do
     socket =
       socket
@@ -24,11 +24,24 @@ defmodule WololoWeb.RatingLive do
     {:ok, socket}
   end
 
-  def handle_async(:get_stats, {:ok, stats}, socket) when is_map(stats) do
+  @impl true
+  def handle_async(:get_stats, {:ok, {:error, reason}}, socket) do
+    {:noreply,
+     assign(socket,
+       stats: %Phoenix.LiveView.AsyncResult{
+         ok?: false,
+         loading: false,
+         failed: reason,
+         result: nil
+       }
+     )}
+  end
+
+  def handle_async(:get_stats, {:ok, result}, socket) do
     socket =
       socket
-      |> assign(:stats, AsyncResult.ok(%AsyncResult{}, stats))
-      |> push_event("update-player", %{movingAverages: stats.moving_averages})
+      |> assign(:stats, AsyncResult.ok(%AsyncResult{}, result))
+      |> push_event("update-player", %{movingAverages: result.moving_averages})
 
     {:noreply, socket}
   end

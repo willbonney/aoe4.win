@@ -21,8 +21,7 @@ defmodule WololoWeb.PlayerLive do
        rank: nil,
        wr: nil,
        error: nil,
-       show_search: true,
-       loading: true
+       show_search: true
      )}
   end
 
@@ -45,17 +44,10 @@ defmodule WololoWeb.PlayerLive do
   @impl true
   def handle_info(
         {:load_player_data,
-         %{
-           "id" => profile_id,
-           "name" => name,
-           "avatar" => avatar,
-           "url" => url,
-           "rank" => rank,
-           "wr" => wr
-         }},
+         %{"id" => profile_id, "name" => name, "avatar" => avatar, "url" => url} = player},
         socket
       ) do
-    # Assign all the player data here
+    # Assign player data with optional rank and win rate
     {:noreply,
      assign(socket,
        active: :rating,
@@ -63,10 +55,9 @@ defmodule WololoWeb.PlayerLive do
        name: name,
        avatar: avatar,
        url: url,
-       rank: rank,
-       wr: wr,
-       error: nil,
-       loading: false
+       rank: Map.get(player, "rank", nil),
+       wr: Map.get(player, "wr", nil),
+       error: nil
      )}
   end
 
