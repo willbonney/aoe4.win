@@ -1,4 +1,6 @@
-# Wololo
+# AOE4.WIN
+
+![Description of image](priv/static/favicon/android-chrome-192x192.png)
 
 To start your Phoenix server:
 
