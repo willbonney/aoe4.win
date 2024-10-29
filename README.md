@@ -1,7 +1,7 @@
 
 <div align="center">
-![Description of image](priv/static/favicon/android-chrome-192x192.png)
-# AOE4.WIN
+<img src="priv/static/favicon/android-chrome-192x192.png" alt="AOE4.WIN logo" />
+<h1>AOE4.WIN</h1>
 </div>
 
 To start your Phoenix server:
