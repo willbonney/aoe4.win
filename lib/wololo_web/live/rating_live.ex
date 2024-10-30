@@ -6,6 +6,7 @@ defmodule WololoWeb.RatingLive do
   import Wololo.Utils, only: [rating_to_color_map: 1]
   alias Phoenix.LiveView.AsyncResult
 
+  @impl true
   def mount(socket) do
     {:ok,
      socket
@@ -24,19 +25,6 @@ defmodule WololoWeb.RatingLive do
     {:ok, socket}
   end
 
-  @impl true
-  def handle_async(:get_stats, {:ok, {:error, reason}}, socket) do
-    {:noreply,
-     assign(socket,
-       stats: %Phoenix.LiveView.AsyncResult{
-         ok?: false,
-         loading: false,
-         failed: reason,
-         result: nil
-       }
-     )}
-  end
-
   def handle_async(:get_stats, {:ok, result}, socket) do
     socket =
       socket
@@ -46,7 +34,8 @@ defmodule WololoWeb.RatingLive do
     {:noreply, socket}
   end
 
-  def handle_async(:get_stats, {:error, reason}, socket) do
+  @impl true
+  def handle_async(:get_stats, {status, reason}, socket) when status in [:error, :exit, :ok] do
     socket =
       socket
       |> assign(:stats, AsyncResult.failed(%AsyncResult{}, reason))

@@ -22,23 +22,23 @@ defmodule Wololo.PlayerStatsAPI do
   end
 
   def process_player_stats(body) do
-    %{
-      "max_rating" => max_rating,
-      "max_rating_7d" => max_rating_7d,
-      "max_rating_1m" => max_rating_1m,
-      "rating_history" => rating_history
-    } =
+    stats =
       body
       |> Jason.decode!()
       |> get_in(["modes", "rm_solo"])
 
+    rating_history = Map.get(stats, "rating_history", [])
     total_count = Enum.count(rating_history)
 
     %{
-      max_rating: max_rating,
-      max_rating_7d: max_rating_7d,
-      max_rating_1m: max_rating_1m,
-      average_rating: calculate_average_rating(rating_history, total_count),
+      max_rating: Map.get(stats, "max_rating", "N/A"),
+      max_rating_7d: Map.get(stats, "max_rating_7d", "N/A"),
+      max_rating_1m: Map.get(stats, "max_rating_1m", "N/A"),
+      average_rating:
+        if(total_count > 0,
+          do: calculate_average_rating(rating_history, total_count),
+          else: "N/A"
+        ),
       total_count: total_count
     }
   end
