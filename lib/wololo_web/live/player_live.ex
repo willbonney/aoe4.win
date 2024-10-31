@@ -4,7 +4,6 @@ defmodule WololoWeb.PlayerLive do
   alias WololoWeb.OpponentsByCountryLive
   alias WololoWeb.InsightsLive
   alias WololoWeb.RatingLive
-  import WololoWeb.Components.Spinner
 
   alias WololoWeb.GameLengthLive
 

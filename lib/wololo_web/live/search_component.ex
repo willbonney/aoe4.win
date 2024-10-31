@@ -23,7 +23,12 @@ defmodule WololoWeb.SearchComponent do
   def render(assigns) do
     ~H"""
     <div id="search-component">
-      <.search_modal show={assigns[:show]} id="search-modal" on_cancel={@on_cancel}>
+      <.search_modal
+        show={assigns[:show]}
+        id="search-modal"
+        on_cancel={@on_cancel}
+        allow_outside_clicks={false}
+      >
         <.search_input phx-target={@myself} phx-keyup="do-search" phx-debounce="200" />
         <.search_results players={@players} has_searched={@has_searched} />
       </.search_modal>

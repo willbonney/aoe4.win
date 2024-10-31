@@ -4,6 +4,7 @@ defmodule WololoWeb.CustomComponents do
   attr(:id, :string, required: true)
   attr(:show, :boolean, default: false)
   attr(:on_cancel, JS, default: %JS{})
+  attr(:allow_outside_clicks, :boolean, default: true)
   slot(:inner_block, required: true)
 
   def search_modal(assigns) do
@@ -35,7 +36,7 @@ defmodule WololoWeb.CustomComponents do
                 phx-mounted={@show && show_modal(@id)}
                 phx-window-keydown={hide_modal(@on_cancel, @id)}
                 phx-key="escape"
-                phx-click-away={hide_modal(@on_cancel, @id)}
+                phx-click-away={@allow_outside_clicks && hide_modal(@on_cancel, @id)}
                 class="hidden relative rounded-2xl bg-white p-2 shadow-lg shadow-zinc-700/10 ring-1 ring-zinc-700/10 transition min-h-[30vh] max-h-[50vh] overflow-y-scroll"
               >
                 <div id={"#{@id}-content"}>
@@ -105,8 +106,8 @@ defmodule WololoWeb.CustomComponents do
       <input
         {@rest}
         type="text"
-        class="h-12 w-full border-none focus:ring-0 pl-11 pr-4 text-gray-800 placeholder-gray-400 sm:text-sm"
-        placeholder="Search player.."
+        class="h-12 w-full border-none focus:ring-0 pl-11 pr-4 text-gray-800 placeholder:text-gray-400 placeholder:text-lg"
+        placeholder="Search player... (🚧 1v1 ranked only for the moment 🚧)"
         role="combobox"
         aria-expanded="false"
         aria-controls="options"

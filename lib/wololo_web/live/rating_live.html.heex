@@ -2,7 +2,7 @@
 
   <div id="rating">
   <%
-  common_stat_classes = "font-time-traveler-pal font-black text-4xl"
+  common_stat_classes = "font-time-traveler-pal font-black text-3xl mx-auto text-center"
  %>
   <.async_result :let={stats} assign={@stats}>
     <:loading>
@@ -18,8 +18,12 @@
   <div class="text-[#E6E6E6]" />
   <div class="text-[#87CEEB]" />
   <div class="text-[#FF8C00]" />
+  <div class="text-[#DDDDDD]" />
   <%!-- stupid tw --%>
 
+    <h1 class="font-time-traveler-pal font-gray text-4xl my-8 mx-auto text-center">
+      Current Season Rating
+    </h1>
     <h1 class={[common_stat_classes]}>
       Max: <span class={["text-[#{rating_to_color_map(stats[:max_rating])}]"]}><%= stats[:max_rating] %></span>
     </h1>
@@ -34,8 +38,8 @@
       Last <%= stats[:total_count] %> games: <span class={["text-[#{rating_to_color_map(stats[:average_rating])}]"]}><%= stats[:average_rating] %></span>
     </h1>
     <div class="border-b border-gray-200 mt-8"></div>
-    <h1 class="font-time-traveler-pal font-black text-4xl my-8">
-      Moving Averages:
+    <h1 class="font-time-traveler-pal font-gray text-4xl my-8 mx-auto text-center">
+      Moving Averages
     </h1>
     <canvas
       id="moving-averages"

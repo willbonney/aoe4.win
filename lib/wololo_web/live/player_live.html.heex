@@ -34,9 +34,11 @@
             <% end %>
           </div>
         </div>
-        <div class="cursor-pointer" phx-click="reset">
-          <.icon name="hero-x-mark" class="w-8 h-8" />
-        </div>
+        <%= if !@show_search do %>
+          <div class="cursor-pointer" phx-click="reset">
+            <.icon name="hero-x-mark" class="w-8 h-8" />
+          </div>
+        <% end %>
       </div>
     </div>
     <div class="flex justify-center">
