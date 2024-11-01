@@ -281,7 +281,7 @@ const csrfToken = document
 	.getAttribute("content");
 
 const liveSocket = new LiveSocket("/live", Socket, {
-	longPollFallbackMs: 5000,
+	longPollFallbackMs: 2500,
 	params: { _csrf_token: csrfToken },
 	hooks: hooks,
 });

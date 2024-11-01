@@ -13,6 +13,7 @@ config :wololo,
 # Configures the endpoint
 config :wololo, WololoWeb.Endpoint,
   url: [host: "localhost"],
+  check_origin: ["https://aoe4.win", "https://wololo.fly.dev/"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
     formats: [html: WololoWeb.ErrorHTML, json: WololoWeb.ErrorJSON],
