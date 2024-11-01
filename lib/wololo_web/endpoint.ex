@@ -13,7 +13,9 @@ defmodule WololoWeb.Endpoint do
 
   socket("/live", Phoenix.LiveView.Socket,
     websocket: [connect_info: [session: @session_options]],
-    longpoll: [connect_info: [session: @session_options]]
+    longpoll: [connect_info: [session: @session_options]],
+    check_origin: ["https://aoe4.win", "https://www.aoe4.win"],
+    connect_info: [:x_headers, :user_agent, :uri]
   )
 
   # Serve at "/" the static files from "priv/static" directory.
