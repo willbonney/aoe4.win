@@ -117,10 +117,13 @@ defmodule WololoWeb.CivsByMapLive do
       percentage < 51 -> "#{prefix}-green-200"
       percentage < 53 -> "#{prefix}-green-300"
       percentage < 55 -> "#{prefix}-green-400"
-      percentage < 57 -> "#{prefix}-green-500"
-      percentage < 59 -> "#{prefix}-green-600"
-      percentage < 61 -> "#{prefix}-green-700"
-      true -> "#{prefix}-gray-500"
+      percentage < 60 -> "#{prefix}-green-500"
+      percentage < 65 -> "#{prefix}-green-600"
+      percentage < 70 -> "#{prefix}-green-700"
+      percentage < 63 -> "#{prefix}-green-800"
+      percentage < 65 -> "#{prefix}-green-900"
+      percentage < 67 -> "#{prefix}-green-950"
+      true -> "#FFF"
     end
   end
 

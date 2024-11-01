@@ -69,7 +69,7 @@ defmodule WololoWeb.CustomComponents do
       <%= for player <- @players do %>
         <li
           class="cursor-default select-none rounded-md px-4 py-2 text-xl bg-zinc-100 hover:bg-zinc-200 hover:cursor-pointer flex flex-row space-x-2 items-center"
-          id={"option-#{player["name"]}"}
+          id={"option-#{player["profile_id"]}"}
           role="option"
           tabindex="-1"
           phx-click="select-player"

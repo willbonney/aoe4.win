@@ -68,6 +68,7 @@ defmodule Wololo.CivsByMapAPI do
   end
 
   defp format_win_rate(nil), do: "N/A"
+  defp format_win_rate(win_rate) when win_rate == 0 or win_rate == 100, do: "N/A"
 
   defp format_win_rate(win_rate) do
     :io_lib.format("~.2f%", [win_rate])

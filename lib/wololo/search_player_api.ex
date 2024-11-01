@@ -4,7 +4,8 @@ defmodule Wololo.SearchPlayerAPI do
   @base_url Application.compile_env(:wololo, :api_base_url)
 
   def fetch_player(name) do
-    endpoint = "#{@base_url}/players/autocomplete?leaderboard=rm_solo&query=#{name}"
+    encoded_name = URI.encode_www_form(name)
+    endpoint = "#{@base_url}/players/autocomplete?leaderboard=rm_solo&query=#{encoded_name}"
 
     request = Finch.build(:get, endpoint)
 
