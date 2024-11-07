@@ -25,6 +25,9 @@ import topbar from "../vendor/topbar";
 // *****
 // *****
 // *****
+
+// from https://medium.com/@lionel.aimerie/integrating-chart-js-into-elixir-phoenix-for-visual-impact-9a3991f0690f
+
 import Chart from "chart.js/auto";
 
 const MUI_COLORS = [
@@ -299,4 +302,23 @@ liveSocket.connect();
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket;
 
-//.from https://medium.com/@lionel.aimerie/integrating-chart-js-into-elixir-phoenix-for-visual-impact-9a3991f0690f
+
+
+
+
+// *****
+// *****
+// *****
+
+
+
+// from https://fly.io/phoenix-files/copy-to-clipboard-with-phoenix-liveview/
+
+
+window.addEventListener("phx:copy", (event) => {
+    let text = event.target.value;
+    
+	navigator.clipboard.writeText(text).then(() => {
+
+	}).catch(err => { })
+});

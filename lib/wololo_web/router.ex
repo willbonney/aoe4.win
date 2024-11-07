@@ -19,7 +19,7 @@ defmodule WololoWeb.Router do
 
     get("/", PageController, :home)
     live("/civs_by_map", CivsByMapLive)
-    live("/player/:section", PlayerLive)
+    live("/player/:profile_id/:section", PlayerLive)
     live("/player", PlayerLive)
   end
 

@@ -46,7 +46,7 @@ defmodule WololoWeb.RatingLive do
 
   def fetch_stats(profile_id) do
     with {:ok, opponents_data} <- PlayerGamesAPI.get_players_games_statistics(profile_id),
-         {:ok, player_stats} <- PlayerStatsAPI.fetch_player_stats(profile_id) do
+         {:ok, player_stats} <- PlayerStatsAPI.fetch_player_data(profile_id, true) do
       # Return just the map without wrapping it in a tuple
       %{
         moving_averages: opponents_data[:ratings],

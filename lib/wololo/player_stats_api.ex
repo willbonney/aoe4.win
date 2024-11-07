@@ -3,7 +3,7 @@ defmodule Wololo.PlayerStatsAPI do
 
   @base_url Application.compile_env(:wololo, :api_base_url)
 
-  def fetch_player_stats(profile_id) do
+  def fetch_player_data(profile_id, with_stats \\ false) do
     endpoint = "#{@base_url}/players/#{profile_id}?full_history=true"
 
     request = Finch.build(:get, endpoint)
@@ -11,7 +11,7 @@ defmodule Wololo.PlayerStatsAPI do
     case Finch.request(request, Wololo.Finch) do
       {:ok, %Finch.Response{status: 200, body: body}} ->
         # Logger.info("Received countries body: #{inspect(Jason.decode!(body))}")
-        {:ok, process_player_stats(body)}
+        {:ok, if(with_stats, do: process_player_stats(body), else: Jason.decode!(body))}
 
       {:ok, %Finch.Response{status: status_code}} ->
         {:error, "Request failed with status code: #{status_code}"}

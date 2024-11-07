@@ -4,36 +4,66 @@ defmodule WololoWeb.PlayerLive do
   alias WololoWeb.OpponentsByCountryLive
   alias WololoWeb.InsightsLive
   alias WololoWeb.RatingLive
+  alias Wololo.PlayerStatsAPI
 
   alias WololoWeb.GameLengthLive
 
+  @initial_assigns [
+    active: nil,
+    profile_id: nil,
+    name: nil,
+    avatar: nil,
+    url: nil,
+    rank: nil,
+    wr: nil,
+    error: nil
+  ]
+
   @impl true
+  def mount(%{"profile_id" => profile_id} = _params, _session, socket)
+      when not is_nil(profile_id) do
+    send(self(), {:load_player_data, %{"id" => profile_id}})
+
+    if connected?(socket) do
+      :ok = Phoenix.PubSub.subscribe(Wololo.PubSub, "flash")
+    end
+
+    {:ok,
+     assign(
+       socket,
+       @initial_assigns ++
+         [show_search: false, current_url: url(socket, ~p"/player/#{profile_id}/rating")]
+     )}
+  end
+
   def mount(_params, _session, socket) do
     {:ok,
-     socket
-     |> assign(
-       active: nil,
-       profile_id: nil,
-       name: nil,
-       avatar: nil,
-       url: nil,
-       rank: nil,
-       wr: nil,
-       error: nil,
-       show_search: true
+     assign(
+       socket,
+       @initial_assigns ++ [show_search: true, current_url: url(socket, ~p"/player")]
      )}
   end
 
   @impl true
-  def handle_event(event, params, socket) do
-    case event do
-      "select-player" ->
-        socket = assign(socket, show_search: false)
-        send(self(), {:load_player_data, params})
-        {:noreply, socket}
+  def handle_event("select-player", params, socket) do
+    socket = assign(socket, show_search: false)
+    send(self(), {:load_player_data, params})
 
+    {:noreply,
+     push_patch(socket,
+       to: ~p"/player/#{params["id"]}/rating",
+       replace: true
+     )}
+  end
+
+  @impl true
+  def handle_event(event, _params, socket) do
+    case event do
       "reset" ->
         {:noreply, socket |> assign(show_search: true, profile_id: nil)}
+
+      "copy_success" ->
+        {:noreply, put_flash(socket, :info, "Copied player link to clipboard!")}
 
       _ ->
         {:noreply, socket}
@@ -41,22 +71,22 @@ defmodule WololoWeb.PlayerLive do
   end
 
   @impl true
-  def handle_info(
-        {:load_player_data,
-         %{"id" => profile_id, "name" => name, "avatar" => avatar, "url" => url} = player},
-        socket
-      ) do
-    # Assign player data with optional rank and win rate
+  def handle_info({:load_player_data, %{"id" => profile_id}}, socket) do
+    {:ok, stats} = PlayerStatsAPI.fetch_player_data(profile_id)
+
     {:noreply,
-     assign(socket,
+     socket
+     |> assign(
        active: :rating,
        profile_id: profile_id,
-       name: name,
-       avatar: avatar,
-       url: url,
-       rank: Map.get(player, "rank", nil),
-       wr: Map.get(player, "wr", nil),
-       error: nil
+       name: stats["name"],
+       avatar: get_in(stats, ["avatars", "medium"]),
+       url: stats["site_url"],
+       rank: get_in(stats, ["modes", "rm_solo", "rank"]),
+       wr: get_in(stats, ["modes", "rm_solo", "win_rate"]),
+       error: nil,
+       show_search: false,
+       current_url: url(socket, ~p"/player/#{profile_id}/rating")
      )}
   end
 
@@ -110,6 +140,11 @@ defmodule WololoWeb.PlayerLive do
         :insights ->
           ~H"""
           <.live_component module={InsightsLive} id="insights" profile_id={@profile_id} player_name={@name} />
+          """
+
+        _ ->
+          ~H"""
+          <div>Unknown section</div>
           """
       end
     end

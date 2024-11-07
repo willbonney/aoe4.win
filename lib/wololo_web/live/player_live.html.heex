@@ -22,9 +22,14 @@
               <h6 class="font-bold"><%= @name %></h6>
               <%= if @url do %>
                 <a href={@url}>
-                  <.icon name="hero-arrow-top-right-on-square" class="cursor-pointer h-4 w-4 ml-2" />
+                  <.icon name="hero-arrow-top-right-on-square" class="cursor-pointer h-4 w-4 ml-2" /> 
                 </a>
               <% end %>
+              <button phx-click={JS.dispatch("phx:copy", to: "#control-codes") |> JS.push("copy_success")}>  
+                <.icon name="hero-link" class="cursor-pointer h-4 w-4 ml-2" /> 
+                <input id="control-codes" value={@current_url} type="hidden"/>
+              </button>
+
             </div>
             <%= if @rank do %>
               <h6>#<%= @rank %></h6>
@@ -42,41 +47,43 @@
       </div>
     </div>
     <div class="flex justify-center">
-      <.link
-        patch={~p"/player/rating"}
-        class={[common_link_classes, @active == :rating && active_link_classes]}
-      >
-        <div class="rounded-md">
-          Rating
-        </div>
-      </.link>
-      
-      <.link
-        patch={~p"/player/game_length"}
-        class={[common_link_classes, @active == :game_length && active_link_classes]}
-      >
-        <div class="rounded-md">
-          Game Length
-        </div>
-      </.link>
+      <%= if @profile_id do %>
+        <.link
+          patch={~p"/player/#{@profile_id}/rating"}
+          class={[common_link_classes, @active == :rating && active_link_classes]}
+        >
+          <div class="rounded-md">
+            Rating
+          </div>
+        </.link>
+        
+        <.link
+          patch={~p"/player/#{@profile_id}/game_length"}
+          class={[common_link_classes, @active == :game_length && active_link_classes]}
+        >
+          <div class="rounded-md">
+            Game Length
+          </div>
+        </.link>
 
-      <.link
-        patch={~p"/player/opponents"}
-        class={[common_link_classes, @active == :opponents && active_link_classes]}
-      >
-        <div class="rounded-md">
-          Opponents
-        </div>
-      </.link>
+        <.link
+          patch={~p"/player/#{@profile_id}/opponents"}
+          class={[common_link_classes, @active == :opponents && active_link_classes]}
+        >
+          <div class="rounded-md">
+            Opponents
+          </div>
+        </.link>
 
-      <.link
-        patch={~p"/player/insights"}
-        class={[common_link_classes, @active == :insights && active_link_classes]}
-      >
-        <div class="rounded-md">
-          Insights
-        </div>
-      </.link>
+        <.link
+          patch={~p"/player/#{@profile_id}/insights"}
+          class={[common_link_classes, @active == :insights && active_link_classes]}
+        >
+          <div class="rounded-md">
+            Insights
+          </div>
+        </.link>
+      <% end %>
     </div>
   </div>
   <%= render_section(assigns) %>
