@@ -23,6 +23,11 @@ defmodule Wololo.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Wololo.Supervisor]
+
+    :logger.add_handler(:my_sentry_handler, Sentry.LoggerHandler, %{
+      config: %{metadata: [:file, :line]}
+    })
+
     Supervisor.start_link(children, opts)
   end
 
