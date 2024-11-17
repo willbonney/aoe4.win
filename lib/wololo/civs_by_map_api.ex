@@ -24,17 +24,39 @@ defmodule Wololo.CivsByMapAPI do
 
   def fetch_civs_by_map(league \\ nil) do
     Logger.info("Fetching civs_by_map data for #{league}")
+    cache_key = "civs_by_map_#{league || "all"}"
+
+    case Cachex.get(:openai_cache, cache_key) do
+      {:ok, nil} ->
+        # Cache miss, make the API call
+        result = make_api_request(build_url(league))
+
+        if match?({:ok, _}, result),
+          do: Cachex.put(:openai_cache, cache_key, result, ttl: :timer.hours(24))
+
+        result
+
+      {:ok, cached_result} ->
+        cached_result
+
+      {:error, _} ->
+        # Error reading from cache, fall back to API call
+        make_api_request(build_url(league))
+    end
+  end
+
+  defp build_url(league) do
     endpoint = "#{@base_url}/stats/rm_solo/maps?include_civs=true"
 
-    url =
-      if league do
-        "#{endpoint}&rank_level=#{URI.encode_www_form(league)}"
-      else
-        endpoint
-      end
+    if league do
+      "#{endpoint}&rank_level=#{URI.encode_www_form(league)}"
+    else
+      endpoint
+    end
+  end
 
+  defp make_api_request(url) do
     IO.inspect(url, label: "url")
-
     request = Finch.build(:get, url)
 
     case Finch.request(request, Wololo.Finch) do
