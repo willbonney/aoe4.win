@@ -26,13 +26,13 @@ defmodule Wololo.CivsByMapAPI do
     Logger.info("Fetching civs_by_map data for #{league}")
     cache_key = "civs_by_map_#{league || "all"}"
 
-    case Cachex.get(:openai_cache, cache_key) do
+    case Cachex.get(:wololo_cache, cache_key) do
       {:ok, nil} ->
         # Cache miss, make the API call
         result = make_api_request(build_url(league))
 
         if match?({:ok, _}, result),
-          do: Cachex.put(:openai_cache, cache_key, result, ttl: :timer.hours(24))
+          do: Cachex.put(:wololo_cache, cache_key, result, ttl: :timer.hours(24))
 
         result
 
@@ -64,12 +64,10 @@ defmodule Wololo.CivsByMapAPI do
         {:ok, Jason.decode!(body)}
 
       {:ok, %Finch.Response{status: status}} ->
-        Logger.error("API request failed with status: #{status}")
-        {:error, "Request failed with status code: #{status}"}
+        {:error, "civs_by_map make_api_request failed with status code: #{status}"}
 
       {:error, reason} ->
-        Logger.error("API request error: #{inspect(reason)}")
-        {:error, "Request failed: #{inspect(reason)}"}
+        {:error, "civs_by_map make_api_request failed: #{inspect(reason)}"}
     end
   end
 

@@ -20,11 +20,11 @@ defmodule WololoWeb.InsightsLive do
   def call(_, %{:player_name => player_name, :prompt => prompt}) do
     cache_key = "openai_#{:crypto.hash(:md5, prompt) |> Base.encode16()}"
 
-    case Cachex.get(:openai_cache, cache_key) do
+    case Cachex.get(:wololo_cache, cache_key) do
       {:ok, nil} ->
         # Cache miss, make the API call
         result = make_openai_request(player_name, prompt)
-        Cachex.put(:openai_cache, cache_key, result, ttl: :timer.hours(24))
+        Cachex.put(:wololo_cache, cache_key, result, ttl: :timer.hours(24))
         result
 
       {:ok, cached_result} ->
@@ -103,8 +103,19 @@ defmodule WololoWeb.InsightsLive do
   defp fetch_insights(profile_id, player_name) do
     case PlayerGamesAPI.get_players_games_statistics(profile_id, false) do
       {:ok, data} ->
-        openai_completion = call(nil, %{player_name: player_name, prompt: data})
-        {:ok, %{insights: openai_completion["content"]}}
+        case call(nil, %{player_name: player_name, prompt: data}) do
+          response when is_map(response) ->
+            case Map.get(response, "content") do
+              content when is_binary(content) ->
+                {:ok, %{insights: content}}
+
+              _ ->
+                {:error, "Invalid response format from OpenAI"}
+            end
+
+          error ->
+            {:error, "Unexpected response: #{inspect(error)}"}
+        end
 
       {:error, reason} ->
         {:error, reason}

@@ -45,11 +45,12 @@ defmodule WololoWeb.RatingLive do
   end
 
   def fetch_stats(profile_id) do
-    with {:ok, opponents_data} <- PlayerGamesAPI.get_players_games_statistics(profile_id),
-         {:ok, player_stats} <- PlayerStatsAPI.fetch_player_data(profile_id, true) do
-      # Return just the map without wrapping it in a tuple
+    with {:games, {:ok, opponents_data}} <-
+           {:games, PlayerGamesAPI.get_players_games_statistics(profile_id)},
+         {:stats, {:ok, player_stats}} <-
+           {:stats, PlayerStatsAPI.fetch_player_data(profile_id, true)} do
       %{
-        moving_averages: opponents_data[:ratings],
+        moving_averages: opponents_data[:ratings] || [],
         max_rating: player_stats[:max_rating],
         max_rating_7d: player_stats[:max_rating_7d],
         max_rating_1m: player_stats[:max_rating_1m],
@@ -57,7 +58,11 @@ defmodule WololoWeb.RatingLive do
         total_count: player_stats[:total_count]
       }
     else
-      {:error, reason} -> {:error, reason}
+      {:games, {:error, reason}} ->
+        {:error, "Failed to fetch game statistics: #{reason}"}
+
+      {:stats, {:error, reason}} ->
+        {:error, "Failed to fetch player stats: #{reason}"}
     end
   end
 end

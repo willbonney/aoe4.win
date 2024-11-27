@@ -88,10 +88,10 @@ defmodule Wololo.PlayerGamesAPI do
         {:ok, Jason.decode!(body)}
 
       {:ok, %Finch.Response{status: status_code}} ->
-        {:error, "Request failed with status code: #{status_code}"}
+        {:error, "player_games_api fetch_page failed with status code: #{status_code}"}
 
       {:error, %Finch.Error{reason: reason}} ->
-        {:error, "Request failed: #{reason}"}
+        {:error, "player_games_api fetch_page failed: #{reason}"}
     end
   end
 

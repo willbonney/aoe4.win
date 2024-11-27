@@ -14,10 +14,10 @@ defmodule Wololo.SearchPlayerAPI do
         {:ok, Jason.decode!(body)}
 
       {:ok, %Finch.Response{status: status_code}} ->
-        {:error, "Request failed with status code: #{status_code}"}
+        {:error, "search_player_api fetch_player failed with status code: #{status_code}"}
 
       {:error, %Finch.Error{reason: reason}} ->
-        {:error, "Request failed: #{reason}"}
+        {:error, "search_player_api fetch_player failed: #{reason}"}
     end
   end
 end

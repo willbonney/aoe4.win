@@ -10,17 +10,29 @@ defmodule Wololo.PlayerStatsAPI do
 
     case Finch.request(request, Wololo.Finch) do
       {:ok, %Finch.Response{status: 200, body: body}} ->
-        # Logger.info("Received countries body: #{inspect(Jason.decode!(body))}")
         {:ok, if(with_stats, do: process_player_stats(body), else: Jason.decode!(body))}
 
       {:ok, %Finch.Response{status: status_code}} ->
-        {:error, "Request failed with status code: #{status_code}"}
+        {:error, "fetch_player_data failed with status code: #{status_code}"}
 
       {:error, %Finch.Error{reason: reason}} ->
-        {:error, "Request failed: #{reason}"}
+        {:error, "fetch_player_data failed: #{reason}"}
     end
   end
 
+  @spec process_player_stats(
+          binary()
+          | maybe_improper_list(
+              binary() | maybe_improper_list(any(), binary() | []) | byte(),
+              binary() | []
+            )
+        ) :: %{
+          average_rating: <<_::24>> | integer(),
+          max_rating: any(),
+          max_rating_1m: any(),
+          max_rating_7d: any(),
+          total_count: non_neg_integer()
+        }
   def process_player_stats(body) do
     stats =
       body
