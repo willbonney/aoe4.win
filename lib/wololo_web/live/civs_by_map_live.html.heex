@@ -25,8 +25,7 @@
           :for={civ <- @civs}
           label={civ_header(%{image: civ.image, label: civ.label})}
         >
-          <%!-- <div class="bg-green-200 p-2 rounded"> --%>
-          <div class={"#{color_class(Map.get(map, civ.key), :bg)} p-2 rounded"}>
+          <div class={"#{color_class(Map.get(map, civ.key), :bg)} p-2 w-full h-full hover:scale-[1.15] hover:brightness-95 transition-all duration-200 ease-in-out rounded-sm"}>
             <%= Map.get(map, civ.key) %>
           </div>
         </:col>
