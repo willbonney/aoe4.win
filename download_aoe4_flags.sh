@@ -29,5 +29,7 @@ download_flag "holy_roman_empire" "https://static.aoe4world.com/assets/flags/hol
 download_flag "rus" "https://static.aoe4world.com/assets/flags/rus-cb31fb6f8663187f63136cb2523422a07161c792de27852bdc37f0aa1b74911b.png"
 download_flag "malians" "https://static.aoe4world.com/assets/flags/malians-edb6f54659da3f9d0c5c51692fd4b0b1619850be429d67dbe9c3a9d53ab17ddd.png"
 download_flag "chinese" "https://static.aoe4world.com/assets/flags/chinese-2d4edb3d7fc7ab5e1e2df43bd644aba4d63992be5a2110ba3163a4907d0f3d4e.png"
+download_flag "knights_templar" "https://static.aoe4world.com/assets/flags/knights_templar-0dc0979a16240ed364b6859ec9aef4cd53f059144ee45b6fd3ea7bfaea209b16.png"
+download_flag "house_of_lancaster" "https://static.aoe4world.com/assets/flags/house_of_lancaster-4b590484b88bb49e122c8e7933913f35774fd4d2c5e1505fdc93b628da8b6174.png"
 
 echo "All flags have been downloaded to the 'aoe4_flags' directory."

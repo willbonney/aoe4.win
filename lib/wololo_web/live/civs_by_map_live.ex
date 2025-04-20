@@ -36,7 +36,9 @@ defmodule WololoWeb.CivsByMapLive do
     %{key: :ayyubids, label: "Ayyubids", image: "ayyubids"},
     %{key: :jeanne_darc, label: "JDA", image: "jeanne_darc"},
     %{key: :order_of_the_dragon, label: "OOTD", image: "order_of_the_dragon"},
-    %{key: :zhu_xis_legacy, label: "ZXL", image: "zhu_xis_legacy"}
+    %{key: :zhu_xis_legacy, label: "ZXL", image: "zhu_xis_legacy"},
+    %{key: :knights_templar, label: "KTP", image: "knights_templar"},
+    %{key: :house_of_lancaster, label: "HOL", image: "house_of_lancaster"}
   ]
 
   @impl Phoenix.LiveView

@@ -19,7 +19,9 @@ defmodule Wololo.CivsByMapAPI do
     "ayyubids",
     "jeanne_darc",
     "order_of_the_dragon",
-    "zhu_xis_legacy"
+    "zhu_xis_legacy",
+    "knights_templar",
+    "house_of_lancaster"
   ]
 
   def fetch_civs_by_map(league \\ nil) do
