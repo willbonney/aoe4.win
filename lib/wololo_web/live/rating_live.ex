@@ -26,12 +26,23 @@ defmodule WololoWeb.RatingLive do
   end
 
   def handle_async(:get_stats, {:ok, result}, socket) do
-    socket =
-      socket
-      |> assign(:stats, AsyncResult.ok(%AsyncResult{}, result))
-      |> push_event("update-player", %{movingAverages: result.moving_averages})
+    case result do
+      {:error, reason} ->
+        socket =
+          socket
+          |> assign(:stats, AsyncResult.failed(%AsyncResult{}, reason))
+          |> assign(:error, reason)
 
-    {:noreply, socket}
+        {:noreply, socket}
+
+      stats ->
+        socket =
+          socket
+          |> assign(:stats, AsyncResult.ok(%AsyncResult{}, stats))
+          |> push_event("update-player", %{movingAverages: stats.moving_averages})
+
+        {:noreply, socket}
+    end
   end
 
   @impl true

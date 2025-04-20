@@ -62,18 +62,30 @@ defmodule Wololo.PlayerGamesAPI do
   def get_players_games_statistics(profile_id, should_process \\ true) do
     base_endpoint = "#{@base_url}/players/#{profile_id}/games?leaderboard=rm_solo"
 
-    with {:ok, page1_data} <- fetch_page(base_endpoint, 1),
-         {:ok, page2_data} <- fetch_page(base_endpoint, 2) do
-      merged_data = merge_page_data(page1_data, page2_data)
-
+    with {:ok, page1_data} <- fetch_page(base_endpoint, 1) do
+      # Only fetch page 2 if there are more than 50 games (games per page)
       data =
-        if should_process do
-          process_games(Jason.encode!(merged_data), profile_id)
+        if page1_data["total"] > 50 do
+          case fetch_page(base_endpoint, 2) do
+            {:ok, page2_data} ->
+              merge_page_data(page1_data, page2_data)
+
+            {:error, _} ->
+              # If page 2 fails, just use page 1 data
+              page1_data
+          end
         else
-          Jason.encode!(merged_data)
+          page1_data
         end
 
-      {:ok, data}
+      processed_data =
+        if should_process do
+          process_games(Jason.encode!(data), profile_id)
+        else
+          Jason.encode!(data)
+        end
+
+      {:ok, processed_data}
     else
       {:error, reason} -> {:error, reason}
     end
