@@ -212,7 +212,7 @@ hooks.MovingAverages = {
 		this.handleEvent("update-player", null);
 	},
 };
-hooks.RankOverTime = {
+hooks.RankHistory = {
 	mounted() {
 		const ctx = this.el;
 		const data = {
@@ -241,12 +241,12 @@ hooks.RankOverTime = {
 		console.log("data", data);
 		const chart = new Chart(ctx, data);
 		this.handleEvent("update-player", (event) => {
-			const sorted = sortByDate(event.movingAverages);
+			// const sorted = sortByDate(event.rankt);
 
 			chart.data.datasets.push(
 				{
-					data: sortByDate(sorted).map(
-						({ rank }) => rank,
+					data: event.rankHistory.map(
+						({ rank, season }) => rank,
 					),
 					label: "Rank",
 				}
@@ -257,6 +257,7 @@ hooks.RankOverTime = {
 			// 		day: "numeric",
 			// 	}),
 			// );
+			chart.data.labels = event.rankHistory.map((m) => m.season);
 			chart.update();
 		});
 	},

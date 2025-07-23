@@ -30,6 +30,8 @@ defmodule Wololo.PlayerStatsAPI do
     total_count = Enum.count(rating_history)
     total_seasons = Enum.count(stats["previous_seasons"]) + 1
 
+    Logger.info("stats: #{inspect(stats)}")
+
     rank_history =
       Enum.map(stats["previous_seasons"], fn season ->
         %{
@@ -50,9 +52,13 @@ defmodule Wololo.PlayerStatsAPI do
       total_count: total_count,
       rank_history: rank_history,
       total_seasons: total_seasons,
-      average_rank: calculate_average_rank(rank_history, total_seasons),
-      min_rank: Enum.min_by(rank_history, fn %{rank: rank} -> rank end).rank,
-      max_rank: Enum.max_by(rank_history, fn %{rank: rank} -> rank end).rank
+      average_rank:
+        if(total_seasons > 0,
+          do: calculate_average_rank(rank_history, total_seasons),
+          else: "N/A"
+        ),
+      min_rank: Enum.max_by(rank_history, fn %{rank: rank} -> rank end).rank,
+      max_rank: Enum.min_by(rank_history, fn %{rank: rank} -> rank end).rank
     }
   end
 
@@ -65,7 +71,7 @@ defmodule Wololo.PlayerStatsAPI do
 
   def calculate_average_rank(rank_history, total_count) do
     round(
-      Enum.reduce(rank_history, 0, fn {_, %{"rank" => rank}}, acc -> acc + rank end) /
+      Enum.reduce(rank_history, 0, fn %{rank: rank}, acc -> acc + rank end) /
         total_count
     )
   end

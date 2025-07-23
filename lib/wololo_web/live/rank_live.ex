@@ -1,9 +1,7 @@
 defmodule WololoWeb.RankLive do
-  alias Wololo.PlayerGamesAPI
   use WololoWeb, :live_component
   import WololoWeb.Components.Spinner
   alias Wololo.PlayerStatsAPI
-  import Wololo.Utils, only: [rating_to_color_map: 1]
   alias Phoenix.LiveView.AsyncResult
 
   @impl true
@@ -39,7 +37,7 @@ defmodule WololoWeb.RankLive do
         socket =
           socket
           |> assign(:stats, AsyncResult.ok(%AsyncResult{}, stats))
-          |> push_event("update-player", %{movingAverages: stats.moving_averages})
+          |> push_event("update-player", %{rankHistory: stats.rank_history})
 
         {:noreply, socket}
     end

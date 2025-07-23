@@ -4,6 +4,7 @@ defmodule WololoWeb.PlayerLive do
   alias WololoWeb.OpponentsByCountryLive
   alias WololoWeb.InsightsLive
   alias WololoWeb.RatingLive
+  alias WololoWeb.RankLive
   alias Wololo.PlayerStatsAPI
 
   alias WololoWeb.GameLengthLive
