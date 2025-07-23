@@ -1,0 +1,53 @@
+<div id="rating">
+  <% common_stat_classes = "font-time-traveler-pal font-black text-3xl mx-auto text-center" %>
+  <.async_result :let={stats} assign={@stats}>
+    <:loading>
+      <div class="flex justify-center items-center">
+        <.spinner size="lg" class="text-brand-500" />
+      </div>
+    </:loading>
+    <:failed :let={_reason}>Failed to load stats</:failed>
+
+    <h1 class="font-time-traveler-pal font-gray text-4xl my-8 mx-auto text-center">
+      Rank Over Time
+    </h1>
+    <h1 class={[common_stat_classes]}>
+      Max:
+      <span>
+        <%!-- <span class={["text-[#{rating_to_color_map(stats[:max_rating])}]"]}> --%>
+        <%= stats[:max_rating] %>
+      </span>
+    </h1>
+    <h1 class={[common_stat_classes]}>
+      Min:
+      <span>
+        <%!-- <span class={["text-[#{rating_to_color_map(stats[:max_rating_7d])}]"]}> --%>
+        <%= stats[:max_rating_7d] %>
+      </span>
+    </h1>
+    <h1 class={[common_stat_classes]}>
+      Mean: <%!-- <span class={["text-[#{rating_to_color_map(stats[:max_rating_1m])}]"]}> --%>
+      <span>
+        <%= stats[:max_rating_1m] %>
+      </span>
+    </h1>
+    <%!-- line break --%>
+    <h1 class={[common_stat_classes]}>
+      Last <%= stats[:total_count] %> games:
+      <%!-- <span class={["text-[#{rating_to_color_map(stats[:average_rating])}]"]}> --%>
+      <span>
+        <%= stats[:average_rating] %>
+      </span>
+    </h1>
+    <div class="border-b border-gray-200 mt-8"></div>
+    <h1 class="font-time-traveler-pal font-gray text-4xl my-8 mx-auto text-center">
+      Moving Averages
+    </h1>
+    <canvas
+      id="rank-history"
+      phx-hook="RankHistory"
+      data-points={Jason.encode!(stats[:rank_history])}
+    >
+    </canvas>
+  </.async_result>
+</div>

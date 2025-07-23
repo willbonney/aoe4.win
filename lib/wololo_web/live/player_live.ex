@@ -98,6 +98,7 @@ defmodule WololoWeb.PlayerLive do
         "rating" -> :rating
         "insights" -> :insights
         "game_length" -> :game_length
+        "rank" -> :rank
         _ -> :rating
       end
 
@@ -116,6 +117,11 @@ defmodule WololoWeb.PlayerLive do
         :rating ->
           ~H"""
           <.live_component module={RatingLive} id="rating" profile_id={@profile_id} />
+          """
+
+        :rank ->
+          ~H"""
+          <.live_component module={RankLive} id="rank" profile_id={@profile_id} />
           """
 
         :game_length ->

@@ -1,9 +1,5 @@
-<%
-  common_link_classes = "p-4 mx-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-  active_link_classes = "bg-gray-100 shadow-md"
-%>
-
-
+<% common_link_classes = "p-4 mx-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+active_link_classes = "bg-gray-100 shadow-md" %>
 
 <div class="mx-auto max-w-4xl">
   <.live_component
@@ -22,14 +18,18 @@
               <h6 class="font-bold"><%= @name %></h6>
               <%= if @url do %>
                 <a href={@url}>
-                  <.icon name="hero-arrow-top-right-on-square" class="cursor-pointer h-4 w-4 ml-2" /> 
+                  <.icon
+                    name="hero-arrow-top-right-on-square"
+                    class="cursor-pointer h-4 w-4 ml-2"
+                  />
                 </a>
               <% end %>
-              <button phx-click={JS.dispatch("phx:copy", to: "#control-codes") |> JS.push("copy_success")}>  
-                <.icon name="hero-link" class="cursor-pointer h-4 w-4 ml-2" /> 
-                <input id="control-codes" value={@current_url} type="hidden"/>
+              <button phx-click={
+                JS.dispatch("phx:copy", to: "#control-codes") |> JS.push("copy_success")
+              }>
+                <.icon name="hero-link" class="cursor-pointer h-4 w-4 ml-2" />
+                <input id="control-codes" value={@current_url} type="hidden" />
               </button>
-
             </div>
             <%= if @rank do %>
               <h6>#<%= @rank %></h6>
@@ -56,7 +56,16 @@
             Rating
           </div>
         </.link>
-        
+
+        <.link
+          patch={~p"/player/#{@profile_id}/rank"}
+          class={[common_link_classes, @active == :rank && active_link_classes]}
+        >
+          <div class="rounded-md">
+            Rank
+          </div>
+        </.link>
+
         <.link
           patch={~p"/player/#{@profile_id}/game_length"}
           class={[common_link_classes, @active == :game_length && active_link_classes]}
@@ -88,4 +97,3 @@
   </div>
   <%= render_section(assigns) %>
 </div>
-

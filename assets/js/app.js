@@ -146,6 +146,7 @@ hooks.OpponentsByCountry = {
 		this.handleEvent("update-opponents-by-country", null);
 	},
 };
+
 hooks.MovingAverages = {
 	mounted() {
 		const ctx = this.el;
@@ -211,6 +212,59 @@ hooks.MovingAverages = {
 		this.handleEvent("update-player", null);
 	},
 };
+hooks.RankOverTime = {
+	mounted() {
+		const ctx = this.el;
+		const data = {
+			type: "line",
+			data: {},
+			options: {
+				responsive: true,
+				plugins: {
+					// tooltip: {
+					//   callbacks: {
+					//     label: function (context) {
+					//       return `${context.formattedValue}%`;
+					//     },
+					//   },
+					// },
+					legend: {
+						position: "top",
+					},
+					title: {
+						display: false,
+						text: "Moving Average",
+					},
+				},
+			},
+		};
+		console.log("data", data);
+		const chart = new Chart(ctx, data);
+		this.handleEvent("update-player", (event) => {
+			const sorted = sortByDate(event.movingAverages);
+
+			chart.data.datasets.push(
+				{
+					data: sortByDate(sorted).map(
+						({ rank }) => rank,
+					),
+					label: "Rank",
+				}
+			);
+			// chart.data.labels = sorted.map((m) =>
+			// 	new Date(m.updated_at).toLocaleDateString("en-US", {
+			// 		month: "short",
+			// 		day: "numeric",
+			// 	}),
+			// );
+			chart.update();
+		});
+	},
+	beforeUnmount() {
+		this.handleEvent("update-player", null);
+	},
+};
+
 hooks.WrsByGameLength = {
 	mounted() {
 		const ctx = this.el;
