@@ -44,3 +44,5 @@ npm-debug.log
 *.tar
 *.zip
 .cursorrules
+
+node_modules/

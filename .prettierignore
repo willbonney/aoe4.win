@@ -1,0 +1,19 @@
+# Build directories
+_build/
+deps/
+priv/static/assets/
+
+# Node modules
+node_modules/
+
+# Generated files
+*.min.js
+*.min.css
+
+# Package files
+package-lock.json
+mix.lock
+
+# Other
+.git/
+.DS_Store 
