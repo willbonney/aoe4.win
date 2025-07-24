@@ -30,8 +30,6 @@ defmodule Wololo.PlayerStatsAPI do
     total_count = Enum.count(rating_history)
     total_seasons = Enum.count(stats["previous_seasons"]) + 1
 
-    Logger.info("stats: #{inspect(stats)}")
-
     rank_history =
       Enum.map(stats["previous_seasons"], fn season ->
         %{
