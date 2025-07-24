@@ -104,6 +104,7 @@ defmodule Wololo.CivsByMapAPI do
           end
         end)
 
+
       _ ->
         Logger.error("Invalid raw_data structure: #{inspect(raw_data)}")
         []
