@@ -29,7 +29,7 @@ import topbar from "../vendor/topbar";
 // from https://medium.com/@lionel.aimerie/integrating-chart-js-into-elixir-phoenix-for-visual-impact-9a3991f0690f
 
 import Chart from "chart.js/auto";
-import  {easingEffects}  from "chart.js/helpers";
+import { easingEffects } from "chart.js/helpers";
 
 const MUI_COLORS = [
   "rgba(255, 193, 7, 1)", // #FFC107
@@ -278,7 +278,6 @@ hooks.RankHistory = {
     // 		}
     // 	}
     // };
-    console.log("data", data);
 
     const previousY = (ctx) =>
       ctx.index === 0
@@ -286,10 +285,10 @@ hooks.RankHistory = {
         : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(["y"], true).y;
 
     const getAnimation = (firstSeason, dataLength) => {
-      const {easeOutQuad} = easingEffects;
+      const easing = easingEffects.easeOutQuad;
       const totalDuration = 2000;
-      const duration = (ctx) => (easeOutQuad(ctx.index / dataLength) * totalDuration) / dataLength;
-      const delay = (ctx) => easeOutQuad(ctx.index / dataLength) * totalDuration;
+      const duration = (ctx) => (easing(ctx.index / dataLength) * totalDuration) / dataLength;
+      const delay = (ctx) => easing(ctx.index / dataLength) * totalDuration;
 
       return {
         x: {
