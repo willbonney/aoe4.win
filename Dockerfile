@@ -52,6 +52,9 @@ COPY lib lib
 COPY assets assets
 
 WORKDIR /app/assets
+# Install node, npm and yarn
+RUN curl -sL https://deb.nodesource.com/setup_22.x | bash
+RUN apt-get install -y nodejs
 RUN npm install
 
 # Switch back to main app directory for Elixir/Phoenix commands
