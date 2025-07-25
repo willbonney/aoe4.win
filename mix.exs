@@ -75,7 +75,7 @@ defmodule Wololo.MixProject do
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind wololo", "esbuild wololo"],
       "assets.deploy": [
-        "cmd --cd assets npm ci",
+        "cmd --cd assets npm ci --only=prod",
         "tailwind wololo --minify",
         "esbuild wololo --minify",
         "phx.digest"

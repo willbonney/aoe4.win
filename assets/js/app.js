@@ -22,13 +22,8 @@ import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import * as topbar from "../vendor/topbar.cjs";
 
-// *****
-// *****
-// *****
-
 // from https://medium.com/@lionel.aimerie/integrating-chart-js-into-elixir-phoenix-for-visual-impact-9a3991f0690f
-
-import {Chart} from "chart.js";
+import {Chart} from "chart.js/auto";
 
 const MUI_COLORS = [
   "rgba(255, 193, 7, 1)", // #FFC107
