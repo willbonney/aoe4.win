@@ -51,7 +51,14 @@ COPY lib lib
 
 COPY assets assets
 
-# compile assets
+WORKDIR /app/assets
+RUN npm install
+
+# Switch back to main app directory for Elixir/Phoenix commands
+WORKDIR /app
+
+# Now you can run Elixir/Phoenix build steps
+RUN mix deps.get
 RUN mix assets.deploy
 
 # Compile the release
