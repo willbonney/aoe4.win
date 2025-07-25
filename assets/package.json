@@ -3,6 +3,7 @@
   "description": "Gigalixir npm deployment configuration",
   "authors": "author",
   "version": "1.0.0",
+  "type": "module",
   "main": "pathToMain",
   "dependencies": {
     "chart.js": "^4.5.0"
