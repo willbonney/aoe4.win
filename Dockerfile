@@ -51,6 +51,10 @@ COPY lib lib
 
 COPY assets assets
 
+# install build dependencies
+RUN apt-get update -y && apt-get install -y build-essential git nodejs npm \
+    && apt-get clean && rm -f /var/lib/apt/lists/*_*
+
 # WORKDIR /app/assets
 # # Install node, npm and yarn
 # RUN curl -sL https://deb.nodesource.com/setup_22.x | bash

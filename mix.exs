@@ -60,7 +60,6 @@ defmodule Wololo.MixProject do
       {:httpoison, "~> 2.2"},
       {:dotenv_parser, "~> 2.0"},
       {:cachex, "~> 3.6"},
-      {:chartjs, github: "chartjs/Chart.js", app: false, compile: false}
     ]
   end
 
@@ -76,6 +75,7 @@ defmodule Wololo.MixProject do
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind wololo", "esbuild wololo"],
       "assets.deploy": [
+        "cmd --cd assets npm ci",
         "tailwind wololo --minify",
         "esbuild wololo --minify",
         "phx.digest"
