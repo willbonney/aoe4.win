@@ -59,7 +59,8 @@ defmodule Wololo.MixProject do
       {:bandit, "~> 1.5"},
       {:httpoison, "~> 2.2"},
       {:dotenv_parser, "~> 2.0"},
-      {:cachex, "~> 3.6"}
+      {:cachex, "~> 3.6"},
+      {:chartjs, github: "chartjs/Chart.js", app: false, compile: false}
     ]
   end
 
