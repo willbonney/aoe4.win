@@ -29,7 +29,7 @@ import topbar from "../vendor/topbar";
 // from https://medium.com/@lionel.aimerie/integrating-chart-js-into-elixir-phoenix-for-visual-impact-9a3991f0690f
 
 import Chart from "chart.js/auto";
-import { easingEffects } from "chart.js/helpers";
+// import { easingEffects } from "chart.js/helpers";
 
 const MUI_COLORS = [
   "rgba(255, 193, 7, 1)", // #FFC107
@@ -202,13 +202,58 @@ hooks.MovingAverages = {
   },
 };
 
+
+// const duration = (ctx) => 
+// const delay = 
 hooks.RankHistory = {
   mounted() {
     const ctx = this.el;
+
+    const totalDuration = 2500;
+    const getDatasetLength = (ctx) => ctx.chart.data.datasets[ctx.datasetIndex].data.length;
     const data = {
       type: "line",
       data: {},
       options: {
+
+        animation: {
+          x: {
+            easing: "easeOutQuad",
+            type: "number",
+            duration(ctx) {
+              const datasetLength = getDatasetLength(ctx);
+              return ((ctx.index / datasetLength) * totalDuration)/datasetLength;
+            },
+            delay(ctx) {
+              const datasetLength = getDatasetLength(ctx);
+
+              if (ctx.type !== "data" || ctx.xStarted) {
+                return 0;
+              }
+              ctx.xStarted = true;
+              return (ctx.index / datasetLength) * totalDuration;
+
+            },
+          },
+          y: {
+              type: "number",
+              easing: "easeOutQuad",
+              duration(ctx) {
+                const datasetLength = getDatasetLength(ctx);
+                return ((ctx.index / datasetLength) * totalDuration)/datasetLength;
+              },
+              from: NaN,
+              delay(ctx) {
+                const datasetLength = getDatasetLength(ctx);
+
+                if (ctx.type !== "data" || ctx.yStarted) {
+                  return 0;
+                }
+                ctx.yStarted = true;
+              return (ctx.index / datasetLength) * totalDuration;
+            },
+          },
+        },
         responsive: true,
         layout: {
           padding: {
@@ -246,86 +291,11 @@ hooks.RankHistory = {
       },
     };
 
-    // // Animation configuration - moved after data declaration
-    // const totalDuration = 10000;
-    // const delayBetweenPoints = 300;
-    // const previousY = (ctx) => ctx.index === 0 ? ctx.chart.scales.y.getPixelForValue(50) : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
-    // const animation = {
-    // 	x: {
-    // 		type: 'number',
-    // 		easing: 'linear',
-    // 		duration: delayBetweenPoints,
-    // 		from: NaN, // the point is initially skipped
-    // 		delay(ctx) {
-    // 			if (ctx.type !== 'data' || ctx.xStarted) {
-    // 				return 0;
-    // 			}
-    // 			ctx.xStarted = true;
-    // 			return ctx.index * delayBetweenPoints;
-    // 		}
-    // 	},
-    // 	y: {
-    // 		type: 'number',
-    // 		easing: 'linear',
-    // 		duration: delayBetweenPoints,
-    // 		from: previousY,
-    // 		delay(ctx) {
-    // 			if (ctx.type !== 'data' || ctx.yStarted) {
-    // 				return 0;
-    // 			}
-    // 			ctx.yStarted = true;
-    // 			return ctx.index * delayBetweenPoints;
-    // 		}
-    // 	}
-    // };
-
-    const previousY = (ctx) =>
-      ctx.index === 0
-        ? ctx.chart.scales.y.getPixelForValue(50)
-        : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(["y"], true).y;
-
-    const getAnimation = (firstSeason, dataLength) => {
-      const easing = easingEffects.easeOutQuad;
-      const totalDuration = 2000;
-      const duration = (ctx) => (easing(ctx.index / dataLength) * totalDuration) / dataLength;
-      const delay = (ctx) => easing(ctx.index / dataLength) * totalDuration;
-
-      return {
-        x: {
-          type: "number",
-          easing: "linear",
-          duration: duration,
-          from: NaN, // the point is initially skipped
-          delay(ctx) {
-            if (ctx.type !== "data" || ctx.xStarted) {
-              return 0;
-            }
-            ctx.xStarted = true;
-            return delay(ctx);
-          },
-        },
-        y: {
-          type: "number",
-          easing: "linear",
-          duration: duration,
-          from: previousY,
-          delay(ctx) {
-            if (ctx.type !== "data" || ctx.yStarted) {
-              return 0;
-            }
-            ctx.yStarted = true;
-            return delay(ctx);
-          },
-        },
-      };
-    };
-
     const chart = new Chart(ctx, data);
     this.handleEvent("update-player", (event) => {
-      const rankData = event.rankHistory.map(({ rank, season }) => rank).reverse();
+      const rankData = event.rankHistory.map(({ rank }) => rank).reverse();
       const maxRankValue = Math.max(...rankData);
 
-      data.options.animation = getAnimation(event.rankHistory[0].season, rankData.length);
       chart.data.datasets.push({
         data: rankData,
         label: "Rank",
@@ -337,7 +307,7 @@ hooks.RankHistory = {
         borderColor: MUI_COLORS[1],
         backgroundColor: MUI_COLORS[1],
       });
-      chart.data.labels = event.rankHistory.map((m) => `Season ${m.season}`);
+      chart.data.labels = event.rankHistory.map((m) => `Season ${m.season}`).reverse();
 
       chart.options.scales.y.max = 1.2 * maxRankValue;
       chart.update();

@@ -13,21 +13,19 @@
     </h1>
     <h1 class={[common_stat_classes]}>
       Max:
-      <span>
-        <%!-- <span class={["text-[#{rating_to_color_map(stats[:max_rating])}]"]}> --%>
+      <span style="color: #8BC34A;">
         #<%= stats[:max_rank] %>
       </span>
     </h1>
     <h1 class={[common_stat_classes]}>
       Min:
-      <span>
-        <%!-- <span class={["text-[#{rating_to_color_map(stats[:max_rating_7d])}]"]}> --%>
+      <span style="color: #E91E63;">
         #<%= stats[:min_rank] %>
       </span>
     </h1>
     <h1 class={[common_stat_classes]}>
-      Mean: <%!-- <span class={["text-[#{rating_to_color_map(stats[:max_rating_1m])}]"]}> --%>
-      <span>
+      Mean:
+      <span style="color: #673AB7;">
         #<%= stats[:average_rank] %>
       </span>
     </h1>

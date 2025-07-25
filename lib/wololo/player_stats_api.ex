@@ -37,7 +37,6 @@ defmodule Wololo.PlayerStatsAPI do
           season: season["season"]
         }
       end)
-
     %{
       max_rating: Map.get(stats, "max_rating", "N/A"),
       max_rating_7d: Map.get(stats, "max_rating_7d", "N/A"),
