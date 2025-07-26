@@ -37,6 +37,7 @@ defmodule Wololo.PlayerStatsAPI do
           season: season["season"]
         }
       end)
+      |> List.insert_at(0, %{rank: stats["rank"], season: stats["season"]})
     %{
       max_rating: Map.get(stats, "max_rating", "N/A"),
       max_rating_7d: Map.get(stats, "max_rating_7d", "N/A"),
