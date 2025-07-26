@@ -21,44 +21,48 @@ defmodule Wololo.PlayerStatsAPI do
   end
 
   def process_player_stats(body) do
-    stats =
-      body
-      |> Jason.decode!()
-      |> get_in(["modes", "rm_solo"])
 
-    rating_history = Map.get(stats, "rating_history", [])
-    total_count = Enum.count(rating_history)
-    total_seasons = Enum.count(stats["previous_seasons"] || []) + 1
+    with {:ok, data} <- Jason.decode(body),
 
-    rank_history =
-      Enum.map(stats["previous_seasons"] || [], fn season ->
-        %{
-          rank: season["rank"],
-          season: season["season"]
-        }
-      end)
-      |> List.insert_at(0, %{rank: stats["rank"], season: stats["season"]})
+         rating_history when is_map(rating_history) <- get_in(data, ["modes", "rm_solo", "rating_history"]),
+         previous_seasons when is_list(previous_seasons) <- get_in(data, ["modes", "rm_solo", "previous_seasons"]),
+         current_rank when is_integer(current_rank) <- get_in(data, ["modes", "rm_solo", "rank"]),
+         current_season when is_integer(current_season) <- get_in(data, ["modes", "rm_solo", "season"]) do
 
-    %{
-      max_rating: Map.get(stats, "max_rating", "N/A"),
-      max_rating_7d: Map.get(stats, "max_rating_7d", "N/A"),
-      max_rating_1m: Map.get(stats, "max_rating_1m", "N/A"),
-      average_rating:
-        if(total_count > 0,
-          do: calculate_average_rating(rating_history, total_count),
-          else: "N/A"
-        ),
-      total_count: total_count,
-      rank_history: rank_history,
-      total_seasons: total_seasons,
-      average_rank:
-        if(total_seasons > 0,
-          do: calculate_average_rank(rank_history, total_seasons),
-          else: "N/A"
-        ),
-      min_rank: Enum.max_by(rank_history, fn %{rank: rank} -> rank end).rank,
-      max_rank: Enum.min_by(rank_history, fn %{rank: rank} -> rank end).rank
-    }
+      total_count = Enum.count(rating_history)
+      total_seasons = Enum.count(previous_seasons) + 1
+      rank_history =
+        Enum.map(previous_seasons, fn season ->
+          %{
+            rank: season["rank"],
+            season: season["season"]
+          }
+        end)
+        |> List.insert_at(0, %{rank: current_rank, season: current_season})
+
+      %{
+        max_rating: get_in(data, ["modes", "rm_solo", "max_rating"]) || "N/A",
+        max_rating_7d: get_in(data, ["modes", "rm_solo", "max_rating_7d"]) || "N/A",
+        max_rating_1m: get_in(data, ["modes", "rm_solo", "max_rating_1m"]) || "N/A",
+        average_rating:
+          if(total_count > 0,
+            do: calculate_average_rating(rating_history, total_count),
+            else: "N/A"
+          ),
+        total_count: total_count,
+        rank_history: rank_history,
+        total_seasons: total_seasons,
+        average_rank:
+          if(total_seasons > 0,
+            do: calculate_average_rank(rank_history, total_seasons),
+            else: "N/A"
+          ),
+        min_rank: Enum.max_by(rank_history, fn %{rank: rank} -> rank end).rank,
+        max_rank: Enum.min_by(rank_history, fn %{rank: rank} -> rank end).rank
+      }
+    else
+      _ -> %{error: "Invalid data structure"}
+    end
   end
 
   def calculate_average_rating(rating_history, total_count) do
