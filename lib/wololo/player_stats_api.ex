@@ -28,16 +28,17 @@ defmodule Wololo.PlayerStatsAPI do
 
     rating_history = Map.get(stats, "rating_history", [])
     total_count = Enum.count(rating_history)
-    total_seasons = Enum.count(stats["previous_seasons"]) + 1
+    total_seasons = Enum.count(stats["previous_seasons"] || []) + 1
 
     rank_history =
-      Enum.map(stats["previous_seasons"], fn season ->
+      Enum.map(stats["previous_seasons"] || [], fn season ->
         %{
           rank: season["rank"],
           season: season["season"]
         }
       end)
       |> List.insert_at(0, %{rank: stats["rank"], season: stats["season"]})
+
     %{
       max_rating: Map.get(stats, "max_rating", "N/A"),
       max_rating_7d: Map.get(stats, "max_rating_7d", "N/A"),
