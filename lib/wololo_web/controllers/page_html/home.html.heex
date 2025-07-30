@@ -1,13 +1,14 @@
+<.nav_header show_home_link?={false} />
 <.flash_group flash={@flash} />
 <div class="mx-auto max-w-3xl p-10">
   <div class="mx-auto max-w-3xl lg:mx-0">
     <div class="flex justify-center items-center mb-12">
       <img src="/images/logo.png" width="64" alt="AOE4World Logo" class="mr-4" />
-      <h1 class="text-brand flex items-center text-xl font-semibold leading-6 dark:text-slate-100">
+      <h1 class="text-brand flex items-center text-xl font-semibold leading-6 dark:text-zinc-100">
         AOE4.WIN
       </h1>
     </div>
-    <p class="text-[1.5rem] mt-4 font-semibold leading-10 tracking-tighter text-zinc-900 text-balance text-center dark:text-slate-100">
+    <p class="text-[1.5rem] mt-4 font-semibold leading-10 tracking-tighter text-zinc-900 text-balance text-center dark:text-zinc-100">
       Derived Statistics from AOE4WORLD
     </p>
     <p class="mt-4 text-base leading-7 text-zinc-400 text-center dark:text-stone-400">
@@ -25,12 +26,12 @@
         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 justify-items-center">
           <a
             href={~p"/civs_by_map"}
-            class="group relative rounded-2xl px-6 py-4 text-sm font-semibold leading-6 text-zinc-900 sm:py-6 w-full max-w-xs"
+            class="group relative rounded-2xl px-6 py-4 text-sm font-semibold leading-6 text-zinc-900 sm:py-6 w-full max-w-xs "
           >
-            <span class="absolute inset-0 rounded-2xl bg-zinc-50 transition group-hover:bg-zinc-100 dark:group-hover:bg-stone-800 sm:group-hover:scale-105 dark:bg-stone-800">
+            <span class="absolute border-2 border-zinc-200 dark:border-stone-800 inset-0 rounded-2xl bg-zinc-50 transition group-hover:bg-zinc-100 dark:group-hover:bg-stone-800 sm:group-hover:scale-105 dark:bg-stone-800">
             </span>
-            <span class="relative flex items-center gap-4 sm:flex-col dark:text-slate-100">
-              <.icon name="hero-map" class="w-40 h-40 dark:text-slate-100 dark:fill-slate-100" />
+            <span class="relative flex items-center gap-4 sm:flex-col dark:text-zinc-100 ">
+              <.icon name="hero-map" class="w-40 h-40 dark:text-zinc-100 dark:fill-slate-100" />
               Civilization WRs by Map
             </span>
           </a>
@@ -38,10 +39,10 @@
             href={~p"/player"}
             class="group relative rounded-2xl px-6 py-4 text-sm font-semibold leading-6 text-zinc-900 sm:py-6 w-full max-w-xs"
           >
-            <span class="absolute inset-0 rounded-2xl bg-zinc-50 dark:bg-stone-800 transition group-hover:bg-zinc-100 dark:group-hover:bg-stone-800 sm:group-hover:scale-105">
+            <span class="absolute  border-2 border-zinc-200 dark:border-stone-800 inset-0 rounded-2xl bg-zinc-50 dark:bg-stone-800 transition group-hover:bg-zinc-100 dark:group-hover:bg-stone-800 sm:group-hover:scale-105">
             </span>
-            <span class="relative flex items-center gap-4 sm:flex-col dark:text-slate-100">
-              <.icon name="hero-chart-bar" class="w-40 h-40 dark:text-slate-100" />
+            <span class="relative flex items-center gap-4 sm:flex-col dark:text-zinc-100">
+              <.icon name="hero-chart-bar" class="w-40 h-40 dark:text-zinc-100" />
               Player Statistics
             </span>
           </a>
@@ -73,7 +74,7 @@
         <a
           alt="Discord"
           href="https://discord.gg/Gx9qY8Dx"
-          class="group -mx-2 -my-0.5 inline-flex items-center gap-3 rounded-lg px-2 py-0.5 hover:bg-zinc-50 hover:text-zinc-900 relative dark:hover:bg-stone-800 dark:hover:text-stone-800"
+          class="group -mx-2 -my-0.5 inline-flex items-center gap-3 rounded-lg px-2 py-0.5 hover:bg-zinc-50 hover:text-zinc-900 relative dark:hover:bg-stone-800 hover:text-zinc-900 dark:hover:text-stone-800 "
         >
           <svg
             width="30"

@@ -1,15 +1,4 @@
-<header class="px-4 sm:px-6 lg:px-8">
-  <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
-    <div class="flex items-center gap-4">
-      <a href="/">
-        <.icon name="hero-home" class="h-6 2-6 dark:text-slate-100" />
-      </a>
-    </div>
-    <div class="absolute inset-y-0 right-0 flex items-center pr-2 lg:static lg:inset-auto lg:ml-6 lg:pr-0">
-      <DarktoggleWeb.Components.ToggleTheme.render />
-    </div>
-  </div>
-</header>
+<.nav_header show_home_link?={true} />
 <main class="px-4 py-20 sm:px-6 lg:px-8">
   <div class="mx-8">
     <.flash_group flash={@flash} />

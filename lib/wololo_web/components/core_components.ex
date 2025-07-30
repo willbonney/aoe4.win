@@ -434,7 +434,7 @@ defmodule WololoWeb.CoreComponents do
     ~H"""
     <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
       <div>
-        <h1 class="text-lg font-semibold leading-8 text-zinc-800 dark:text-slate-100">
+        <h1 class="text-lg font-semibold leading-8 text-zinc-800 dark:text-zinc-100">
           <%= render_slot(@inner_block) %>
         </h1>
         <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
@@ -442,6 +442,30 @@ defmodule WololoWeb.CoreComponents do
         </p>
       </div>
       <div class="flex-none"><%= render_slot(@actions) %></div>
+    </header>
+    """
+  end
+
+  @doc """
+  Renders a navigation header with home link and dark mode toggle.
+  """
+  attr(:show_home_link?, :boolean, default: true)
+
+  def nav_header(assigns) do
+    ~H"""
+    <header class="px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-3 text-sm">
+        <div class="flex items-center gap-4">
+          <a href="/">
+            <%= if @show_home_link? do %>
+              <.icon name="hero-home" class="h-6 w-6 dark:text-zinc-100" />
+            <% end %>
+          </a>
+        </div>
+        <div class="absolute inset-y-0 right-0 flex items-center pr-2 lg:static lg:inset-auto lg:ml-6 lg:pr-0">
+          <DarktoggleWeb.Components.ToggleTheme.render />
+        </div>
+      </div>
     </header>
     """
   end

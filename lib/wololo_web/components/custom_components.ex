@@ -68,7 +68,7 @@ defmodule WololoWeb.CustomComponents do
       </li>
       <%= for player <- @players do %>
         <li
-          class="cursor-default select-none rounded-md px-4 py-2 text-xl text-stone-800 dark:text-slate-100 bg-zinc-100 dark:bg-stone-800 hover:bg-zinc-200 hover:dark:bg-stone-700 hover:cursor-pointer flex flex-row space-x-2 items-center"
+          class="cursor-default select-none rounded-md px-4 py-2 text-xl text-stone-800 dark:text-zinc-100 bg-zinc-100 dark:bg-stone-800 hover:bg-zinc-200 hover:dark:bg-stone-700 hover:cursor-pointer flex flex-row space-x-2 items-center"
           id={"option-#{player["profile_id"]}"}
           role="option"
           tabindex="-1"
@@ -106,7 +106,7 @@ defmodule WololoWeb.CustomComponents do
       <input
         {@rest}
         type="text"
-        class="h-12 w-full border-none focus:ring-0 pl-11 pr-4 text-gray-800 dark:text-slate-100 dark:bg-stone-800 placeholder:text-gray-400 placeholder:text-lg"
+        class="h-12 w-full border-none focus:ring-0 pl-11 pr-4 text-gray-800 dark:text-zinc-100 dark:bg-stone-800 placeholder:text-gray-400 placeholder:text-lg"
         placeholder="Search player... (🚧 1v1 ranked only for the moment 🚧)"
         role="combobox"
         aria-expanded="false"
