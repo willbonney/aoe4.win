@@ -434,7 +434,7 @@ defmodule WololoWeb.CoreComponents do
     ~H"""
     <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
       <div>
-        <h1 class="text-lg font-semibold leading-8 text-zinc-800">
+        <h1 class="text-lg font-semibold leading-8 text-zinc-800 dark:text-slate-100">
           <%= render_slot(@inner_block) %>
         </h1>
         <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
@@ -483,7 +483,15 @@ defmodule WololoWeb.CoreComponents do
       <table class="w-[40rem] mt-11 sm:w-full">
         <thead class="text-sm text-left leading-6 text-zinc-500">
           <tr>
-            <th :for={col <- @col} class="p-0 pb-1 pr-2 font-normal"><%= col[:label] %></th>
+            <th
+              :for={{col, col_index} <- Enum.with_index(@col)}
+              class="p-0 pb-1 pr-2 font-normal"
+              data-col-index={col_index}
+            >
+              <div class="group-hover/header:scale-[1.02] transition-transform duration-200">
+                <%= col[:label] %>
+              </div>
+            </th>
             <th :if={@action != []} class="relative p-0 pb-4">
               <span class="sr-only"><%= gettext("Actions") %></span>
             </th>
@@ -492,17 +500,24 @@ defmodule WololoWeb.CoreComponents do
         <tbody
           id={@id}
           phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
-          class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700"
+          class="relative divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700"
         >
-          <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="group">
+          <tr
+            :for={row <- @rows}
+            id={@row_id && @row_id.(row)}
+            class="group hover:scale-[1.02] hover:border-t hover:border-b hover:border-zinc-300 dark:hover:border-zinc-600 transition-all duration-200 ease-in-out"
+          >
             <td
               :for={{col, i} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
               class={["relative p-0", @row_click && "hover:cursor-pointer"]}
+              data-col-index={i}
             >
               <div class="block py-1 pr-2">
                 <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
-                  <%= render_slot(col, @row_item.(row)) %>
+                  <div class="truncate">
+                    <%= render_slot(col, @row_item.(row)) %>
+                  </div>
                 </span>
               </div>
             </td>

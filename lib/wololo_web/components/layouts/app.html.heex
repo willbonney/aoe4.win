@@ -2,10 +2,12 @@
   <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
     <div class="flex items-center gap-4">
       <a href="/">
-        <.icon name="hero-home" class="h-6 2-6" />
+        <.icon name="hero-home" class="h-6 2-6 dark:text-slate-100" />
       </a>
     </div>
-    <div><span class="text-xs">v 0.26</span></div>
+    <div class="absolute inset-y-0 right-0 flex items-center pr-2 lg:static lg:inset-auto lg:ml-6 lg:pr-0">
+      <DarktoggleWeb.Components.ToggleTheme.render />
+    </div>
   </div>
 </header>
 <main class="px-4 py-20 sm:px-6 lg:px-8">

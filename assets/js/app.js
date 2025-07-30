@@ -21,7 +21,7 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import * as topbar from "../vendor/topbar.cjs";
-
+import toggleThemeHook from "../vendor/toggle_theme";
 // from https://medium.com/@lionel.aimerie/integrating-chart-js-into-elixir-phoenix-for-visual-impact-9a3991f0690f
 import {Chart} from "chart.js/auto";
 
@@ -146,13 +146,19 @@ hooks.MovingAverages = {
       options: {
         responsive: true,
         plugins: {
-          // tooltip: {
-          //   callbacks: {
-          //     label: function (context) {
-          //       return `${context.formattedValue}%`;
-          //     },
-          //   },
-          // },
+          tooltip: {
+            // backgroundColor: "white",
+            // bodyColor: "black",
+            // bodyFont: {
+            //   size: 16,
+            // },
+            // titleFont: {
+            // // callbacks: {
+            // //   label: function (context) {
+            // //     return `${context.formattedValue}%`;
+            // //   },
+            // },
+          },
           legend: {
             position: "top",
           },
@@ -172,14 +178,20 @@ hooks.MovingAverages = {
         {
           data: sortByDate(sorted).map(({ moving_average_5g }) => moving_average_5g),
           label: "5 Game",
+          borderColor: MUI_COLORS[4],
+          backgroundColor: MUI_COLORS[4],
         },
         {
           data: sortByDate(sorted).map(({ moving_average_10g }) => moving_average_10g),
           label: "10 Game",
+          borderColor: MUI_COLORS[7],
+          backgroundColor: MUI_COLORS[7],
         },
         {
           data: sortByDate(sorted).map(({ moving_average_20g }) => moving_average_20g),
           label: "20 Game",
+          borderColor: MUI_COLORS[10],
+          backgroundColor: MUI_COLORS[10],
         }
       );
       chart.data.labels = sorted.map((m) =>
@@ -369,6 +381,9 @@ hooks.WrsByGameLength = {
     this.handleEvent("update-wrs", null);
   },
 };
+
+hooks.DarkThemeToggle = toggleThemeHook;
+
 
 // *****
 // *****

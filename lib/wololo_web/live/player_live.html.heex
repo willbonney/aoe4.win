@@ -15,33 +15,36 @@ active_link_classes = "bg-gray-100 shadow-md" %>
           <img class="mr-4 h-full" src={@avatar} />
           <div class="flex flex-col">
             <div class="flex">
-              <h6 class="font-bold"><%= @name %></h6>
+              <h6 class="font-bold text-stone-800 dark:text-slate-100"><%= @name %></h6>
               <%= if @url do %>
                 <a href={@url}>
                   <.icon
                     name="hero-arrow-top-right-on-square"
-                    class="cursor-pointer h-4 w-4 ml-2"
+                    class="cursor-pointer h-4 w-4 ml-2 text-stone-800 dark:text-slate-100"
                   />
                 </a>
               <% end %>
               <button phx-click={
                 JS.dispatch("phx:copy", to: "#control-codes") |> JS.push("copy_success")
               }>
-                <.icon name="hero-link" class="cursor-pointer h-4 w-4 ml-2" />
+                <.icon
+                  name="hero-link"
+                  class="cursor-pointer h-4 w-4 ml-2 text-stone-800 dark:text-slate-100"
+                />
                 <input id="control-codes" value={@current_url} type="hidden" />
               </button>
             </div>
             <%= if @rank do %>
-              <h6>#<%= @rank %></h6>
+              <h6 class="text-stone-800 dark:text-slate-100">#<%= @rank %></h6>
             <% end %>
             <%= if @wr do %>
-              <h6><%= @wr %> %</h6>
+              <h6 class="text-stone-800 dark:text-slate-100"><%= @wr %> %</h6>
             <% end %>
           </div>
         </div>
         <%= if !@show_search do %>
           <div class="cursor-pointer" phx-click="reset">
-            <.icon name="hero-x-mark" class="w-8 h-8" />
+            <.icon name="hero-x-mark" class="w-8 h-8 text-stone-800 dark:text-slate-100" />
           </div>
         <% end %>
       </div>
