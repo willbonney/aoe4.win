@@ -4,7 +4,6 @@
       <.spinner size="lg" class="text-brand-500 dark:text-stone-400" />
     </div>
   <% else %>
-    <!-- render data here -->
     <canvas id="wrs" phx-hook="WrsByGameLength" data-points={Jason.encode!(@wrs)}></canvas>
   <% end %>
 </div>

@@ -3,7 +3,7 @@
 
 const localStorageKey = "theme";
 
-const isDark = () => {
+export const isDark = () => {
   if (localStorage.getItem(localStorageKey) === "dark") return true;
   if (localStorage.getItem(localStorageKey) === "light") return false;
   return window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -11,12 +11,8 @@ const isDark = () => {
 
 const setupToggleTheme = () => {
   toggleVisibility = (dark) => {
-    const themeToggleDarkIcon = document.getElementById(
-      "theme-toggle-dark-icon",
-    );
-    const themeToggleLightIcon = document.getElementById(
-      "theme-toggle-light-icon",
-    );
+    const themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
+    const themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
     if (themeToggleDarkIcon == null || themeToggleLightIcon == null) return;
     const show = dark ? themeToggleDarkIcon : themeToggleLightIcon;
     const hide = dark ? themeToggleLightIcon : themeToggleDarkIcon;
@@ -29,14 +25,14 @@ const setupToggleTheme = () => {
     }
     try {
       localStorage.setItem(localStorageKey, dark ? "dark" : "light");
+      // Dispatch custom event for same-tab listeners
+      window.dispatchEvent(new CustomEvent("themeChanged", { detail: { isDark: dark } }));
     } catch (_err) {}
   };
   toggleVisibility(isDark());
-  document
-    .getElementById("theme-toggle")
-    .addEventListener("click", function () {
-      toggleVisibility(!isDark());
-    });
+  document.getElementById("theme-toggle").addEventListener("click", function () {
+    toggleVisibility(!isDark());
+  });
 };
 
 const toggleThemeHook = {
