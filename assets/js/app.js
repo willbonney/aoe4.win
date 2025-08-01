@@ -73,15 +73,19 @@ const getMinutesFromBucket = (bucket) => {
 const setScales = (chart, isDark) => {
   chart.options.scales = {
     y: {
+      ...chart.options.scales.y,
       grid: {
+        ...chart.options.scales.y.grid,
         color: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
         borderColor: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
       },
       ticks: {
+        ...chart.options.scales.y.ticks,
         color: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
         borderColor: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
       },
     },
+    x: chart.options.scales.x,
   };
 };
 
@@ -372,9 +376,6 @@ hooks.WrsByGameLength = {
 
     const chart = new Chart(ctx, data);
     this.handleEvent("update-wrs", (event) => {
-      // let isDark = false;
-      // let isDark = localStorage.getItem("theme") === "dark"
-      console.log(event);
       setScales(chart, localStorage.getItem("theme") === "dark");
 
       window.addEventListener("themeChanged", (e) => {
