@@ -9,8 +9,8 @@ defmodule Wololo.PlayerGamesAPI do
     _1200_to_1499: 0,
     _1500_to_1799: 0,
     _1800_to_2699: 0,
-    _2700_to_3000: 0,
-    _gte3000: 0
+    _2700_to_3599: 0,
+    _gte3600: 0
   }
 
   defp get_moving_average(ratings, games_count) do
@@ -208,8 +208,8 @@ defmodule Wololo.PlayerGamesAPI do
       duration < 1500 -> :_1200_to_1499
       duration < 1800 -> :_1500_to_1799
       duration < 2700 -> :_1800_to_2699
-      duration < 3000 -> :_2700_to_3000
-      true -> :_gte3000
+      duration < 3600 -> :_2700_to_3599
+      true -> :_gte3600
     end
   end
 end

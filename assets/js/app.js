@@ -61,8 +61,8 @@ const getMinutesFromBucket = (bucket) => {
     _1200_to_1499: "20-25 Minutes",
     _1500_to_1799: "25-30 Minutes",
     _1800_to_2699: "30-45 Minutes",
-    _2700_to_3000: "45-60 Minutes",
-    _gte3000: "> 60 Minutes",
+    _2700_to_3599: "45-60 Minutes",
+    _gte3600: "> 60 Minutes",
   };
 
   const bucketOrder = Object.keys(bucketLabels);
@@ -73,19 +73,19 @@ const getMinutesFromBucket = (bucket) => {
 const setScales = (chart, isDark) => {
   chart.options.scales = {
     y: {
-      ...chart.options.scales.y,
+      ...chart.options.scales?.y,
       grid: {
-        ...chart.options.scales.y.grid,
+        ...chart.options.scales?.y?.grid,
         color: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
         borderColor: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
       },
       ticks: {
-        ...chart.options.scales.y.ticks,
+        ...chart.options.scales?.y?.ticks,
         color: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
         borderColor: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
       },
     },
-    x: chart.options.scales.x,
+    x: chart.options.scales?.x,
   };
 };
 
@@ -189,8 +189,16 @@ hooks.MovingAverages = {
     };
     const sortByDate = (unsorted) => unsorted.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
     const chart = new Chart(ctx, data);
+
     this.handleEvent("update-player", (event) => {
       const sorted = sortByDate(event.movingAverages);
+      setScales(chart, localStorage.getItem("theme") === "dark");
+
+      window.addEventListener("themeChanged", (e) => {
+        const { isDark } = e.detail;
+        setScales(chart, isDark);
+        chart.update();
+      });
 
       chart.data.datasets.push(
         {
@@ -314,6 +322,14 @@ hooks.RankHistory = {
 
     const chart = new Chart(ctx, data);
     this.handleEvent("update-player", (event) => {
+      setScales(chart, localStorage.getItem("theme") === "dark");
+
+      window.addEventListener("themeChanged", (e) => {
+        const { isDark } = e.detail;
+        setScales(chart, isDark);
+        chart.update();
+      });
+
       const rankData = event.rankHistory.map(({ rank }) => rank).reverse();
       const maxRankValue = Math.max(...rankData);
 
@@ -375,6 +391,7 @@ hooks.WrsByGameLength = {
     };
 
     const chart = new Chart(ctx, data);
+
     this.handleEvent("update-wrs", (event) => {
       setScales(chart, localStorage.getItem("theme") === "dark");
 
@@ -385,7 +402,6 @@ hooks.WrsByGameLength = {
       });
 
       const split = Object.entries(event.byLength);
-      console.log(split);
 
       const sortedSplit = split.sort((a, b) => getMinutesFromBucket(a[0]).order - getMinutesFromBucket(b[0]).order);
       console.log(sortedSplit);

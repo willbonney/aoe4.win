@@ -107,7 +107,7 @@ defmodule WololoWeb.CustomComponents do
         {@rest}
         type="text"
         class="h-12 w-full border-none focus:ring-0 pl-11 pr-4 text-gray-800 dark:text-zinc-100 dark:bg-stone-800 placeholder:text-gray-400 placeholder:text-lg"
-        placeholder="Search player... (🚧 1v1 ranked only for the moment 🚧)"
+        placeholder="Search solo ladder (eg. Elyona)"
         role="combobox"
         aria-expanded="false"
         aria-controls="options"
