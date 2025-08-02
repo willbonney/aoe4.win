@@ -65,17 +65,23 @@ defmodule Wololo.PlayerStatsAPI do
     end
   end
 
-  def calculate_average_rating(rating_history, total_count) do
+  def calculate_average_rating(rating_history, total_count) when total_count > 0 do
     round(
-      Enum.reduce(rating_history, 0, fn {_, %{"rating" => rating}}, acc -> acc + rating end) /
-        total_count
+      Enum.reduce(rating_history, 0, fn {_, %{"rating" => rating}}, acc ->
+        acc + (rating || 0)
+      end) / total_count
     )
   end
 
-  def calculate_average_rank(rank_history, total_count) do
+  def calculate_average_rating(_, _), do: 0  # Handle zero count case
+
+  def calculate_average_rank(rank_history, total_count) when total_count > 0 do
     round(
-      Enum.reduce(rank_history, 0, fn %{rank: rank}, acc -> acc + rank end) /
-        total_count
+      Enum.reduce(rank_history, 0, fn %{rank: rank}, acc ->
+        acc + (rank || 0)
+      end) / total_count
     )
   end
+
+  def calculate_average_rank(_, _), do: 0  # Handle zero count case
 end
