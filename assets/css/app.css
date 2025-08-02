@@ -24,3 +24,33 @@
     opacity: 1;
   }
 }
+
+@keyframes pulseScale {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+}
+
+.animate-pulse-scale {
+  animation: pulseScale 2s ease-in-out infinite;
+}
+
+/* Column hover effects using JavaScript */
+.column-hovered {
+  transform: scale(1.02);
+  border-top: 1px solid rgb(212 212 212);
+  border-bottom: 1px solid rgb(212 212 212);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Dark mode column hover effects */
+@media (prefers-color-scheme: dark) {
+  .column-hovered {
+    border-top: 1px solid rgb(82 82 91);
+    border-bottom: 1px solid rgb(82 82 91);
+  }
+}

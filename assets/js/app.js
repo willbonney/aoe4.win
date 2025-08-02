@@ -21,9 +21,9 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import * as topbar from "../vendor/topbar.cjs";
-
+import toggleThemeHook from "../vendor/toggle_theme";
 // from https://medium.com/@lionel.aimerie/integrating-chart-js-into-elixir-phoenix-for-visual-impact-9a3991f0690f
-import {Chart} from "chart.js/auto";
+import { Chart } from "chart.js/auto";
 
 const MUI_COLORS = [
   "rgba(255, 193, 7, 1)", // #FFC107
@@ -60,15 +60,33 @@ const getMinutesFromBucket = (bucket) => {
     _900_to_1199: "15-20 Minutes",
     _1200_to_1499: "20-25 Minutes",
     _1500_to_1799: "25-30 Minutes",
-    _1800_to_2099: "30-35 Minutes",
-    _2100_to_2399: "35-40 Minutes",
-    _2400_to_2999: "40-50 Minutes",
-    _gt_3000: "> 50 Minutes",
+    _1800_to_2699: "30-45 Minutes",
+    _2700_to_3599: "45-60 Minutes",
+    _gte3600: "> 60 Minutes",
   };
 
   const bucketOrder = Object.keys(bucketLabels);
 
   return { label: bucketLabels[bucket], order: bucketOrder.indexOf(bucket) };
+};
+
+const setScales = (chart, isDark) => {
+  chart.options.scales = {
+    y: {
+      ...chart.options.scales?.y,
+      grid: {
+        ...chart.options.scales?.y?.grid,
+        color: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
+        borderColor: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
+      },
+      ticks: {
+        ...chart.options.scales?.y?.ticks,
+        color: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
+        borderColor: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
+      },
+    },
+    x: chart.options.scales?.x,
+  };
 };
 
 const hooks = {};
@@ -146,13 +164,19 @@ hooks.MovingAverages = {
       options: {
         responsive: true,
         plugins: {
-          // tooltip: {
-          //   callbacks: {
-          //     label: function (context) {
-          //       return `${context.formattedValue}%`;
-          //     },
-          //   },
-          // },
+          tooltip: {
+            // backgroundColor: "white",
+            // bodyColor: "black",
+            // bodyFont: {
+            //   size: 16,
+            // },
+            // titleFont: {
+            // // callbacks: {
+            // //   label: function (context) {
+            // //     return `${context.formattedValue}%`;
+            // //   },
+            // },
+          },
           legend: {
             position: "top",
           },
@@ -165,21 +189,35 @@ hooks.MovingAverages = {
     };
     const sortByDate = (unsorted) => unsorted.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
     const chart = new Chart(ctx, data);
+
     this.handleEvent("update-player", (event) => {
       const sorted = sortByDate(event.movingAverages);
+      setScales(chart, localStorage.getItem("theme") === "dark");
+
+      window.addEventListener("themeChanged", (e) => {
+        const { isDark } = e.detail;
+        setScales(chart, isDark);
+        chart.update();
+      });
 
       chart.data.datasets.push(
         {
           data: sortByDate(sorted).map(({ moving_average_5g }) => moving_average_5g),
           label: "5 Game",
+          borderColor: MUI_COLORS[4],
+          backgroundColor: MUI_COLORS[4],
         },
         {
           data: sortByDate(sorted).map(({ moving_average_10g }) => moving_average_10g),
           label: "10 Game",
+          borderColor: MUI_COLORS[7],
+          backgroundColor: MUI_COLORS[7],
         },
         {
           data: sortByDate(sorted).map(({ moving_average_20g }) => moving_average_20g),
           label: "20 Game",
+          borderColor: MUI_COLORS[10],
+          backgroundColor: MUI_COLORS[10],
         }
       );
       chart.data.labels = sorted.map((m) =>
@@ -196,9 +234,8 @@ hooks.MovingAverages = {
   },
 };
 
-
-// const duration = (ctx) => 
-// const delay = 
+// const duration = (ctx) =>
+// const delay =
 hooks.RankHistory = {
   mounted() {
     const ctx = this.el;
@@ -209,14 +246,13 @@ hooks.RankHistory = {
       type: "line",
       data: {},
       options: {
-
         animation: {
           x: {
             easing: "easeOutQuad",
             type: "number",
             duration(ctx) {
               const datasetLength = getDatasetLength(ctx);
-              return ((ctx.index / datasetLength) * totalDuration)/datasetLength;
+              return ((ctx.index / datasetLength) * totalDuration) / datasetLength;
             },
             delay(ctx) {
               const datasetLength = getDatasetLength(ctx);
@@ -226,24 +262,23 @@ hooks.RankHistory = {
               }
               ctx.xStarted = true;
               return (ctx.index / datasetLength) * totalDuration;
-
             },
           },
           y: {
-              type: "number",
-              easing: "easeOutQuad",
-              duration(ctx) {
-                const datasetLength = getDatasetLength(ctx);
-                return ((ctx.index / datasetLength) * totalDuration)/datasetLength;
-              },
-              from: NaN,
-              delay(ctx) {
-                const datasetLength = getDatasetLength(ctx);
+            type: "number",
+            easing: "easeOutQuad",
+            duration(ctx) {
+              const datasetLength = getDatasetLength(ctx);
+              return ((ctx.index / datasetLength) * totalDuration) / datasetLength;
+            },
+            from: NaN,
+            delay(ctx) {
+              const datasetLength = getDatasetLength(ctx);
 
-                if (ctx.type !== "data" || ctx.yStarted) {
-                  return 0;
-                }
-                ctx.yStarted = true;
+              if (ctx.type !== "data" || ctx.yStarted) {
+                return 0;
+              }
+              ctx.yStarted = true;
               return (ctx.index / datasetLength) * totalDuration;
             },
           },
@@ -287,6 +322,14 @@ hooks.RankHistory = {
 
     const chart = new Chart(ctx, data);
     this.handleEvent("update-player", (event) => {
+      setScales(chart, localStorage.getItem("theme") === "dark");
+
+      window.addEventListener("themeChanged", (e) => {
+        const { isDark } = e.detail;
+        setScales(chart, isDark);
+        chart.update();
+      });
+
       const rankData = event.rankHistory.map(({ rank }) => rank).reverse();
       const maxRankValue = Math.max(...rankData);
 
@@ -348,16 +391,26 @@ hooks.WrsByGameLength = {
     };
 
     const chart = new Chart(ctx, data);
+
     this.handleEvent("update-wrs", (event) => {
-      console.log("event", event);
+      setScales(chart, localStorage.getItem("theme") === "dark");
+
+      window.addEventListener("themeChanged", (e) => {
+        const { isDark } = e.detail;
+        setScales(chart, isDark);
+        chart.update();
+      });
+
       const split = Object.entries(event.byLength);
+
       const sortedSplit = split.sort((a, b) => getMinutesFromBucket(a[0]).order - getMinutesFromBucket(b[0]).order);
+      console.log(sortedSplit);
 
       chart.data.datasets.push({
         data: sortedSplit.map(([length, wr]) => wr),
         label: "Win Rate",
         borderColor: MUI_COLORS.slice(0, sortedSplit.length),
-        backgroundColor: MUI_COLORS.map((color) => `${color.slice(0, -4)}, 0.4)`).slice(0, sortedSplit.length),
+        backgroundColor: MUI_COLORS.map((color) => `${color.slice(0, -4)}, 0.8)`).slice(0, sortedSplit.length),
         borderWidth: 1,
         barThickness: 50,
       });
@@ -369,6 +422,8 @@ hooks.WrsByGameLength = {
     this.handleEvent("update-wrs", null);
   },
 };
+
+hooks.DarkThemeToggle = toggleThemeHook;
 
 // *****
 // *****

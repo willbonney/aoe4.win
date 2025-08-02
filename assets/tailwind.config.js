@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 
 module.exports = {
+  darkMode: "class",
   content: ["./js/**/*.js", "../lib/wololo_web.ex", "../lib/wololo_web/**/*.*ex"],
   safelist: [
     "bg-red-700",

@@ -1,9 +1,6 @@
-
-
-  <div id="rating">
-  <%
-  common_stat_classes = "font-time-traveler-pal font-black text-3xl mx-auto text-center"
- %>
+<div id="rating">
+  <% common_stat_classes =
+    "font-time-traveler-pal font-black text-3xl mx-auto text-center text-stone-800 dark:text-zinc-100" %>
   <.async_result :let={stats} assign={@stats}>
     <:loading>
       <div class="flex justify-center items-center">
@@ -11,34 +8,46 @@
       </div>
     </:loading>
     <:failed :let={_reason}>Failed to load stats</:failed>
-      <%!-- stupid tw --%>
-  <div class="text-[#B87333]" />
-  <div class="text-[#C0C0C0]" />
-  <div class="text-[#FFC125]" />
-  <div class="text-[#E6E6E6]" />
-  <div class="text-[#87CEEB]" />
-  <div class="text-[#FF8C00]" />
-  <div class="text-[#DDDDDD]" />
-  <%!-- stupid tw --%>
+    <%!-- stupid tw --%>
+    <div class="text-[#B87333]" />
+    <div class="text-[#C0C0C0]" />
+    <div class="text-[#FFC125]" />
+    <div class="text-[#E6E6E6]" />
+    <div class="text-[#87CEEB]" />
+    <div class="text-[#FF8C00]" />
+    <div class="text-[#DDDDDD]" />
+    <%!-- stupid tw --%>
 
-    <h1 class="font-time-traveler-pal font-gray text-4xl my-8 mx-auto text-center">
+    <h1 class="font-time-traveler-pal font-gray text-4xl my-8 mx-auto text-center text-stone-800 dark:text-zinc-100">
       Current Season Rating
     </h1>
     <h1 class={[common_stat_classes]}>
-      Max: <span class={["text-[#{rating_to_color_map(stats[:max_rating])}]"]}><%= stats[:max_rating] %></span>
+      Max:
+      <span class={["text-[#{rating_to_color_map(stats[:max_rating])}]"]}>
+        <%= stats[:max_rating] %>
+      </span>
     </h1>
-      <h1 class={[common_stat_classes]}>
-      7D High: <span class={["text-[#{rating_to_color_map(stats[:max_rating_7d])}]"]}><%= stats[:max_rating_7d] %></span>
+    <h1 class={[common_stat_classes]}>
+      7D High:
+      <span class={["text-[#{rating_to_color_map(stats[:max_rating_7d])}]"]}>
+        <%= stats[:max_rating_7d] %>
+      </span>
     </h1>
-      <h1 class={[common_stat_classes]}>
-      30D High: <span class={["text-[#{rating_to_color_map(stats[:max_rating_1m])}]"]}><%= stats[:max_rating_1m] %></span>  
+    <h1 class={[common_stat_classes]}>
+      30D High:
+      <span class={["text-[#{rating_to_color_map(stats[:max_rating_1m])}]"]}>
+        <%= stats[:max_rating_1m] %>
+      </span>
     </h1>
     <%!-- line break --%>
     <h1 class={[common_stat_classes]}>
-      Last <%= stats[:total_count] %> games: <span class={["text-[#{rating_to_color_map(stats[:average_rating])}]"]}><%= stats[:average_rating] %></span>
+      Last <%= stats[:total_count] %> games:
+      <span class={["text-[#{rating_to_color_map(stats[:average_rating])}]"]}>
+        <%= stats[:average_rating] %>
+      </span>
     </h1>
     <div class="border-b border-gray-200 mt-8"></div>
-    <h1 class="font-time-traveler-pal font-gray text-4xl my-8 mx-auto text-center">
+    <h1 class="font-time-traveler-pal font-gray text-4xl my-8 mx-auto text-center text-stone-800 dark:text-zinc-100">
       Moving Averages
     </h1>
     <canvas
@@ -49,5 +58,3 @@
     </canvas>
   </.async_result>
 </div>
-
-

@@ -92,7 +92,7 @@ defmodule WololoWeb.CivsByMapLive do
       <%= if @image do %>
         <img src={"/images/#{@image}.png"} alt={@label} class="w-10 h-6 mb-1" />
       <% end %>
-      <span><%= @label %></span>
+      <span class="dark:text-stone-400"><%= @label %></span>
     </div>
     """
   end

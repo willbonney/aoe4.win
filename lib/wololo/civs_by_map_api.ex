@@ -58,7 +58,6 @@ defmodule Wololo.CivsByMapAPI do
   end
 
   defp make_api_request(url) do
-    IO.inspect(url, label: "url")
     request = Finch.build(:get, url)
 
     case Finch.request(request, Wololo.Finch) do
@@ -103,7 +102,6 @@ defmodule Wololo.CivsByMapAPI do
               %{name: "Unknown", error: "Invalid data structure"}
           end
         end)
-
 
       _ ->
         Logger.error("Invalid raw_data structure: #{inspect(raw_data)}")

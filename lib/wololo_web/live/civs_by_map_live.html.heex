@@ -32,14 +32,14 @@
       </.table>
     </div>
 
-    <div class="md:hidden space-y-4">
+    <div class="md:hidden space-y-4 w-full max-w-full">
       <%= for map <- @maps do %>
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-          <div class="bg-gray-100 px-4 py-2 font-bold">
+        <div class="shadow rounded-lg overflow-hidden w-full">
+          <div class="bg-zinc-100 dark:bg-stone-800  font-bold w-full">
             <%= map.name %>
           </div>
           <div class="p-4">
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-3 gap-2">
               <%= for civ <- Enum.drop(@civs, 1) do %>
                 <div class="flex flex-col items-center">
                   <%= if civ.image do %>
