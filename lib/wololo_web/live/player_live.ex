@@ -73,22 +73,32 @@ defmodule WololoWeb.PlayerLive do
 
   @impl true
   def handle_info({:load_player_data, %{"id" => profile_id}}, socket) do
-    {:ok, stats} = PlayerStatsAPI.fetch_player_data(profile_id)
+    case PlayerStatsAPI.fetch_player_data(profile_id) do
+      {:ok, stats} ->
+        {:noreply,
+         socket
+         |> assign(
+           active: :rating,
+           profile_id: profile_id,
+           name: stats["name"],
+           avatar: get_in(stats, ["avatars", "medium"]),
+           url: stats["site_url"],
+           rank: get_in(stats, ["modes", "rm_solo", "rank"]),
+           wr: get_in(stats, ["modes", "rm_solo", "win_rate"]),
+           error: nil,
+           show_search: false,
+           current_url: url(socket, ~p"/player/#{profile_id}/rating")
+         )}
 
-    {:noreply,
-     socket
-     |> assign(
-       active: :rating,
-       profile_id: profile_id,
-       name: stats["name"],
-       avatar: get_in(stats, ["avatars", "medium"]),
-       url: stats["site_url"],
-       rank: get_in(stats, ["modes", "rm_solo", "rank"]),
-       wr: get_in(stats, ["modes", "rm_solo", "win_rate"]),
-       error: nil,
-       show_search: false,
-       current_url: url(socket, ~p"/player/#{profile_id}/rating")
-     )}
+      {:error, reason} ->
+        {:noreply,
+         socket
+         |> assign(
+           error: reason,
+           profile_id: profile_id,
+           show_search: false
+         )}
+    end
   end
 
   @impl true
