@@ -18,6 +18,14 @@ defmodule Wololo.SearchPlayerAPI do
 
       {:error, %Finch.Error{reason: reason}} ->
         {:error, "search_player_api fetch_player failed: #{reason}"}
+
+      {:error, %Mint.TransportError{reason: reason}} ->
+        Logger.error("search_player_api fetch_player transport error: #{reason}")
+        {:error, "search_player_api fetch_player failed: connection timeout"}
+
+      {:error, error} ->
+        Logger.error("search_player_api fetch_player unexpected error: #{inspect(error)}")
+        {:error, "search_player_api fetch_player failed: unexpected error"}
     end
   end
 end

@@ -103,6 +103,14 @@ defmodule Wololo.PlayerGamesAPI do
 
       {:error, %Finch.Error{reason: reason}} ->
         {:error, "player_games_api fetch_page failed: #{reason}"}
+
+      {:error, %Mint.TransportError{reason: reason}} ->
+        Logger.error("player_games_api fetch_page transport error: #{reason}")
+        {:error, "player_games_api fetch_page failed: connection timeout"}
+
+      {:error, error} ->
+        Logger.error("player_games_api fetch_page unexpected error: #{inspect(error)}")
+        {:error, "player_games_api fetch_page failed: unexpected error"}
     end
   end
 

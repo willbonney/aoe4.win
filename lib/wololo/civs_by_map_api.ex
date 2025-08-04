@@ -75,9 +75,17 @@ defmodule Wololo.CivsByMapAPI do
         Logger.error("API request failed with status #{status}")
         {:error, "civs_by_map make_api_request failed with status code: #{status}"}
 
-      {:error, reason} ->
+      {:error, %Finch.Error{reason: reason}} ->
         Logger.error("API request failed: #{inspect(reason)}")
         {:error, "civs_by_map make_api_request failed: #{inspect(reason)}"}
+
+      {:error, %Mint.TransportError{reason: reason}} ->
+        Logger.error("civs_by_map make_api_request transport error: #{reason}")
+        {:error, "civs_by_map make_api_request failed: connection timeout"}
+
+      {:error, error} ->
+        Logger.error("civs_by_map make_api_request unexpected error: #{inspect(error)}")
+        {:error, "civs_by_map make_api_request failed: unexpected error"}
     end
   end
 

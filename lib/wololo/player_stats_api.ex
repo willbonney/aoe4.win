@@ -17,20 +17,29 @@ defmodule Wololo.PlayerStatsAPI do
 
       {:error, %Finch.Error{reason: reason}} ->
         {:error, "fetch_player_data failed: #{reason}"}
+
+      {:error, %Mint.TransportError{reason: reason}} ->
+        Logger.error("fetch_player_data transport error: #{reason}")
+        {:error, "fetch_player_data failed: connection timeout"}
+
+      {:error, error} ->
+        Logger.error("fetch_player_data unexpected error: #{inspect(error)}")
+        {:error, "fetch_player_data failed: unexpected error"}
     end
   end
 
   def process_player_stats(body) do
-
     with {:ok, data} <- Jason.decode(body),
-
-         rating_history when is_map(rating_history) <- get_in(data, ["modes", "rm_solo", "rating_history"]),
-         previous_seasons when is_list(previous_seasons) <- get_in(data, ["modes", "rm_solo", "previous_seasons"]),
+         rating_history when is_map(rating_history) <-
+           get_in(data, ["modes", "rm_solo", "rating_history"]),
+         previous_seasons when is_list(previous_seasons) <-
+           get_in(data, ["modes", "rm_solo", "previous_seasons"]),
          current_rank when is_integer(current_rank) <- get_in(data, ["modes", "rm_solo", "rank"]),
-         current_season when is_integer(current_season) <- get_in(data, ["modes", "rm_solo", "season"]) do
-
+         current_season when is_integer(current_season) <-
+           get_in(data, ["modes", "rm_solo", "season"]) do
       total_count = Enum.count(rating_history)
       total_seasons = Enum.count(previous_seasons) + 1
+
       rank_history =
         Enum.map(previous_seasons, fn season ->
           %{
@@ -73,7 +82,8 @@ defmodule Wololo.PlayerStatsAPI do
     )
   end
 
-  def calculate_average_rating(_, _), do: 0  # Handle zero count case
+  # Handle zero count case
+  def calculate_average_rating(_, _), do: 0
 
   def calculate_average_rank(rank_history, total_count) when total_count > 0 do
     round(
@@ -83,5 +93,6 @@ defmodule Wololo.PlayerStatsAPI do
     )
   end
 
-  def calculate_average_rank(_, _), do: 0  # Handle zero count case
+  # Handle zero count case
+  def calculate_average_rank(_, _), do: 0
 end

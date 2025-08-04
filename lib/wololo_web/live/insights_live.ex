@@ -51,7 +51,7 @@ defmodule WololoWeb.InsightsLive do
     |> parse_response()
   end
 
-  defp parse_response({:ok, %Finch.Response{body: body}}) do
+  defp parse_response({:ok, %Finch.Response{status: 200, body: body}}) do
     IO.inspect(body, label: "body")
 
     messages =
@@ -65,8 +65,29 @@ defmodule WololoWeb.InsightsLive do
     end
   end
 
+  defp parse_response({:ok, %Finch.Response{status: status_code}}) do
+    Logger.error("OpenAI API request failed with status code: #{status_code}")
+    {:error, "OpenAI API request failed with status code: #{status_code}"}
+  end
+
+  defp parse_response({:error, %Finch.Error{reason: reason}}) do
+    Logger.error("OpenAI API request failed: #{reason}")
+    {:error, "OpenAI API request failed: #{reason}"}
+  end
+
+  defp parse_response({:error, %Mint.TransportError{reason: reason}}) do
+    Logger.error("OpenAI API request transport error: #{reason}")
+    {:error, "OpenAI API request failed: connection timeout"}
+  end
+
+  defp parse_response({:error, error}) do
+    Logger.error("OpenAI API request unexpected error: #{inspect(error)}")
+    {:error, "OpenAI API request failed: unexpected error"}
+  end
+
   defp parse_response(error) do
-    error
+    Logger.error("OpenAI API request error: #{inspect(error)}")
+    {:error, "OpenAI API request failed: #{inspect(error)}"}
   end
 
   defp request(body, _opts) do
