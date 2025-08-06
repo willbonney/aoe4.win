@@ -58,10 +58,8 @@ defmodule Wololo.CivsByMapAPI do
   end
 
   defp make_api_request(url) do
-    request = Finch.build(:get, url)
-
-    case Finch.request(request, Wololo.Finch) do
-      {:ok, %Finch.Response{status: 200, body: body}} ->
+    case Wololo.HTTPClient.get_with_retry(url) do
+      {:ok, body} ->
         case Jason.decode(body) do
           {:ok, decoded} ->
             {:ok, decoded}
@@ -71,21 +69,8 @@ defmodule Wololo.CivsByMapAPI do
             {:error, "Invalid JSON response"}
         end
 
-      {:ok, %Finch.Response{status: status}} ->
-        Logger.error("API request failed with status #{status}")
-        {:error, "civs_by_map make_api_request failed with status code: #{status}"}
-
-      {:error, %Finch.Error{reason: reason}} ->
-        Logger.error("API request failed: #{inspect(reason)}")
-        {:error, "civs_by_map make_api_request failed: #{inspect(reason)}"}
-
-      {:error, %Mint.TransportError{reason: reason}} ->
-        Logger.error("civs_by_map make_api_request transport error: #{reason}")
-        {:error, "civs_by_map make_api_request failed: connection timeout"}
-
-      {:error, error} ->
-        Logger.error("civs_by_map make_api_request unexpected error: #{inspect(error)}")
-        {:error, "civs_by_map make_api_request failed: unexpected error"}
+      {:error, reason} ->
+        {:error, "civs_by_map make_api_request failed: #{reason}"}
     end
   end
 

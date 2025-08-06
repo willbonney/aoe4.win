@@ -6,25 +6,12 @@ defmodule Wololo.PlayerStatsAPI do
   def fetch_player_data(profile_id, with_stats \\ false) do
     endpoint = "#{@base_url}/players/#{profile_id}?full_history=true"
 
-    request = Finch.build(:get, endpoint)
-
-    case Finch.request(request, Wololo.Finch) do
-      {:ok, %Finch.Response{status: 200, body: body}} ->
+    case Wololo.HTTPClient.get_with_retry(endpoint) do
+      {:ok, body} ->
         {:ok, if(with_stats, do: process_player_stats(body), else: Jason.decode!(body))}
 
-      {:ok, %Finch.Response{status: status_code}} ->
-        {:error, "fetch_player_data failed with status code: #{status_code}"}
-
-      {:error, %Finch.Error{reason: reason}} ->
+      {:error, reason} ->
         {:error, "fetch_player_data failed: #{reason}"}
-
-      {:error, %Mint.TransportError{reason: reason}} ->
-        Logger.error("fetch_player_data transport error: #{reason}")
-        {:error, "fetch_player_data failed: connection timeout"}
-
-      {:error, error} ->
-        Logger.error("fetch_player_data unexpected error: #{inspect(error)}")
-        {:error, "fetch_player_data failed: unexpected error"}
     end
   end
 

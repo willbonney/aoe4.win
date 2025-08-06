@@ -92,25 +92,13 @@ defmodule Wololo.PlayerGamesAPI do
 
   defp fetch_page(base_endpoint, page) do
     endpoint = "#{base_endpoint}&page=#{page}"
-    request = Finch.build(:get, endpoint)
 
-    case Finch.request(request, Wololo.Finch) do
-      {:ok, %Finch.Response{status: 200, body: body}} ->
+    case Wololo.HTTPClient.get_with_retry(endpoint) do
+      {:ok, body} ->
         {:ok, Jason.decode!(body)}
 
-      {:ok, %Finch.Response{status: status_code}} ->
-        {:error, "player_games_api fetch_page failed with status code: #{status_code}"}
-
-      {:error, %Finch.Error{reason: reason}} ->
+      {:error, reason} ->
         {:error, "player_games_api fetch_page failed: #{reason}"}
-
-      {:error, %Mint.TransportError{reason: reason}} ->
-        Logger.error("player_games_api fetch_page transport error: #{reason}")
-        {:error, "player_games_api fetch_page failed: connection timeout"}
-
-      {:error, error} ->
-        Logger.error("player_games_api fetch_page unexpected error: #{inspect(error)}")
-        {:error, "player_games_api fetch_page failed: unexpected error"}
     end
   end
 

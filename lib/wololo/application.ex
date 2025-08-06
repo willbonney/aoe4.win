@@ -12,7 +12,7 @@ defmodule Wololo.Application do
       {DNSCluster, query: Application.get_env(:wololo, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Wololo.PubSub},
       # Start the Finch HTTP client for sending emails
-      {Finch, name: Wololo.Finch},
+      {Finch, name: Wololo.Finch, pool_size: 50, pool_count: 5},
       # Start a worker by calling: Wololo.Worker.start_link(arg)
       # {Wololo.Worker, arg},
       # Start to serve requests, typically the last entry
