@@ -91,9 +91,10 @@ active_link_classes = "font-semibold text-stone-800 dark:text-zinc-100" %>
           patch={~p"/player/#{@profile_id}/insights"}
           class={[common_link_classes, @active == :insights && active_link_classes]}
         >
-          <div class="rounded-md">
+          <div class="rounded-md flex items-center">
+            <.icon name="hero-sparkles" class={["w-5 h-5 mr-2 text-gray-500", @active == :insights && "text-stone-800 dark:text-zinc-100"]} />
             Insights
-          </div>
+          </div>  
         </.link>
       <% end %>
     </div>
