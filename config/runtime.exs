@@ -58,13 +58,6 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
-  # Configure HTTP client for better connection management
-  config :wololo, :http_client,
-    timeout: 30_000,
-    pool_size: 50,
-    pool_count: 5,
-    max_retries: 3
-
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key
