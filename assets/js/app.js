@@ -24,6 +24,9 @@ import * as topbar from "../vendor/topbar.cjs";
 import toggleThemeHook from "../vendor/toggle_theme";
 // from https://medium.com/@lionel.aimerie/integrating-chart-js-into-elixir-phoenix-for-visual-impact-9a3991f0690f
 import { Chart } from "chart.js/auto";
+import annotationPlugin from "chartjs-plugin-annotation";
+
+Chart.register(annotationPlugin);
 
 const MUI_COLORS = [
   "rgba(255, 193, 7, 1)", // #FFC107
@@ -53,6 +56,9 @@ const MUI_COLORS = [
   "rgba(33, 33, 33, 1)", // #212121
 ];
 
+const TW_STONE_800 = "rgb(41, 37, 36)";
+const TW_ZINC_100 = "rgba(244, 244, 245,0.5)";
+
 const getMinutesFromBucket = (bucket) => {
   const bucketLabels = {
     _lt_600: "< 10 Minutes",
@@ -76,17 +82,37 @@ const setScales = (chart, isDark) => {
       ...chart.options.scales?.y,
       grid: {
         ...chart.options.scales?.y?.grid,
-        color: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
-        borderColor: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
+        color: isDark ? TW_ZINC_100 : TW_STONE_800,
+        borderColor: isDark ? TW_ZINC_100 : TW_STONE_800,
       },
       ticks: {
         ...chart.options.scales?.y?.ticks,
-        color: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
-        borderColor: isDark ? "rgb(82 82 91)" : "rgb(212 212 212)",
+        color: isDark ? TW_ZINC_100 : TW_STONE_800,
+        borderColor: isDark ? TW_ZINC_100 : TW_STONE_800,
       },
     },
     x: chart.options.scales?.x,
   };
+  chart.update();
+
+};
+
+const setFiftyPercentLine = (chart, isDark) => {
+  chart.options.plugins.annotation = {
+    annotations: {
+      line1: {
+        type: 'line',
+        yMin: 50,
+        yMax: 50,
+        borderColor: isDark ? TW_ZINC_100 : TW_STONE_800,
+        borderWidth: 5,
+        borderDash: [10, 5], // [dash length, gap length]
+        pointRadius: 0,
+        hidden: true,
+      }
+    }
+  };
+  chart.update();
 };
 
 const hooks = {};
@@ -241,7 +267,12 @@ hooks.RankHistory = {
     const ctx = this.el;
 
     const totalDuration = 2500;
-    const getDatasetLength = (ctx) => ctx.chart.data.datasets[ctx.datasetIndex].data.length;
+    const getDatasetLength = (ctx) => {
+      if(ctx?.chart?.data?.datasets?.length > 0 && typeof ctx?.datasetIndex === "number") {
+        return ctx.chart.data.datasets[ctx.datasetIndex].data.length;
+      }
+      return 100;
+    };
     const data = {
       type: "line",
       data: {},
@@ -361,8 +392,10 @@ hooks.WrsByGameLength = {
     const data = {
       type: "bar",
       data: {},
+      // plugins: [annotationPlugin],
 
       options: {
+
         responsive: true,
         scales: {
           y: {
@@ -374,6 +407,7 @@ hooks.WrsByGameLength = {
           },
         },
         plugins: {
+          
           legend: {
             display: false,
           },
@@ -392,14 +426,20 @@ hooks.WrsByGameLength = {
 
     const chart = new Chart(ctx, data);
 
+
     this.handleEvent("update-wrs", (event) => {
       setScales(chart, localStorage.getItem("theme") === "dark");
+      setFiftyPercentLine(chart, localStorage.getItem("theme") === "dark");
 
       window.addEventListener("themeChanged", (e) => {
         const { isDark } = e.detail;
         setScales(chart, isDark);
-        chart.update();
+        setFiftyPercentLine(chart, isDark);
+
       });
+
+
+
 
       const split = Object.entries(event.byLength);
 
