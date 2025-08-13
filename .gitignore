@@ -46,3 +46,5 @@ npm-debug.log
 .cursorrules
 
 node_modules/
+
+.elixir_ls/
