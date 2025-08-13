@@ -95,6 +95,16 @@ hooks.OpponentsByCountry = {
     const regionNamesInEnglish = new Intl.DisplayNames(["en"], {
       type: "region",
     });
+
+    // Function to convert country code to flag emoji
+    const getCountryFlag = (countryCode) => {
+      const codePoints = countryCode
+        .toUpperCase()
+        .split("")
+        .map((char) => 127397 + char.charCodeAt());
+      return String.fromCodePoint(...codePoints);
+    };
+
     const ctx = this.el;
     const data = {
       type: "doughnut",
@@ -114,10 +124,40 @@ hooks.OpponentsByCountry = {
           tooltip: {
             callbacks: {
               label: (context) => `${context.formattedValue}%`,
+              afterBody: function (context) {
+                const label = context[0].label;
+
+                if (label === "Other" && chart.otherCountries) {
+                  // Get the other countries data
+                  const otherCountries = Object.entries(chart.otherCountries).map(
+                    ([country, percentage]) => `${getCountryFlag(country)} ${country.toUpperCase()}: ${percentage}%`
+                  );
+
+                  // Return each country on its own line
+                  return ["", ...otherCountries];
+                }
+                return [];
+              },
+            },
+            backgroundColor: "rgba(0, 0, 0, 0.9)",
+            titleColor: "white",
+            bodyColor: "white",
+            borderColor: "rgba(255, 255, 255, 0.2)",
+            borderWidth: 1,
+            cornerRadius: 8,
+            displayColors: false,
+            padding: 16,
+            bodyFont: {
+              size: 14,
+            },
+            titleFont: {
+              size: 16,
+              weight: "bold",
             },
           },
           legend: {
             position: "top",
+            display: false,
           },
           title: {
             display: false,
@@ -128,13 +168,20 @@ hooks.OpponentsByCountry = {
     };
     const chart = new Chart(ctx, data);
     this.handleEvent("update-opponents-by-country", (event) => {
-      const threshold = 5; // Percentage threshold for "Other" category
+      const threshold = 3; // Percentage threshold for "Other" category
       let otherPercentage = 0;
+      const otherCountries = {};
       const filteredData = Object.entries(event.byCountry).reduce((acc, [country, percentage]) => {
         if (percentage >= threshold) {
           acc[country] = percentage;
         } else {
           otherPercentage += percentage;
+          // create map with percentages of other countries
+          if (!otherCountries[country]) {
+            otherCountries[country] = percentage;
+          } else {
+            otherCountries[country] += percentage;
+          }
         }
         return acc;
       }, {});
@@ -145,8 +192,12 @@ hooks.OpponentsByCountry = {
 
       chart.data.datasets[0].data = Object.values(filteredData);
       chart.data.labels = Object.keys(filteredData).map((country) =>
-        country === "other" ? "Other" : regionNamesInEnglish.of(country.toUpperCase())
+        country === "other" ? "Other" : getCountryFlag(country) + " " + regionNamesInEnglish.of(country.toUpperCase())
       );
+
+      // Store other countries data for tooltip
+      chart.otherCountries = otherCountries;
+
       chart.update();
     });
   },
