@@ -1,5 +1,6 @@
 defmodule WololoWeb.InsightsLive do
   use WololoWeb, :live_component
+  require Logger
   alias Wololo.PlayerGamesAPI
   import WololoWeb.Components.Spinner
 
