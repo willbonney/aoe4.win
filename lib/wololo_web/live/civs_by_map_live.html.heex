@@ -20,14 +20,25 @@
   <% else %>
     <div class="hidden md:block">
       <.table id="aoe4_civilizations" rows={@maps}>
+        <:col :let={map} label={civ_header(%{image: nil, label: "Map"})}>
+          <div class="p-2 w-full h-full">
+            <%= map.name %>
+          </div>
+        </:col>
         <:col
           :let={map}
-          :for={civ <- @civs}
+          :for={civ <- Enum.drop(@civs, 1)}
           label={civ_header(%{image: civ.image, label: civ.label})}
         >
-          <div class={"#{color_class(Map.get(map, civ.key), :bg)} p-2 w-full h-full hover:scale-[1.15] hover:brightness-95 transition-all duration-200 ease-in-out rounded-sm"}>
-          
-            <%= Map.get(map, civ.key).win_rate %>
+          <div class={"#{color_class(get_in(map, [:civs, civ.key, :win_rate]), :bg)} p-2 w-full h-full hover:scale-[1.15] hover:brightness-95 transition-all duration-200 ease-in-out rounded-sm"}>
+            <div class="flex flex-col items-center">
+              <div>
+                <%= get_in(map, [:civs, civ.key, :win_rate]) || "N/A" %>
+              </div>
+                             <div>
+                 (<%= format_number(get_in(map, [:civs, civ.key, :games_count])) %>)
+               </div>
+            </div>
           </div>
         </:col>
       </.table>
@@ -46,8 +57,8 @@
                   <%= if civ.image do %>
                     <img src={"/images/#{civ.image}.png"} alt={civ.label} class="w-10 h-6 mb-1" />
                   <% end %>
-                  <span class={"text-sm font-semibold #{color_class(Map.get(map, civ.key), :text)}"}>
-                    <%= Map.get(map, civ.key) %>
+                  <span class={"text-sm font-semibold #{color_class(get_in(map, [:civs, civ.key, :win_rate]), :text)}"}>
+                    <%= get_in(map, [:civs, civ.key, :win_rate]) || "N/A" %>
                   </span>
                 </div>
               <% end %>

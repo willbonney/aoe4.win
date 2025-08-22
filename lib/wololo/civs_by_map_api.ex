@@ -92,8 +92,10 @@ defmodule Wololo.CivsByMapAPI do
                 end)
                 |> Enum.into(%{})
 
-              Map.merge(%{name: map_name}, civ_win_rates)
-              Logger.info("Map data: #{inspect(civ_win_rates)}")
+              %{
+                name: map_name,
+                civs: civ_win_rates
+              }
 
             _ ->
               Logger.error("Invalid map data structure: #{inspect(map_data)}")
