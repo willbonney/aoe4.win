@@ -79,16 +79,21 @@ defmodule Wololo.CivsByMapAPI do
       %{"data" => data} when is_list(data) ->
         Enum.map(data, fn map_data ->
           case map_data do
-            %{"civilizations" => civ_data, "map" => map_name} when is_map(civ_data) ->
+            %{"civilizations" => civ_data, "map" => map_name, "games_count" => games_count}
+            when is_map(civ_data) ->
               civ_win_rates =
                 @list_of_civs
                 |> Enum.map(fn civ ->
                   win_rate = get_in(civ_data, [civ, "win_rate"])
-                  {String.to_atom(civ), format_win_rate(win_rate)}
+                  games_count = get_in(civ_data, [civ, "games_count"])
+
+                  {String.to_atom(civ),
+                   %{win_rate: format_win_rate(win_rate), games_count: games_count}}
                 end)
                 |> Enum.into(%{})
 
               Map.merge(%{name: map_name}, civ_win_rates)
+              Logger.info("Map data: #{inspect(civ_win_rates)}")
 
             _ ->
               Logger.error("Invalid map data structure: #{inspect(map_data)}")

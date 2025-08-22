@@ -94,14 +94,13 @@ const setScales = (chart, isDark) => {
     x: chart.options.scales?.x,
   };
   chart.update();
-
 };
 
 const setFiftyPercentLine = (chart, isDark) => {
   chart.options.plugins.annotation = {
     annotations: {
       line1: {
-        type: 'line',
+        type: "line",
         yMin: 50,
         yMax: 50,
         borderColor: isDark ? TW_ZINC_100 : TW_STONE_800,
@@ -109,8 +108,8 @@ const setFiftyPercentLine = (chart, isDark) => {
         borderDash: [10, 5], // [dash length, gap length]
         pointRadius: 0,
         hidden: true,
-      }
-    }
+      },
+    },
   };
   chart.update();
 };
@@ -239,6 +238,11 @@ hooks.MovingAverages = {
       type: "line",
       data: {},
       options: {
+        scales: {
+          x: {
+            display: false,
+          },
+        },
         responsive: true,
         plugins: {
           tooltip: {
@@ -319,7 +323,7 @@ hooks.RankHistory = {
 
     const totalDuration = 2500;
     const getDatasetLength = (ctx) => {
-      if(ctx?.chart?.data?.datasets?.length > 0 && typeof ctx?.datasetIndex === "number") {
+      if (ctx?.chart?.data?.datasets?.length > 0 && typeof ctx?.datasetIndex === "number") {
         return ctx.chart.data.datasets[ctx.datasetIndex].data.length;
       }
       return 100;
@@ -385,9 +389,6 @@ hooks.RankHistory = {
               },
             },
           },
-          x: {
-            // reverse: true, // Removed to fix animation direction
-          },
         },
         plugins: {
           legend: {
@@ -446,7 +447,6 @@ hooks.WrsByGameLength = {
       // plugins: [annotationPlugin],
 
       options: {
-
         responsive: true,
         scales: {
           y: {
@@ -458,7 +458,6 @@ hooks.WrsByGameLength = {
           },
         },
         plugins: {
-          
           legend: {
             display: false,
           },
@@ -477,7 +476,6 @@ hooks.WrsByGameLength = {
 
     const chart = new Chart(ctx, data);
 
-
     this.handleEvent("update-wrs", (event) => {
       setScales(chart, localStorage.getItem("theme") === "dark");
       setFiftyPercentLine(chart, localStorage.getItem("theme") === "dark");
@@ -486,11 +484,7 @@ hooks.WrsByGameLength = {
         const { isDark } = e.detail;
         setScales(chart, isDark);
         setFiftyPercentLine(chart, isDark);
-
       });
-
-
-
 
       const split = Object.entries(event.byLength);
 

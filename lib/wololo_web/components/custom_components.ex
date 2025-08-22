@@ -29,7 +29,7 @@ defmodule WololoWeb.CustomComponents do
           aria-modal="true"
           tabindex="0"
         >
-          <div class="flex min-h-full justify-center">
+          <div class="flex min-h-full justify-center items-center">
             <div class="w-full min-h-12 max-w-3xl p-2 sm:p-4 lg:py-6">
               <.focus_wrap
                 id={"#{@id}-container"}

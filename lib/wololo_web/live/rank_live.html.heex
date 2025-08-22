@@ -1,6 +1,6 @@
 <div id="rank">
   <% common_stat_classes =
-    "font-time-traveler-pal font-black text-3xl mx-auto text-center text-stone-800 dark:text-zinc-100" %>
+    "font-zabal font-black text-3xl mx-auto text-center text-stone-800 dark:text-zinc-100" %>
   <.async_result :let={stats} assign={@stats}>
     <:loading>
       <div class="flex justify-center items-center">
@@ -9,7 +9,7 @@
     </:loading>
     <:failed :let={_reason}>Failed to load stats</:failed>
 
-    <h1 class="font-time-traveler-pal font-gray text-4xl my-8 mx-auto text-center text-stone-800 dark:text-zinc-100">
+        <h1 class="font-zabal font-gray text-4xl my-8 mx-auto text-center text-stone-800 dark:text-zinc-100">
       Rank Over Time
     </h1>
     <h1 class={[common_stat_classes]}>
@@ -32,7 +32,7 @@
     </h1>
     <%!-- line break --%>
     <div class="border-b border-gray-200 mt-8"></div>
-    <h1 class="font-time-traveler-pal font-gray text-4xl my-8 mx-auto text-center text-stone-800 dark:text-zinc-100">
+    <h1 class="font-zabal font-gray text-4xl my-8 mx-auto text-center text-stone-800 dark:text-zinc-100">
       Rank History
     </h1>
     <p class=" text-sm text-gray-500 mb-4 dark:text-stone-400">

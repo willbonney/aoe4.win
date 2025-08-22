@@ -6,8 +6,8 @@
 
 @layer base {
   @font-face {
-    font-family: "TimeTravelerPal";
-    src: url("/fonts/TimeTravelerPal-Normal-Regular.ttf") format("ttf");
+    font-family: "Zabal";
+    src: url("/fonts/ZabalDEMO-Black.otf") format("opentype");
   }
 }
 
@@ -37,6 +37,20 @@
 
 .animate-pulse-scale {
   animation: pulseScale 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0px);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
 
 /* Column hover effects using JavaScript */
