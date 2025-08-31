@@ -1,6 +1,7 @@
 defmodule WololoWeb.CivsByMapLive do
   use WololoWeb, :live_view
   alias Wololo.CivsByMapAPI
+  alias Wololo.Cldr
   require Logger
   import WololoWeb.Components.Spinner
 
@@ -96,6 +97,17 @@ defmodule WololoWeb.CivsByMapLive do
     </div>
     """
   end
+
+  defp format_number(nil), do: "N/A"
+
+  defp format_number(number) when is_integer(number) do
+    case Cldr.Number.to_string(number) do
+      {:ok, formatted} -> formatted
+      {:error, _} -> Integer.to_string(number)
+    end
+  end
+
+  defp format_number(number), do: number
 
   def color_class(percentage, type) when is_binary(percentage) do
     case Float.parse(percentage) do

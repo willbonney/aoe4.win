@@ -44,7 +44,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        "time-traveler-pal": ["TimeTravelerPal", "sans-serif"],
+        zabal: ["Zabal", "sans-serif"],
       },
       colors: {
         brand: "#273649",

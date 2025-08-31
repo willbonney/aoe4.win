@@ -94,14 +94,13 @@ const setScales = (chart, isDark) => {
     x: chart.options.scales?.x,
   };
   chart.update();
-
 };
 
 const setFiftyPercentLine = (chart, isDark) => {
   chart.options.plugins.annotation = {
     annotations: {
       line1: {
-        type: 'line',
+        type: "line",
         yMin: 50,
         yMax: 50,
         borderColor: isDark ? TW_ZINC_100 : TW_STONE_800,
@@ -109,8 +108,8 @@ const setFiftyPercentLine = (chart, isDark) => {
         borderDash: [10, 5], // [dash length, gap length]
         pointRadius: 0,
         hidden: true,
-      }
-    }
+      },
+    },
   };
   chart.update();
 };
@@ -121,6 +120,16 @@ hooks.OpponentsByCountry = {
     const regionNamesInEnglish = new Intl.DisplayNames(["en"], {
       type: "region",
     });
+
+    // Function to convert country code to flag emoji
+    const getCountryFlag = (countryCode) => {
+      const codePoints = countryCode
+        .toUpperCase()
+        .split("")
+        .map((char) => 127397 + char.charCodeAt());
+      return String.fromCodePoint(...codePoints);
+    };
+
     const ctx = this.el;
     const data = {
       type: "doughnut",
@@ -140,10 +149,40 @@ hooks.OpponentsByCountry = {
           tooltip: {
             callbacks: {
               label: (context) => `${context.formattedValue}%`,
+              afterBody: function (context) {
+                const label = context[0].label;
+
+                if (label === "Other" && chart.otherCountries) {
+                  // Get the other countries data
+                  const otherCountries = Object.entries(chart.otherCountries).map(
+                    ([country, percentage]) => `${getCountryFlag(country)} ${country.toUpperCase()}: ${percentage}%`
+                  );
+
+                  // Return each country on its own line
+                  return ["", ...otherCountries];
+                }
+                return [];
+              },
+            },
+            backgroundColor: "rgba(0, 0, 0, 0.9)",
+            titleColor: "white",
+            bodyColor: "white",
+            borderColor: "rgba(255, 255, 255, 0.2)",
+            borderWidth: 1,
+            cornerRadius: 8,
+            displayColors: false,
+            padding: 16,
+            bodyFont: {
+              size: 14,
+            },
+            titleFont: {
+              size: 16,
+              weight: "bold",
             },
           },
           legend: {
             position: "top",
+            display: false,
           },
           title: {
             display: false,
@@ -154,13 +193,20 @@ hooks.OpponentsByCountry = {
     };
     const chart = new Chart(ctx, data);
     this.handleEvent("update-opponents-by-country", (event) => {
-      const threshold = 5; // Percentage threshold for "Other" category
+      const threshold = 3; // Percentage threshold for "Other" category
       let otherPercentage = 0;
+      const otherCountries = {};
       const filteredData = Object.entries(event.byCountry).reduce((acc, [country, percentage]) => {
         if (percentage >= threshold) {
           acc[country] = percentage;
         } else {
           otherPercentage += percentage;
+          // create map with percentages of other countries
+          if (!otherCountries[country]) {
+            otherCountries[country] = percentage;
+          } else {
+            otherCountries[country] += percentage;
+          }
         }
         return acc;
       }, {});
@@ -171,8 +217,12 @@ hooks.OpponentsByCountry = {
 
       chart.data.datasets[0].data = Object.values(filteredData);
       chart.data.labels = Object.keys(filteredData).map((country) =>
-        country === "other" ? "Other" : regionNamesInEnglish.of(country.toUpperCase())
+        country === "other" ? "Other" : getCountryFlag(country) + " " + regionNamesInEnglish.of(country.toUpperCase())
       );
+
+      // Store other countries data for tooltip
+      chart.otherCountries = otherCountries;
+
       chart.update();
     });
   },
@@ -188,6 +238,11 @@ hooks.MovingAverages = {
       type: "line",
       data: {},
       options: {
+        scales: {
+          x: {
+            display: false,
+          },
+        },
         responsive: true,
         plugins: {
           tooltip: {
@@ -268,7 +323,7 @@ hooks.RankHistory = {
 
     const totalDuration = 2500;
     const getDatasetLength = (ctx) => {
-      if(ctx?.chart?.data?.datasets?.length > 0 && typeof ctx?.datasetIndex === "number") {
+      if (ctx?.chart?.data?.datasets?.length > 0 && typeof ctx?.datasetIndex === "number") {
         return ctx.chart.data.datasets[ctx.datasetIndex].data.length;
       }
       return 100;
@@ -334,9 +389,6 @@ hooks.RankHistory = {
               },
             },
           },
-          x: {
-            // reverse: true, // Removed to fix animation direction
-          },
         },
         plugins: {
           legend: {
@@ -395,7 +447,6 @@ hooks.WrsByGameLength = {
       // plugins: [annotationPlugin],
 
       options: {
-
         responsive: true,
         scales: {
           y: {
@@ -407,7 +458,6 @@ hooks.WrsByGameLength = {
           },
         },
         plugins: {
-          
           legend: {
             display: false,
           },
@@ -426,7 +476,6 @@ hooks.WrsByGameLength = {
 
     const chart = new Chart(ctx, data);
 
-
     this.handleEvent("update-wrs", (event) => {
       setScales(chart, localStorage.getItem("theme") === "dark");
       setFiftyPercentLine(chart, localStorage.getItem("theme") === "dark");
@@ -435,11 +484,7 @@ hooks.WrsByGameLength = {
         const { isDark } = e.detail;
         setScales(chart, isDark);
         setFiftyPercentLine(chart, isDark);
-
       });
-
-
-
 
       const split = Object.entries(event.byLength);
 

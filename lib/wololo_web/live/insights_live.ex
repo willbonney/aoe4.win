@@ -1,5 +1,6 @@
 defmodule WololoWeb.InsightsLive do
   use WololoWeb, :live_component
+  require Logger
   alias Wololo.PlayerGamesAPI
   import WololoWeb.Components.Spinner
 
@@ -11,7 +12,7 @@ defmodule WololoWeb.InsightsLive do
 
     Remember that the `country` key in the `player` object is a two-letter country code. You can use this to determine the country of the player's opponents. This is not the same as the `civilization` key, which is the civilization the player chose to play with.
 
-    The format of your answer should be in html for easy parsing. Do not wrap the answer with any non-html syntax like ```. The parent container should be a <div> and there shouldn't be any <html> tags. Use <br /> for new lines and use tailwind classes. The 5 insights should be bullet points (use the `list-disc` tailwind class), with substantial bottom margin. Make it look modern and clean. Any html elements that contain text should include the following tailwind classes: `text-stone-900 dark:text-zinc-100`. Add `my-8` to each <li> element.
+    The format of your answer should be in html for easy parsing. Do not wrap the answer with any non-html syntax like ```. The parent container should be a <div> and there shouldn't be any <html> tags. Use <br /> for new lines and use tailwind classes. The 5 insights should be bullet points (use the `list-disc` tailwind class), with substantial bottom margin. Make it look modern and clean. Any html elements that contain text should include the following tailwind classes: `text-stone-900 dark:text-zinc-100`, this includes <li> elements. Add `my-8` to each <li> element.
 
     Instead of using "the player" to refer to the player, use #{player_name} instead. Make the player's name bold.
     """

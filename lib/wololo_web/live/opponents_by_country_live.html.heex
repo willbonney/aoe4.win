@@ -4,9 +4,11 @@
       <.spinner size="lg" class="text-brand-500" />
     </div>
   <% else %>
-    <div class="mx-auto my-auto w-full max-w-[600px]">
+    <div class="mx-auto my-auto w-full max-w-[600px] center">
+
         <canvas id="countries" phx-hook="OpponentsByCountry" data-points={Jason.encode!(@countries)}>
         </canvas>
+              <div class="flex justify-center items-center text-sm italic dark:text-zinc-100 text-stone-900 pt-12"><.icon name="hero-information-circle" class="w-4 h-4 inline-block" /><span class="ml-2">Hover over each slice to see details</span></div>
     </div>
   <% end %>
 </div>

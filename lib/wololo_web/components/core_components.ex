@@ -462,7 +462,7 @@ defmodule WololoWeb.CoreComponents do
             <% end %>
           </a>
         </div>
-        <div class="absolute inset-y-0 right-0 flex items-center pr-2 lg:static lg:inset-auto lg:ml-6 lg:pr-0">
+        <div class="flex items-center">
           <DarktoggleWeb.Components.ToggleTheme.render />
         </div>
       </div>
